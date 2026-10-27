@@ -1,1 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wishy - Giỏ hàng và quản lý giá bán </title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
 
+<body>
+<header class="site-header">
+  <div class="header-top">
+    <div></div>
+    <div class="logo">wishy</div>
+    <div id="user-header-box"></div>
+  </div>
+  <nav class="main-nav">
+    <a href="#">Trang chủ</a>
+    <div class="has-mega">
+      <a href="#">Sản phẩm</a>
+      <div class="mega-menu" id="mega-menu"></div>
+    </div>
+    <div id="nav-cart" class="has-drop" style="display: inline-block;">
+      <a href="#" class="active" onclick="goCart()" style="display: inline-block;">Giỏ hàng</a>
+      <div class="drop-menu" id="cart-menu"></div>
+    </div>
+    <a href="orders.html">Đơn hàng</a>
+  </nav>
+</header>
+
+<!-- Khi chưa đăng nhập -->
+<div id="welcome-screen" class="hero">
+  <div class="sea-overlay"></div>
+  <div class="welcome">
+    <h2>Chào mừng đến với wishy</h2>
+    <p style="margin-top: 10px;">Vui lòng đăng nhập để xem giỏ hàng và đặt hàng.</p>
+    <button class="btn" style="margin-top: 20px;" onclick="openAuth('login')">Đăng nhập</button>
+    <button class="btn-outline" style="margin-top: 20px;" onclick="openAuth('register')">Đăng ký</button>
+  </div>
+</div>
+
+<!-- Khi đã đăng nhập -->
+<div id="app-screen" style="display:none;">
+  <!-- TAB 1: KHÁCH HÀNG - GIỎ HÀNG -->
+  <section id="tab-cart-view" class="tab-content active">
+    <div class="cart-title-row">
+      <h2>Giỏ hàng của bạn</h2>
+    </div>
+    
+    <div class="cart-actions-bar">
+      <label class="select-all-label">
+        <input type="checkbox" id="select-all-chk" onclick="toggleSelectAll(this)"> Chọn tất cả
+      </label>
+      <button class="btn-danger btn-sm" onclick="removeSelectedItems()">Xóa mục đã chọn</button>
+    </div>
+
+    <!-- Tiêu đề các cột -->
+    <div class="cart-header-row">
+      <div class="col-chk"></div>
+      <div class="col-name">Sản phẩm</div>
+      <div class="col-price">Đơn giá</div>
+      <div class="col-qty">Số lượng</div>
+      <div class="col-subtotal">Thành tiền</div>
+      <div class="col-action">Thao tác</div>
+    </div>
+
+    <!-- Danh sách sản phẩm trong giỏ -->
+    <div id="cart-items-container" class="cart-list-container"></div>
+
+    <!-- Tổng tiền và nút chuyển bước điền thông tin -->
+    <div class="card-box cart-summary-box" id="cart-summary-box">
+      <h3 id="cart-grand-total">Tổng tiền: 0đ</h3>
+      <button class="btn" onclick="showCheckoutSection()">Tiến hành đặt hàng</button>
+    </div>
+
+    <!-- Nhập thông tin thanh toán & địa chỉ -->
+    <div class="card-box checkout-section" id="checkout-section">
+      <div class="checkout-header">
+        <h3>Thông tin thanh toán &amp; Giao hàng</h3>
+        <button class="btn-outline btn-sm" onclick="backToCart()">← Quay lại giỏ hàng</button>
+      </div>
+
+      <div class="address-choice-group">
+        <label><input type="radio" name="addr-choice" checked onclick="toggleNewAddress(false)"> Sử dụng địa chỉ mặc định trong tài khoản</label>
+        <label><input type="radio" name="addr-choice" onclick="toggleNewAddress(true)"> Nhập địa chỉ nhận hàng mới</label>
+      </div>
+
+      <div id="new-address-box" class="new-address-box">
+        <div class="form-row"><label>Họ và tên người nhận</label><input type="text" id="ship-name" placeholder="Nguyễn Văn A"></div>
+        <div class="form-row"><label>Số điện thoại nhận hàng</label><input type="tel" id="ship-phone" placsseholder="0901234567" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+        <div class="form-row"><label>Địa chỉ nhận hàng chi tiết</label><input type="text" id="ship-addr" placeholder="Số nhà, tên đường, phường/xã..."></div>
+      </div>
+
+      <div class="payment-method-group">
+        <label class="pay-method-title">Phương thức thanh toán:</label>
+        <div>
+          <label><input type="radio" name="pay-method" value="COD" checked> <b>Tiền mặt khi nhận hàng (COD)</b> (Mặc định)</label>
+          <label><input type="radio" name="pay-method" value="Banking"> Chuyển khoản ngân hàng (QR Code)</label>
+        </div>
+      </div>
+
+      <div class="checkout-footer">
+        <h3 id="checkout-grand-total">Tổng thanh toán: 0đ</h3>
+        <button class="btn" onclick="checkoutOrder()">Xác nhận đặt hàng</button>
+      </div>
+    </div>
+
+    <!-- Hóa đơn đặt hàng -->
+    <div id="invoice-box" class="card-box invoice-box">
+      <h2 class="invoice-title">✓ ĐẶT HÀNG THÀNH CÔNG!</h2>
+      <p class="invoice-subtitle">Cảm ơn bạn đã mua sắm tại <b>wishy</b>. Dưới đây là thông tin hóa đơn của bạn:</p>
+      <hr class="invoice-hr">
+      
+      <div id="invoice-content"></div>
+
+      <div class="invoice-btn-wrap">
+        <button class="btn" onclick="continueShopping()">Tiếp tục mua sắm</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: ADMIN - QUẢN LÝ GIÁ BÁN & TRA CỨU -->
+  <section id="tab-admin-pricing" class="tab-content">
+    <h2>Quản lý Giá bán &amp; Tỷ suất Lợi nhuận (Admin)</h2>
+    
+    <!-- Cập nhật giá sản phẩm -->
+    <div class="card-box pricing-admin-box" style="margin-bottom: 24px;">
+      <h3>Cập nhật % Lợi nhuận (Margin) theo sản phẩm</h3>
+      <div class="form-row"><label>Chọn sản phẩm</label><select id="pricing-prod-select"></select></div>
+      <div class="form-row"><label>Phần trăm lợi nhuận (%)</label><input type="number" id="pricing-margin-input" value="30"></div>
+      <button class="btn" style="margin-top: 10px;" onclick="saveProductMargin()">Lưu &amp; Tính lại giá bán</button>
+    </div>
+
+    <!-- Bảng tra cứu & Thanh tìm kiếm -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+      <h3 style="margin:0;">Bảng tra cứu Giá vốn, % Lợi nhuận &amp; Giá bán</h3>
+      <input type="text" id="search-pricing-input" placeholder="🔍 Tìm nhanh theo tên hoặc mã SP..." onkeyup="filterPricingTable()" style="padding: 8px 16px; width: 300px; border: 1px solid var(--border-color); border-radius: 20px; font-family: inherit;">
+    </div>
+
+    <div class="cart-header-row">
+      <div class="col-admin-id">Mã SP</div>
+      <div class="col-admin-name">Tên sản phẩm &amp; Loại</div>
+      <div class="col-admin-cost">Giá vốn</div>
+      <div class="col-admin-margin">% Margin</div>
+      <div class="col-admin-price">Giá bán tính toán</div>
+    </div>
+    <div id="pricing-items-container" class="cart-list-container"></div>
+  </section>
+</div>
+
+<!-- Modal Đăng nhập -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script src="js/cart.js"></script>
+</body>
+</html>
