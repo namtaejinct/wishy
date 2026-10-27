@@ -561,6 +561,228 @@ select:focus {
 .form-actions button:hover {
     background: var(--primary-hover);
 }
+.cart-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.cart-actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.select-all-label {
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.select-all-label input {
+  margin-right: 8px;
+}
+
+.cart-header-row {
+  display: flex;
+  align-items: center;
+  background: #EBF3FA;
+  padding: 14px 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+/* Các cột nội dung trong giỏ hàng */
+.col-chk { width: 5%; text-align: center; padding-right: 10px; }
+.col-name { width: 35%; font-weight: 700; padding-right: 15px; }
+.col-price { width: 18%; padding-right: 10px; }
+.col-qty { width: 18%; display: flex; align-items: center; }
+.col-qty span { margin: 0 10px; font-weight: 700; }
+.col-subtotal { width: 14%; font-weight: 700; color: var(--primary-color); }
+.col-action { width: 10%; text-align: right; }
+
+/* Cột Admin Quản lý giá */
+.col-admin-id { width: 12%; font-weight: 700; padding-right: 10px; }
+.col-admin-name { width: 38%; font-weight: 600; padding-right: 15px; }
+.col-admin-cost { width: 18%; padding-right: 10px; }
+.col-admin-margin { width: 14%; font-weight: 700; }
+.col-admin-price { width: 18%; font-weight: 700; color: var(--accent-color); }
+
+.cart-list-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.cart-item-row {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+
+.card-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 20px;
+  margin-bottom: 24px;
+}
+
+.cart-summary-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-summary-box h3 {
+  margin: 0;
+}
+
+/* Khối đặt hàng & địa chỉ */
+.checkout-section {
+  display: none;
+}
+
+.checkout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.checkout-header h3 {
+  margin: 0;
+}
+
+.address-choice-group {
+  margin-bottom: 16px;
+}
+
+.address-choice-group label {
+  display: block;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.new-address-box {
+  display: none;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #F8FAFC;
+  border-radius: 8px;
+}
+
+.payment-method-group {
+  margin-bottom: 20px;
+}
+
+.pay-method-title {
+  font-weight: 700;
+  color: var(--primary-color);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.payment-method-group label {
+  display: block;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.checkout-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.checkout-footer h3 {
+  margin: 0;
+  color: var(--primary-color);
+}
+
+/* Khối hóa đơn */
+.invoice-box {
+  display: none;
+  background: #FFFFFF;
+  border: 2px dashed var(--accent-color);
+}
+
+.invoice-title {
+  color: var(--success);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.invoice-subtitle {
+  text-align: center;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.invoice-hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 15px 0;
+}
+
+.invoice-btn-wrap {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.pricing-admin-box {
+  max-width: 600px;
+  margin-bottom: 24px;
+}
+
+#tab-admin-pricing h2 {
+  margin-bottom: 15px;
+}
+
+/* --- TÙY CHỈNH RIÊNG CHO NÚT XÓA VÀ GẠCH CHÂN MENU --- */
+.cart-actions-bar button.btn-danger {
+  background-color: var(--danger, #C0392B);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: none;
+}
+.cart-actions-bar button.btn-danger:hover {
+  background-color: #922B21;
+}
+
+#app-screen .cart-item-row .col-action button.btn-danger {
+  background-color: var(--danger, #C0392B);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 16px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: none;
+  display: inline-block;
+}
+#app-screen .cart-item-row .col-action button.btn-danger:hover {
+  background-color: #922B21;
+}
 @media (max-width: 700px) {
     #register-form .form-row {
         grid-template-columns: 1fr;
