@@ -618,7 +618,7 @@ select:focus {
   flex-direction: column;
   margin-bottom: 20px;
 }
-
+<!-- Cart -->
 .cart-item-row {
   display: flex;
   align-items: center;
@@ -783,6 +783,8 @@ select:focus {
 #app-screen .cart-item-row .col-action button.btn-danger:hover {
   background-color: #922B21;
 }
+<!-- Cart -->
+
 @media (max-width: 700px) {
     #register-form .form-row {
         grid-template-columns: 1fr;
