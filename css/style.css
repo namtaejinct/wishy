@@ -618,7 +618,8 @@ select:focus {
   flex-direction: column;
   margin-bottom: 20px;
 }
-<!-- Cart -->
+
+/* -------- CART -------- */
 .cart-item-row {
   display: flex;
   align-items: center;
@@ -752,7 +753,7 @@ select:focus {
   margin-bottom: 15px;
 }
 
-/* --- TÙY CHỈNH RIÊNG CHO NÚT XÓA VÀ GẠCH CHÂN MENU --- */
+/* --- NÚT XÓA VÀ GẠCH CHÂN --- */
 .cart-actions-bar button.btn-danger {
   background-color: var(--danger, #C0392B);
   color: #FFFFFF;
@@ -783,7 +784,7 @@ select:focus {
 #app-screen .cart-item-row .col-action button.btn-danger:hover {
   background-color: #922B21;
 }
-<!-- Cart -->
+/* -------- CART -------- */
 
 @media (max-width: 700px) {
     #register-form .form-row {
