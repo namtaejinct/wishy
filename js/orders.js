@@ -27,7 +27,14 @@ window.addEventListener('hashchange', function () {
 });
 
 function statusBadge(s) {
-  var cls = s === 'Đã giao' ? 'ok' : s === 'Đã hủy' ? 'warn' : s === 'Đã xử lý' ? 'mid' : '';
+  var colors = {
+    'Chờ xác nhận': '',
+    'Chờ lấy hàng': 'mid',
+    'Chờ giao hàng': 'mid',
+    'Đã giao': 'ok',
+    'Đã hủy': 'warn'
+  };
+  var cls = colors[s] || '';
   return '<span class="badge ' + cls + '">' + esc(s) + '</span>';
 }
 // Màn hình 1: Lịch sử đơn hàng đã mua
@@ -66,7 +73,7 @@ function renderAdminOrders() {
   });
   var tb = document.getElementById('tbody-admin-orders');
   if (!list.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="5">Không có đơn hàng phù hợp.</td></tr>'; return; }
-  var opts = ['Mới đặt', 'Đã xử lý', 'Đã giao', 'Đã hủy'];
+  var opts = ['Chờ xác nhận', 'Chờ lấy hàng', 'Chờ giao hàng', 'Đã giao', 'Đã hủy'];
   tb.innerHTML = list.map(function (o) {
     var u = findUser(o.user);
     var select = '<select id="st-' + o.id + '">' + opts.map(function (s) {
