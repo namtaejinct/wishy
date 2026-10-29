@@ -574,26 +574,36 @@ select:focus {
 .form-actions button:hover {
     background: var(--primary-hover);
 }
-.main-nav > a, 
-.main-nav > #nav-cart {
+
+.main-nav #nav-cart {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.main-nav #nav-cart > a {
     display: block;
     padding: 14px 4px;
     color: var(--text-color);
     text-decoration: none;
     font-size: 18px;
     font-weight: 700;
+    background: transparent;
     transition: color 0.2s, transform 0.2s;
 }
 
-.main-nav > a:hover, 
-.main-nav > a.active, 
-.main-nav > #nav-cart:hover, 
-.main-nav > #nav-cart.active {
+.main-nav #nav-cart:hover > a,
+.main-nav #nav-cart > a.active {
     color: var(--accent-color);
     transform: scale(1.12);
     text-decoration: underline;
     text-decoration-thickness: 2px;
-    text-underline-offset: 6px;}
+    text-underline-offset: 6px;
+    background: transparent;
+}
 
 .cart-title-row {
   display: flex;
