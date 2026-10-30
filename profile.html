@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Khách Hàng - WISHY</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="header-top">
+            <div class="logo">WISHY</div>
+            <div id="user-header-box">
+                <span class="user-name">Xin chào, <span id="header-username">name</span></span>
+                <span class="role-tag">Khách hàng</span>
+                <a href="cart.html" class="btn btn-outline btn-sm" style="text-decoration: none; margin-left: 10px;">🛒 Giỏ hàng (<span id="cart-count">0</span>)</a>
+            </div>
+        </div>
+
+        <nav class="main-nav">
+            <a href="products.html">Tất cả sản phẩm</a>
+            <a href="#">Túi vải</a>
+            <a href="#">Áo thun</a>
+            <a href="#">Phụ kiện</a>
+            <a href="#">Móc khóa</a>
+            <a href="#">Nam châm</a>
+        </nav>
+    </header>
+
+    <div class="sub-menu" style="padding: 12px 40px; font-weight: 600;">
+        <a href="products.html" style="color: var(--primary-color); text-decoration: none;">Trang chủ</a> 
+        <span style="margin: 0 10px; color: var(--border-color);">|</span> 
+        <span style="color: var(--danger);">Trang khách hàng</span>
+    </div>
+
+    <div class="tab-content active" style="display: grid; grid-template-columns: 280px 1fr; gap: 30px; align-items: start; padding: 30px 40px;">
+        
+        <!-- SIDEBAR TRÁI: ĐIỀU HƯỚNG TÀI KHOẢN -->
+        <div class="card-box" style="margin-top: 0; padding: 20px;">
+            <h3 style="font-size: 18px; margin-bottom: 10px;">TRANG TÀI KHOẢN</h3>
+            <p style="margin-bottom: 20px; font-weight: 600; color: var(--text-color);">Xin chào, <span id="sidebar-username">name</span>!</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn btn-outline" style="text-align: left; border: none; background: #EBF3FA; color: var(--primary-color);" onclick="switchProfileTab('info')">Thông tin tài khoản</button>
+                <button class="btn btn-outline" style="text-align: left; border: none; background: transparent;" onclick="switchProfileTab('orders')">Đơn hàng của bạn</button>
+                <button class="btn btn-danger btn-sm" style="margin-top: 15px; text-align: center;" id="btn-logout">Đăng xuất</button>
+            </div>
+        </div>
+
+        <div>
+            <div id="profile-tab-info" class="card-box" style="margin-top: 0;">
+                <h2>THÔNG TIN TÀI KHOẢN</h2>
+                <div style="margin: 15px 0 25px 0; line-height: 1.8;">
+                    <p><strong>Họ tên:</strong> <span id="info-name">name</span></p>
+                    <p><strong>Địa chỉ:</strong> <span id="info-address">address</span></p>
+                    <p><strong>Email:</strong> <span id="info-email">name@gmail.com</span></p>
+                </div>
+
+                <h2 style="margin-top: 30px;">BẢO MẬT</h2>
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+                    <div>
+                        <button class="btn btn-outline btn-sm" onclick="toggleForm('pass')">Đổi mật khẩu</button>
+                        <div id="form-pass" style="display: none; margin-top: 10px; background: var(--bg-color); padding: 15px; border-radius: 8px;">
+                            <div class="form-row">
+                                <label>Mật khẩu hiện tại</label>
+                                <input type="password" id="old-password" placeholder="Nhập mật khẩu cũ">
+                            </div>
+                            <div class="form-row">
+                                <label>Mật khẩu mới</label>
+                                <input type="password" id="new-password" placeholder="Nhập mật khẩu mới">
+                            </div>
+                            <button class="btn btn-sm" onclick="submitChangePassword()">Xác nhận</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button class="btn btn-outline btn-sm" onclick="toggleForm('address')">Đổi địa chỉ</button>
+                        <div id="form-address" style="display: none; margin-top: 10px; background: var(--bg-color); padding: 15px; border-radius: 8px;">
+                            <div class="form-row">
+                                <label>Địa chỉ mới</label>
+                                <input type="text" id="updated-address" placeholder="Nhập địa chỉ giao hàng mới">
+                            </div>
+                            <button class="btn btn-sm" onclick="submitChangeAddress()">Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="profile-tab-orders" class="card-box" style="margin-top: 0; display: none;">
+                <h2>THÔNG TIN ĐƠN HÀNG</h2>
+                <table style="margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profile-orders-list">
+                        <tr class="empty-row">
+                            <td colspan="5">Chưa có đơn hàng nào.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <footer style="background: var(--primary-color); color: white; text-align: center; padding: 20px; margin-top: 40px;">
+        <p style="margin: 0; font-weight: 600; font-size: 14px;">© 2026 wishy - Cửa hàng đồ lưu niệm</p>
+    </footer>
+
+    <script src="js/common.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>

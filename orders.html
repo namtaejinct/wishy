@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wishy - Quản lý đơn hàng &amp; Tồn kho</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="site-header">
+
+  <div class="header-top">
+    <div></div>
+    <div class="logo">wishy</div>
+    <div id="user-header-box"></div>
+  </div>
+
+  <nav class="main-nav">
+    <a href="index.html">Trang chủ</a>
+    <div class="has-mega">
+      <a href="products.html">Sản phẩm</a>
+      <div class="mega-menu" id="mega-menu"></div>
+    </div>
+    <a href="cart.html">Giỏ hàng</a>
+
+    <div id="nav-orders">
+      <a href="#" class="active" onclick="goOrders()">Đơn hàng</a>
+      <div class="drop-menu" id="orders-menu"></div>
+    </div>
+  </nav>
+</header>
+
+<div id="welcome-screen" class="hero">
+  <div class="sea-overlay"></div>
+
+  <div class="welcome">
+  <h2>Chào mừng đến với wishy</h2>
+  <p>Đăng nhập hoặc tạo tài khoản ở góc màn hình để theo dõi đơn hàng của bạn.</p>
+  </div>
+</div>
+
+<div id="app-screen" style="display:none;">
+  <section id="tab-my-orders" class="tab-content active">
+    <h2>Lịch sử đơn hàng của tôi</h2>
+    <table>
+      <thead><tr><th>Mã đơn</th><th>Ngày đặt</th><th>Tổng tiền</th><th>Trạng thái</th><th>Chi tiết</th></tr></thead>
+      <tbody id="tbody-my-orders"></tbody>
+    </table>
+  </section>
+
+  <section id="tab-admin-stock-in" class="tab-content">
+    <h2>Quản lý Phiếu nhập hàng</h2>
+    <button class="btn" onclick="showAddStockModal()">+ Tạo phiếu nhập mới</button>
+    <table style="margin-top: 15px;">
+      <thead><tr><th>Mã phiếu</th><th>Ngày nhập</th><th>Tổng tiền nhập</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+      <tbody id="tbody-stock-in"></tbody>
+    </table>
+  </section>
+
+  <section id="tab-admin-orders" class="tab-content">
+    <h2>Quản lý Đơn đặt hàng của Khách</h2>
+    <div class="filter-box">
+      <label>Từ ngày: <input type="date" id="filter-from-date"></label>
+      <label>Đến ngày: <input type="date" id="filter-to-date"></label>
+      <label>Trạng thái:
+        <select id="filter-status">
+          <option value="all">Tất cả</option>
+          <option value="Chờ xác nhận">Chờ xác nhận</option>
+          <option value="Chờ lấy hàng">Chờ lấy hàng</option>
+          <option value="Chờ giao hàng">Chờ giao hàng</option>
+          <option value="Đã giao">Đã giao</option>
+          <option value="Đã hủy">Đã hủy</option>
+        </select>
+      </label>
+      <button class="btn" onclick="renderAdminOrders()">Lọc đơn hàng</button>
+    </div>
+    <table style="margin-top: 15px;">
+      <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Tổng tiền</th><th>Trạng thái</th><th>Cập nhật trạng thái</th></tr></thead>
+      <tbody id="tbody-admin-orders"></tbody>
+    </table>
+  </section>
+
+  <section id="tab-admin-inventory" class="tab-content">
+    <h2>Báo cáo &amp; Cảnh báo Tồn kho</h2>
+    <div id="alert-box" style="margin-bottom: 15px;"></div>
+    <h3>Bảng tra cứu Tồn kho Thực tế</h3>
+    <table>
+      <thead><tr><th>Mã SP</th><th>Tên SP</th><th>Loại</th><th>SL Tồn</th><th>Cảnh báo</th></tr></thead>
+      <tbody id="tbody-inventory"></tbody>
+    </table>
+  </section>
+</div>
+
+<script src="js/common.js"></script>
+<script src="js/orders.js"></script>
+</body>
+</html>
