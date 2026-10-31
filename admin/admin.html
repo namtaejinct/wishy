@@ -156,11 +156,11 @@
 
             <!-- 4. Quản lí Lợi nhuận (Mai) -->
             <section id="tab-pricing" class="tab-content">
-                <h2>Quản lí Giá bán &amp; Tỷ suất Lợi nhuận (Admin)</h2>
+                <h2>Quản lí Giá bán &amp; Tỷ suất Lợi nhuận</h2>
 
                 <!-- Cập nhật giá sản phẩm -->
                 <div class="card-box pricing-admin-box" style="margin-bottom: 24px;">
-                    <h3>Cập nhật % Lợi nhuận (Margin) theo sản phẩm</h3>
+                    <h3>Cập nhật % Lợi nhuận theo sản phẩm</h3>
                     <div class="form-row"><label>Chọn sản phẩm</label><select id="pricing-prod-select"></select></div>
                     <div class="form-row"><label>Phần trăm lợi nhuận (%)</label><input type="number" id="pricing-margin-input" value="30"></div>
                     <button class="btn" style="margin-top: 10px;" onclick="saveProductMargin()">Lưu &amp; Tính lại giá bán</button>
@@ -169,14 +169,14 @@
                 <!-- Bảng tra cứu & Thanh tìm kiếm -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
                     <h3 style="margin:0;">Bảng tra cứu Giá vốn, % Lợi nhuận &amp; Giá bán</h3>
-                    <input type="text" id="search-pricing-input" placeholder="Tìm nhanh theo tên hoặc mã SP..." onkeyup="filterPricingTable()" style="padding: 8px 16px; width: 300px; border: 1px solid var(--border-color); border-radius: 20px; font-family: inherit;">
+                    <input type="text" id="search-pricing-input" placeholder="Tìm theo tên hoặc mã SP..." onkeyup="filterPricingTable()" style="padding: 8px 16px; width: 300px; border: 1px solid var(--border-color); border-radius: 20px; font-family: inherit;">
                 </div>
 
                 <div class="cart-header-row">
                     <div class="col-admin-id">Mã SP</div>
                     <div class="col-admin-name">Tên sản phẩm &amp; Loại</div>
                     <div class="col-admin-cost">Giá vốn</div>
-                    <div class="col-admin-margin">% Margin</div>
+                    <div class="col-admin-margin">% Lợi nhuận</div>
                     <div class="col-admin-price">Giá bán tính toán</div>
                 </div>
                 <div id="pricing-items-container" class="cart-list-container"></div>
