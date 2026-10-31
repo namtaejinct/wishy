@@ -345,7 +345,7 @@ function renderPricing() {
   var select = document.getElementById('pricing-prod-select');
   if (select) {
     select.innerHTML = products.map(function (p) {
-      return '<option value="' + p.id + '">' + p.id + ' - ' + esc(p.name) + ' [' + esc(p.type || 'Khác') + '] (Vốn: ' + money(p.cost) + ')</option>';
+      return '<option value="' + p.id + '">' + p.id + ' - ' + esc(p.name) + ' [' + esc(p.type || 'Khác') + '])</option>';
     }).join('');
   }
   filterPricingTable();
