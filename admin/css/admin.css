@@ -302,45 +302,46 @@ select:focus {
     font-weight: 600;
 }
 
+/* ===== TV3 ===== */
 .cart-header-row {
-    display: grid;
-    grid-template-columns: 0.8fr 2fr 1.2fr 1fr 1.5fr;
-    gap: 12px;
-    align-items: center;
-    padding: 15px;
-    margin-top: 20px;
-    background: #E8F8F0;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  background: #EBF3FA;
+  padding: 14px 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  color: var(--primary-color);
 }
 
 .cart-item-row {
-    display: flex;
-    align-items: center;
-    background: #FFFFFF;
-    padding: 16px 20px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
 }
-
 .cart-list-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+.col-admin-id { width: 12%; font-weight: 700; padding-right: 10px; }
+.col-admin-name { width: 38%; font-weight: 600; padding-right: 15px; }
+.col-admin-cost { width: 18%; padding-right: 10px; }
+.col-admin-margin { width: 14%; font-weight: 700; }
+.col-admin-price { width: 18%; font-weight: 700; color: var(--accent-color); }
+.pricing-admin-box {
+  max-width: 600px;
+  margin-bottom: 24px;
+}
+#tab-admin-pricing h2 {
+  margin-bottom: 15px;
 }
 
-.col-admin-id,
-.col-admin-name,
-.col-admin-cost,
-.col-admin-margin,
-.col-admin-price {
-    min-width: 0;
-    overflow-wrap: anywhere;
-}
 
 .modal-overlay {
     position: fixed;
