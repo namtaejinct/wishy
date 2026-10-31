@@ -1,4 +1,3 @@
-
 @font-face {
     font-family: 'Quicksand';
     src: url('../font/Quicksand-Regular.ttf') format('truetype'),
@@ -136,6 +135,12 @@ h2, h3 {
     display: block;
 }
 
+/* Thống nhất tiêu đề h2 của 7 tab (đổi cỡ chữ chung tại đây) */
+.tab-content h2 {
+    font-size: 22px;
+    margin: 0 0 22px;
+}
+
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -145,8 +150,7 @@ h2, h3 {
 }
 
 .page-header h2 {
-    color: var(--primary-color);
-    font-size: 22px;
+    margin: 0;   /* page-header đã có margin-bottom riêng */
 }
 
 .card,
@@ -436,7 +440,113 @@ select:focus {
     max-width: 90%;
     max-height: 85vh;
     overflow-y: auto;
-    border-top: 5px solid var(--accent-color);
+}
+
+/* Nút ✕ đóng modal: nằm thẳng hàng với tiêu đề */
+.modal-card > .btn-outline.btn-sm {
+    float: right;
+    margin: -6px -6px 0 0;
+}
+
+/* ===== TV4: nút, badge, cảnh báo, modal phiếu nhập ===== */
+.btn {
+    background: var(--accent-color);
+    color: #FFFFFF;
+}
+
+.btn:hover {
+    background: var(--accent-hover);
+}
+
+.btn-outline {
+    cursor: pointer;
+    padding: 9px 18px;
+    border-radius: 6px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #E8F8F0;
+    color: var(--primary-color);
+}
+
+.badge.ok {
+    background: #D5F5E3;
+    color: var(--success-color);
+}
+
+.badge.mid {
+    background: #FDEBD0;
+    color: var(--warning-color);
+}
+
+.badge.warn {
+    background: #FADBD8;
+    color: var(--danger-color);
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.alert.ok {
+    background: #D5F5E3;
+    color: var(--success-color);
+}
+
+.alert.warn {
+    background: #FADBD8;
+    color: var(--danger-color);
+}
+
+.empty-row td {
+    text-align: center;
+    color: #7F8C8D;
+    padding: 20px;
+}
+
+.line-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.line-row select {
+    flex: 2;
+    min-width: 0;
+}
+
+.line-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+.form-error {
+    color: var(--danger-color);
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 18px;
+}
+
+.detail-total {
+    text-align: right;
+    font-weight: 700;
+    margin-top: 12px;
+    color: var(--primary-color);
 }
 
 @media (max-width: 768px) {
