@@ -43,14 +43,13 @@ function renderHeader() {
   var box = document.getElementById('user-header-box');
   if (!box) return;
   if (currentUser) {
-    box.innerHTML = '<span>Xin chào, <span class="user-name">' + esc(currentUser.fullname) + '</span></span>' +
-                    '<span class="role-tag ' + (isAdmin() ? 'admin' : '') + '">' + (isAdmin() ? 'Admin' : 'Khách hàng') + '</span>' +
-                    '<button class="btn-outline btn-sm" onclick="logout()">Đăng xuất</button>';
+    box.innerHTML = '<span style="white-space: nowrap; font-weight: 600;">Xin chào, <span class="user-name">' + esc(currentUser.fullname) + '</span></span>' +
+                    '<button class="btn-outline btn-sm" onclick="logout()" style="margin-left: 8px;">Đăng xuất</button>';
   } else {
-    box.innerHTML = '<button class="btn-outline btn-sm" onclick="openAuth(\'login\')">Đăng nhập</button>';
+    box.innerHTML = '<button class="btn-outline btn-sm" onclick="openAuth(\'login\')">Đăng nhập</button>' +
+                    '<button class="btn btn-sm" style="margin-left: 6px;" onclick="openAuth(\'register\')">Đăng ký</button>';
   }
 }
-
 function renderCartMenu() {
   var wrap = document.getElementById('nav-cart');
   var menu = document.getElementById('cart-menu');
@@ -85,20 +84,31 @@ function closeModal() {
 }
 
 function loginForm() {
-  return '<div class="form-row"><label>Tên đăng nhập</label><input id="lg-user" autocomplete="username"></div>' +
-         '<div class="form-row"><label>Mật khẩu</label><input id="lg-pass" type="password" autocomplete="current-password"></div>' +
+  return '<div class="form-row"><label>Tên đăng nhập</label><input id="lg-user" placeholder="Nhập tên đăng nhập..." autocomplete="username"></div>' +
+         '<div class="form-row"><label>Mật khẩu</label><input id="lg-pass" type="password" placeholder="Nhập mật khẩu..." autocomplete="current-password"></div>' +
          '<div class="form-error" id="auth-error"></div>' +
-         '<button class="btn" style="width:100%" onclick="doLogin()">Đăng nhập</button>';
+         '<button class="btn" style="width:100%" onclick="doLogin()">Đăng nhập</button>' +
+         '<p style="text-align:center; margin-top:14px; font-size:14px; color:#7B8BA0;">Chưa có tài khoản? <a href="#" onclick="openAuth(\'register\'); return false;" style="color:var(--accent-color); font-weight:700; text-decoration:none;">Đăng ký ngay</a></p>';
 }
 
 function registerForm() {
-  return '<div class="form-row"><label>Họ tên</label><input id="reg-name"></div>' +
-         '<div class="form-row"><label>Tên đăng nhập</label><input id="reg-user"></div>' +
-         '<div class="form-row"><label>Mật khẩu</label><input type="password" id="reg-pass"></div>' +
+  return '<div id="register-form">' +
+           '<div class="form-row">' +
+             '<div class="form-col"><label>Họ và tên</label><input id="reg-name" placeholder="Nguyễn Văn A"></div>' +
+             '<div class="form-col"><label>Tên đăng nhập</label><input id="reg-user" placeholder="4-20 ký tự: chữ, số, dấu _"></div>' +
+           '</div>' +
+           '<div class="form-row">' +
+             '<div class="form-col"><label>Địa chỉ</label><input id="reg-address" placeholder="Số nhà, đường, phường/xã..."></div>' +
+             '<div class="form-col"><label>Mật khẩu</label><input type="password" id="reg-pass" placeholder="Tối thiểu 6 ký tự"></div>' +
+           '</div>' +
+           '<div class="form-row">' +
+             '<div class="form-col"><label>Số điện thoại</label><input id="reg-phone" placeholder="0901234567" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, \'\')"></div>' +
+             '<div class="form-col"><label>Nhập lại mật khẩu</label><input type="password" id="reg-repass" placeholder="Nhập lại mật khẩu..."></div>' +
+           '</div>' +
+         '</div>' +
          '<div class="form-error" id="auth-error"></div>' +
-         '<button class="btn" style="width:100%" onclick="doRegister()">Đăng ký</button>';
+         '<div class="form-actions"><button class="btn" onclick="doRegister()">Đăng ký</button></div>';
 }
-
 function authError(msg) { 
   var err = document.getElementById('auth-error');
   if(err) err.textContent = msg; 
