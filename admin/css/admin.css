@@ -316,6 +316,16 @@ select:focus {
     color: var(--primary-color);
 }
 
+.cart-item-row {
+    display: flex;
+    align-items: center;
+    background: #FFFFFF;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
 .cart-list-container {
     display: flex;
     flex-direction: column;
