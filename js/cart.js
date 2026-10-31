@@ -331,14 +331,7 @@ function checkoutOrder() {
 }
 
 function continueShopping() {
-  document.querySelector('.cart-header-row').style.display = 'flex';
-  document.getElementById('cart-items-container').style.display = 'flex';
-  document.getElementById('cart-summary-box').style.display = 'flex';
-  document.querySelector('.cart-title-row').style.display = 'flex';
-  document.querySelector('.cart-actions-bar').style.display = 'flex';
-
-  document.getElementById('invoice-box').style.display = 'none';
-  renderCart();
+  window.location.href = 'products.html';
 }
 
 /* === ADMIN QUẢN LÝ GIÁ === */
