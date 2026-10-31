@@ -43,8 +43,8 @@ function renderHeader() {
   var box = document.getElementById('user-header-box');
   if (!box) return;
   if (currentUser) {
-    box.innerHTML = '<span style="white-space: nowrap; font-weight: 600;">Xin chào, <span class="user-name">' + esc(currentUser.fullname) + '</span></span>' +
-                    '<button class="btn-outline btn-sm" onclick="logout()" style="margin-left: 8px;">Đăng xuất</button>';
+    box.innerHTML = '<span class="user-greeting">Xin chào, <span class="user-name">' + esc(currentUser.fullname) + '</span></span>' +
+                    '<button class="btn-outline btn-sm" onclick="logout()">Đăng xuất</button>';
   } else {
     box.innerHTML = '<button class="btn-outline btn-sm" onclick="openAuth(\'login\')">Đăng nhập</button>' +
                     '<button class="btn btn-sm" style="margin-left: 6px;" onclick="openAuth(\'register\')">Đăng ký</button>';
