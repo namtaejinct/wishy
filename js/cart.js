@@ -152,7 +152,7 @@ function renderCart() {
   var total = 0;
   var allChecked = true;
 
-  // Khởi tạo thuộc tính selectes cho các sp
+  // Khởi tạo thuộc tính selected cho các sp
   cart.forEach(function(item) {
     if (typeof item.selected === 'undefined') item.selected = true;
   });
