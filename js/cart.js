@@ -20,21 +20,19 @@ var defaultProducts = [
 ];
 
 var products = load('wishy_products', defaultProducts);
+products.forEach(function(p) {
+  var salePrice = Number(p.price) || 0;
+  p.cost = p.cost || Math.round(salePrice * 0.7);
+  p.margin = p.margin || 30;
+  p.price = salePrice;
+});
+save('wishy_products', products);
 var users = load('wishy_users', []);
 var cart = load('wishy_cart', []);
 var orders = load('wishy_orders', []);
 var currentUser = load('wishy_current', null);
 
-function findProduct(id) { 
-  var p = products.filter(function (p) { return p.id === id; })[0];
-  if (p) {
-    var salePrice = Number(p.price) || 0;
-    p.cost = p.cost || Math.round(salePrice * 0.7);
-    p.margin = p.margin || 30;
-    p.price = salePrice;
-  }
-  return p; 
-}
+function findProduct(id) { return products.filter(function (p) { return p.id === id; })[0]; }
 function isAdmin() { return currentUser && currentUser.role === 'admin'; }
 
 /* === HEADER & ĐĂNG NHẬP === */
@@ -336,6 +334,14 @@ function continueShopping() {
 
 /* === ADMIN QUẢN LÝ GIÁ === */
 function renderPricing() {
+  products.forEach(function(p) {
+    var salePrice = Number(p.price) || 0;
+    p.cost = p.cost || Math.round(salePrice * 0.7);
+    p.margin = p.margin || 30;
+    p.price = salePrice;
+  });
+  save('wishy_products', products);
+
   var select = document.getElementById('pricing-prod-select');
   if (select) {
     select.innerHTML = products.map(function (p) {
