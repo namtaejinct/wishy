@@ -35,7 +35,7 @@ function admin_enter() {
 // Gọi mọi hàm render của các tab. Mỗi người thêm hàm render của mình vào đây.
 function renderAll() {
   if (typeof renderUsers === 'function') renderUsers();   // Linh
-  if (typeof renderPricing === 'function') renderPricing();
+  if (typeof renderPricing === 'function') renderPricing(); // Mai (TV3)
   tv4_refresh();                                          // Nam (TV4)
 }
 
