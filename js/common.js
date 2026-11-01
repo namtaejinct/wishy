@@ -81,10 +81,10 @@ function siteHeaderHtml(activePage) {
       '<a class="cat-tab ' + (activePage === 'home' ? 'active' : '') + '" href="index.html">Trang chủ</a>' +
       '<a class="cat-tab ' + (activePage === 'all' ? 'active' : '') + '" href="index.html#products">Tất cả sản phẩm</a>' +
       '<a class="cat-tab" href="index.html#products">Túi vải</a>' +
-      '<a class="cat-tab" href="index.html#products">Áo freesize</a>' +
+      '<a class="cat-tab" href="index.html#products">Áo thun</a>' +
       '<a class="cat-tab" href="index.html#products">Phụ kiện</a>' +
       '<a class="cat-tab" href="index.html#products">Móc khóa</a>' +
-      '<a class="cat-tab" href="index.html#products">Nam châm</a>' +
+      '<a class="cat-tab" href="index.html#products">Bưu thiếp</a>' +
     '</nav>' +
   '</header>';
 }
