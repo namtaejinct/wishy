@@ -226,6 +226,8 @@ function renderAll() {
   if (!logged) return;
 
   switchTab(currentTab);
+  if (typeof renderCart === 'function') {
+    renderCart();
 }
 
 document.addEventListener('keydown', function (e) {
