@@ -36,7 +36,7 @@ function admin_enter() {
 function renderAll() {
   if (typeof renderUsers === 'function') renderUsers();   // Linh
   if (typeof renderPricing === 'function') renderPricing(); // Mai (TV3)
-  tv4_refresh();                                          // Nam (TV4)
+  renderOrdersAndStock();                                 // Đơn hàng, nhập hàng, tồn kho
 }
 
 window.addEventListener('DOMContentLoaded', function () {
@@ -62,7 +62,7 @@ var stockIns = load('wishy_stockins', [
 
 var editingStockId = null;
 
-function tv4_refresh() {
+function renderOrdersAndStock() {
   renderAdminOrders();
   renderStockIn();
   renderInventory();
@@ -124,7 +124,7 @@ function updateOrderStatus(id) {
   if (!o) return;
   o.status = document.getElementById('st-' + id).value;
   save('wishy_orders', orders);
-  tv4_refresh();
+  renderOrdersAndStock();
 }
 
 /* Quản lý nhập hàng: Tạm lưu -> Sửa -> Hoàn thành */
@@ -222,7 +222,7 @@ function saveStock() {
   }
   save('wishy_stockins', stockIns);   // chưa cộng tồn kho
   closeModal();
-  tv4_refresh();
+  renderOrdersAndStock();
 }
 
 function stock_complete(id) {
@@ -233,7 +233,7 @@ function stock_complete(id) {
   s.status = 'Hoàn tất';
   save('wishy_stockins', stockIns);
   save('wishy_products', products);
-  tv4_refresh();
+  renderOrdersAndStock();
 }
 
 /* Tồn kho: cảnh báo + lọc theo loại */
