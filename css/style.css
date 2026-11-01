@@ -1467,6 +1467,5 @@ html {
 }
 
 .profile-nav-btn:hover, .profile-nav-btn.active {
-  color: var(--accent-color);
-  background: var(--bg-color);
+  color: red;
 }
