@@ -224,10 +224,14 @@ function refreshPage() {
   var welcome = document.getElementById('welcome-screen');
   var app = document.getElementById('app-screen');
   
-  if (welcome) welcome.style.display = logged ? 'none' : 'block';
-  if (app) app.style.display = logged ? 'block' : 'none';
+  // Dùng '' (rỗng) thay vì 'block' để trả lại CSS căn giữa ban đầu cho welcome-screen
+  if (welcome) welcome.style.display = logged ? 'none' : '';
+  if (app) app.style.display = logged ? '' : 'none';
   
-  if (logged && typeof renderCart === 'function') {
+  if (logged) {
+    if (typeof load === 'function') {
+      cart = load('wishy_cart', []);
+    }
     renderCart();
   }
 }
