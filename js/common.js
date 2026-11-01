@@ -38,7 +38,14 @@ var orders = load('wishy_orders', [
   { id: 'DH002', user: 'nam', date: '2026-10-19', status: 'Mới đặt', items: [{ pid: 'SP001', qty: 2 }] },
   { id: 'DH003', user: 'lan', date: '2026-10-20', status: 'Đã xử lý', items: [{ pid: 'SP003', qty: 1 }, { pid: 'SP004', qty: 2 }] }
 ]);
+
+// Trang khách (client) KHÔNG được có phiên admin.
+// Nếu localStorage còn phiên admin cũ thì xóa đi.
 var currentUser = load('wishy_current', null);
+if (currentUser && currentUser.role === 'admin') {
+  currentUser = null;
+  save('wishy_current', null);
+}
 
 function findProduct(id) { return products.filter(function (p) { return p.id === id; })[0]; }
 function findUser(u) { return users.filter(function (x) { return x.username === u; })[0]; }
@@ -47,42 +54,32 @@ function orderTotal(o) {
 }
 function isAdmin() { return !!currentUser && currentUser.role === 'admin'; }
 
-var PAGE_LINKS = {
-  home: 'index.html',
-  products: 'products.html',
-  cart: 'cart.html',
-  orders: 'orders.html'
-};
+function cartCount() {
+  var cart = load('wishy_cart', []);
+  return cart.reduce(function (s, i) { return s + (i.qty || 0); }, 0);
+}
+
+var ICON_USER =
+  '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+    '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>' +
+    '<circle cx="12" cy="7" r="4"></circle>' +
+  '</svg>';
+var ICON_CART =
+  '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+    '<circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>' +
+    '<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>' +
+  '</svg>';
 
 function siteHeaderHtml(activePage) {
-  var cart = load('wishy_cart', []);
-  var cartCount = cart.reduce(function(s, i) { return s + (i.qty || 0); }, 0);
-
   return '<header class="site-header">' +
     '<div class="header-top">' +
       '<div class="header-left-space"></div>' +
       '<div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">WISHY</a></div>' +
-      '<div id="user-header-box" class="header-right-icons">' +
-        '<!-- Icon User: Bấm vào là bật ngay Overlay Đăng nhập -->' +
-        '<a href="#" class="icon-btn" title="Tài khoản" onclick="openAuth(\'login\'); return false;">' +
-          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-            '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>' +
-            '<circle cx="12" cy="7" r="4"></circle>' +
-          '</svg>' +
-        '</a>' +
-        '<!-- Icon Giỏ hàng: Đã đăng nhập -> vào cart.html | Chưa đăng nhập -> Overlay Đăng nhập -->' +
-        '<a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng" onclick="checkCartAccess(event)">' +
-          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-            '<circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>' +
-            '<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>' +
-          '</svg>' +
-          '<span class="cart-badge">' + cartCount + '</span>' +
-        '</a>' +
-      '</div>' +
+      '<div id="user-header-box" class="header-right-icons"></div>' +
     '</div>' +
     '<nav class="main-nav-equal" id="category-nav-list">' +
-      '<a class="cat-tab ' + (activePage==='home'?'active':'') + '" href="index.html">Trang chủ</a>' +
-      '<a class="cat-tab ' + (activePage==='all'?'active':'') + '" href="index.html#products">Tất cả sản phẩm</a>' +
+      '<a class="cat-tab ' + (activePage === 'home' ? 'active' : '') + '" href="index.html">Trang chủ</a>' +
+      '<a class="cat-tab ' + (activePage === 'all' ? 'active' : '') + '" href="index.html#products">Tất cả sản phẩm</a>' +
       '<a class="cat-tab" href="index.html#products">Túi vải</a>' +
       '<a class="cat-tab" href="index.html#products">Áo freesize</a>' +
       '<a class="cat-tab" href="index.html#products">Phụ kiện</a>' +
@@ -92,72 +89,26 @@ function siteHeaderHtml(activePage) {
   '</header>';
 }
 
-function renderMegaMenu() {
-  var menu = document.getElementById('mega-menu');
-  if (!menu) return;
-  var groups = {};
-  products.forEach(function (p) {
-    if (!groups[p.type]) groups[p.type] = [];
-    groups[p.type].push(p);
-  });
-  var html = Object.keys(groups).map(function (type) {
-    return '<div class="mega-col"><h4>' + esc(type) + '</h4><ul>' +
-      groups[type].map(function (p) { return '<li><a href="#">' + esc(p.name) + '</a></li>'; }).join('') +
-      '</ul></div>';
-  }).join('');
-  menu.innerHTML = html || '<p>Chưa có sản phẩm.</p>';
-}
-
-function renderOrdersMenu() {
-  var wrap = document.getElementById('nav-orders');
-  var menu = document.getElementById('orders-menu');
-  if (!wrap || !menu) return;
-  if (isAdmin()) {
-    wrap.classList.add('has-drop');
-    menu.innerHTML = [
-      ['tab-admin-stock-in', 'Quản lý Nhập hàng'],
-      ['tab-admin-orders', 'Quản lý Đơn hàng'],
-      ['tab-admin-inventory', 'Quản lý Tồn kho']
-    ].map(function (m) {
-      return '<a href="' + PAGE_LINKS.orders + '#' + m[0] + '" data-tab="' + m[0] + '">' + m[1] + '</a>';
-    }).join('');
-  } else {
-    wrap.classList.remove('has-drop');
-    menu.innerHTML = '';
-  }
-}
-
 function renderHeader() {
-  renderMegaMenu();
-  renderOrdersMenu();
   var box = document.getElementById('user-header-box');
   if (!box) return;
-  
+  var cartBtn =
+    '<a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng" onclick="checkCartAccess(event)">' +
+      ICON_CART + '<span class="cart-badge">' + cartCount() + '</span>' +
+    '</a>';
+
   if (currentUser) {
-    box.innerHTML = 
-      '<span style="font-size:13px; font-weight:700; color:var(--primary-color);">' + esc(currentUser.fullname) + '</span>' +
-      '<a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng">' +
-        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>' +
+    box.innerHTML =
+      '<a href="profile.html" class="icon-btn" title="Trang cá nhân" style="display:flex; align-items:center; gap:6px; text-decoration:none;">' +
+        ICON_USER +
+        '<span style="font-size:13px; font-weight:700; color:var(--primary-color);">' + esc(currentUser.fullname) + '</span>' +
       '</a>' +
+      cartBtn +
       '<button class="btn-outline btn-sm" onclick="logout()">Đăng xuất</button>';
   } else {
-    // Khi chưa đăng nhập 
-    var cart = load('wishy_cart', []);
-    var cartCount = cart.reduce(function(s, i) { return s + (i.qty || 0); }, 0);
-    box.innerHTML = 
-      '<a href="#" class="icon-btn" title="Tài khoản" onclick="openAuth(\'login\'); return false;">' +
-        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-          '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>' +
-          '<circle cx="12" cy="7" r="4"></circle>' +
-        '</svg>' +
-      '</a>' +
-      '<a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng" onclick="checkCartAccess(event)">' +
-        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-          '<circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>' +
-          '<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>' +
-        '</svg>' +
-        '<span class="cart-badge">' + cartCount + '</span>' +
-      '</a>';
+    box.innerHTML =
+      '<a href="#" class="icon-btn" title="Tài khoản" onclick="openAuth(\'login\'); return false;">' + ICON_USER + '</a>' +
+      cartBtn;
   }
 }
 
@@ -166,19 +117,25 @@ function refreshPage() {
   if (typeof renderPage === 'function') renderPage();
 }
 
-function initSite(activePage) {
-  var holder = document.getElementById('site-header');
-  if (holder) holder.innerHTML = siteHeaderHtml(activePage);
-  var foot = document.getElementById('site-footer');
-  if (foot) foot.innerHTML = '<footer class="site-footer">© ' + new Date().getFullYear() + ' wishy - Cửa hàng đồ lưu niệm</footer>';
-  if (!document.getElementById('overlay')) {
-    var ov = document.createElement('div');
+function ensureOverlay() {
+  var ov = document.getElementById('overlay');
+  if (!ov) {
+    ov = document.createElement('div');
     ov.className = 'overlay';
     ov.id = 'overlay';
     ov.innerHTML = '<div class="modal" id="modal"></div>';
     ov.addEventListener('click', function (e) { if (e.target === ov) closeModal(); });
     document.body.appendChild(ov);
   }
+  return ov;
+}
+
+function initSite(activePage) {
+  var holder = document.getElementById('site-header');
+  if (holder) holder.innerHTML = siteHeaderHtml(activePage);
+  var foot = document.getElementById('site-footer');
+  if (foot) foot.innerHTML = '<footer class="site-footer">© ' + new Date().getFullYear() + ' wishy - Cửa hàng đồ lưu niệm</footer>';
+  ensureOverlay();
   refreshPage();
 }
 
@@ -187,12 +144,24 @@ document.addEventListener('click', function (e) {
   if (a) e.preventDefault();
 });
 
-function closeModal() { document.getElementById('overlay').classList.remove('show'); }
+// Chỉ một closeModal / openModal dùng chung cho mọi popup (kể cả đăng nhập)
+function showOverlay() {
+  var ov = ensureOverlay();
+  ov.classList.add('show');
+  ov.style.display = 'flex';
+}
+function closeModal() {
+  var ov = document.getElementById('overlay');
+  if (!ov) return;
+  ov.classList.remove('show');
+  ov.style.display = 'none';
+}
 function openModal(html, wide) {
+  ensureOverlay();
   var m = document.getElementById('modal');
   m.className = 'modal' + (wide ? ' wide' : '');
   m.innerHTML = '<button class="modal-close" onclick="closeModal()">&times;</button>' + html;
-  document.getElementById('overlay').classList.add('show');
+  showOverlay();
 }
 
 function showTab(tabId) {
@@ -202,18 +171,8 @@ function showTab(tabId) {
 function tabFromHash() { return location.hash ? location.hash.slice(1) : ''; }
 
 function openAuth(mode) {
-  var ov = document.getElementById('overlay');
-  if (!ov) {
-    ov = document.createElement('div');
-    ov.className = 'overlay';
-    ov.id = 'overlay';
-    ov.innerHTML = '<div class="modal" id="modal"></div>';
-    ov.onclick = function (e) { if (e.target === ov) closeModal(); };
-    document.body.appendChild(ov);
-  }
-  
+  ensureOverlay();
   var m = document.getElementById('modal');
-  if (!m) return;
   m.className = 'modal' + (mode === 'register' ? ' wide' : '');
   m.innerHTML =
     '<button class="modal-close" onclick="closeModal()">&times;</button>' +
@@ -222,17 +181,8 @@ function openAuth(mode) {
       '<button id="auth-tab-register" class="' + (mode === 'register' ? 'active' : '') + '" onclick="openAuth(\'register\')">Đăng ký</button>' +
     '</div>' +
     (mode === 'login' ? loginForm() : registerForm());
-
-  ov.style.cssText = 'display: flex !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 99999; align-items: center; justify-content: center;';
+  showOverlay();
 }
-
-function closeModal() {
-  var ov = document.getElementById('overlay');
-  if (ov) {
-    ov.style.display = 'none';
-  }
-}
- 
 
 function loginForm() {
   return '<div class="form-row"><label>Tên đăng nhập</label><input id="lg-user" autocomplete="username"></div>' +
@@ -281,7 +231,9 @@ function doLogin() {
   var p = document.getElementById('lg-pass').value;
   if (!u || !p) return authError('Vui lòng nhập đủ tên đăng nhập và mật khẩu.');
   var user = findUser(u);
-  if (!user || user.password !== p) return authError('Sai tên đăng nhập hoặc mật khẩu.');
+  // Admin độc lập với client: tài khoản admin không đăng nhập được ở trang khách.
+  // Dùng chung thông báo lỗi để không lộ việc tài khoản đó tồn tại.
+  if (!user || user.role === 'admin' || user.password !== p) return authError('Sai tên đăng nhập hoặc mật khẩu.');
   currentUser = { username: user.username, fullname: user.fullname, role: user.role };
   save('wishy_current', currentUser);
   closeModal();
@@ -332,35 +284,16 @@ function logout() {
 
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') closeModal();
-  if (e.key === 'Enter' && document.getElementById('overlay').classList.contains('show')) {
-    if (document.getElementById('lg-user')) doLogin();
+  if (e.key === 'Enter') {
+    var ov = document.getElementById('overlay');
+    if (ov && ov.classList.contains('show') && document.getElementById('lg-user')) doLogin();
   }
 });
 
-// Bật/tắt menu khi bấm Icon User
-function toggleUserDropdown(e) {
-  if (e) e.preventDefault();
-  var menu = document.getElementById('user-drop-menu');
-  if (menu) {
-    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-  }
-}
-
-// Click ra ngoài thì đóng menu
-document.addEventListener('DOMContentLoaded', function() {
-  var cart = load('wishy_cart', []);
-  var cartCount = cart.reduce(function(s, i) { return s + (i.qty || 0); }, 0);
-  var badge = document.getElementById('cart-count-badge');
-  if (badge) badge.textContent = cartCount;
-});
-
-// Kiểm tra giỏ hàng khi chưa đăng nhập
+// Chưa đăng nhập thì bấm giỏ hàng sẽ mở popup đăng nhập
 function checkCartAccess(e) {
-  var currentUser = JSON.parse(localStorage.getItem('wishy_current'));
   if (!currentUser) {
     if (e) e.preventDefault();
     openAuth('login');
-  } else {
-    window.location.href = 'cart.html';
   }
 }

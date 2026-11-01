@@ -31,7 +31,7 @@
         </div>
     </div>
     <nav class="main-nav-equal" id="category-nav-list">
-        <a class="cat-tab active" href="index.html" onclick="if(typeof selectCategory==='function') selectCategory('home', this)">Trang chủ</a>
+        <a class="cat-tab" href="index.html" onclick="if(typeof selectCategory==='function') selectCategory('home', this)">Trang chủ</a>
         <a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory==='function') selectCategory('all', this)">Tất cả sản phẩm</a>
         <a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory==='function') selectCategory('Túi vải', this)">Túi vải</a>
         <a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory==='function') selectCategory('Áo freesize', this)">Áo freesize</a>
@@ -55,8 +55,8 @@
             <p style="margin-bottom: 20px; font-weight: 600; color: var(--text-color);">Xin chào, <span id="sidebar-username">name</span>!</p>
             
             <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button class="btn btn-outline" style="text-align: left; border: none; background: #EBF3FA; color: var(--primary-color);" onclick="switchProfileTab('info')">Thông tin tài khoản</button>
-                <button class="btn btn-outline" style="text-align: left; border: none; background: transparent;" onclick="switchProfileTab('orders')">Đơn hàng của bạn</button>
+                <button class="profile-nav-btn active" onclick="switchProfileTab('info')">Thông tin tài khoản</button>
+                <button class="profile-nav-btn" onclick="switchProfileTab('orders')">Đơn hàng của bạn</button>
                 <button class="btn btn-danger btn-sm" style="margin-top: 15px; text-align: center;" id="btn-logout">Đăng xuất</button>
             </div>
         </div>
@@ -101,7 +101,7 @@
             </div>
 
             <div id="profile-tab-orders" class="card-box" style="margin-top: 0; display: none;">
-                <h2>THÔNG TIN ĐƠN HÀNG</h2>
+                <h2>ĐƠN HÀNG CỦA BẠN</h2>
                 <table style="margin-top: 15px;">
                     <thead>
                         <tr>

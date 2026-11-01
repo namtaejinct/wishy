@@ -1453,3 +1453,20 @@ html {
     max-width: 640px !important;
 }
 
+.profile-nav-btn {
+  width: 100%;
+  text-align: left;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-color);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.profile-nav-btn:hover, .profile-nav-btn.active {
+  color: var(--accent-color);
+  background: var(--bg-color);
+}
