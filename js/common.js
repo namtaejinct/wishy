@@ -360,5 +360,7 @@ function checkCartAccess(e) {
   if (!currentUser) {
     if (e) e.preventDefault();
     openAuth('login');
+  } else {
+    window.location.href = 'cart.html';
   }
 }
