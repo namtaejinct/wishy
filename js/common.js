@@ -72,6 +72,7 @@ function orderTotal(o) {
 function isAdmin() { return !!currentUser && currentUser.role === 'admin'; }
 
 function cartCount() {
+  if (!currentUser) return 0; 
   var cart = load('wishy_cart', []);
   return cart.reduce(function (s, i) { return s + (i.qty || 0); }, 0);
 }
@@ -111,17 +112,19 @@ function renderHeader() {
   if (!box) return;
   var cartBtn =
     '<a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng" onclick="checkCartAccess(event)">' +
-      ICON_CART + '<span class="cart-badge">' + cartCount() + '</span>' +
+      ICON_CART + '<span class="cart-badge" id="cart-count-badge">' + cartCount() + '</span>' +
     '</a>';
 
   if (currentUser) {
     box.innerHTML =
-      '<a href="profile.html" class="icon-btn" title="Trang cá nhân" style="display:flex; align-items:center; gap:6px; text-decoration:none;">' +
-        ICON_USER +
-        '<span style="font-size:13px; font-weight:700; color:var(--primary-color);">' + esc(currentUser.fullname) + '</span>' +
-      '</a>' +
-      cartBtn +
-      '<button class="btn-outline btn-sm" onclick="logout()">Đăng xuất</button>';
+      '<div class="user-dropdown-wrapper">' +
+        '<a href="profile.html" class="icon-btn" title="Tài khoản">' + ICON_USER + '</a>' +
+        '<div class="user-dropdown-menu">' +
+          '<a href="profile.html">Trang cá nhân</a>' +
+          '<button onclick="logout()">Đăng xuất</button>' +
+        '</div>' +
+      '</div>' +
+      cartBtn;
   } else {
     box.innerHTML =
       '<a href="#" class="icon-btn" title="Tài khoản" onclick="openAuth(\'login\'); return false;">' + ICON_USER + '</a>' +
@@ -303,6 +306,9 @@ function logout() {
   currentUser = null;
   save('wishy_current', null);
   refreshPage();
+  if (window.location.pathname.indexOf('profile.html') !== -1 || window.location.pathname.indexOf('cart.html') !== -1) {
+    window.location.href = 'index.html';
+  }
 }
 
 document.addEventListener('keydown', function (e) {
