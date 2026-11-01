@@ -330,6 +330,13 @@ function rpt_run() {
     '<tbody><tr><td>' + p.id + ' - ' + esc(p.name) + '</td><td>' + dau + '</td><td>' + inRange.nhap + '</td><td>' + inRange.xuat + '</td><td><b>' + cuoi + '</b></td></tr></tbody></table></div>';
 }
 /* ============ TV3: ADMIN QUẢN LÝ GIÁ ========= */
+products.forEach(function(p) {
+  var salePrice = Number(p.price) || 0;
+  p.cost = p.cost || Math.round(salePrice * 0.7);
+  p.margin = p.margin || 30;
+  p.price = salePrice;
+});
+save('wishy_products', products);
 function renderPricing() {
   products.forEach(function(p) {
     var salePrice = Number(p.price) || 0;
