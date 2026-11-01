@@ -380,7 +380,7 @@ var defaultProducts = [
     type: 'Bưu thiếp', 
     price: 60000, 
     stock: 12, 
-    img: 'images/postcard-vietnameseplaces1.png', 
+    img: 'images/postcard-hanoi1.png', 
     images: ['images/postcard-hanoi1.png', 'images/postcard-hanoi2.png'], 
     desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
   },
@@ -390,7 +390,7 @@ var defaultProducts = [
     type: 'Bưu thiếp', 
     price: 80000, 
     stock: 12, 
-    img: 'images/postcard-vietnameseplaces1.png', 
+    img: 'images/postcard-phuongsongdep1.png', 
     images: ['images/postcard-phuongsongdep1.png', 'images/postcard-phuongsongdep2.png'], 
     desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
   },
@@ -538,7 +538,7 @@ var defaultProducts = [
     img: 'images/aosaigon1.png', 
     images: ['images/aosaigon1.png', 'images/ao-matsau.png'],
     desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
-  },
+  }
 ];
 
 var products = load('wishy_products', defaultProducts);
