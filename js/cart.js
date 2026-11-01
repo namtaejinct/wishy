@@ -215,27 +215,25 @@ function continueShopping() {
 }
 
 /* === ĐIỀU PHỐI CHUNG === */
-function renderAll() {
-  renderHeader();
+function refreshPage() {
+  if (typeof renderHeader === 'function') {
+    renderHeader();
+  }
+  
   var logged = !!currentUser;
   var welcome = document.getElementById('welcome-screen');
   var app = document.getElementById('app-screen');
+  
   if (welcome) welcome.style.display = logged ? 'none' : 'block';
   if (app) app.style.display = logged ? 'block' : 'none';
   
-  if (!logged) return;
-
-  switchTab(currentTab);
-  if (typeof renderCart === 'function') {
+  if (logged && typeof renderCart === 'function') {
     renderCart();
-}}
+  }
+}
+
+refreshPage();
 
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') closeModal();
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  if (typeof renderAll === 'function') {
-    renderAll();
-  }
 });
