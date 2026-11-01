@@ -16,22 +16,12 @@
 
 
 
-var defaultProducts = [
-    { id: 'SP001', name: 'Áo thun basic Wishy', type: 'Áo freesize', price: 150000, stock: 12, img: '', desc: 'Áo thun chất liệu cotton 100% thoáng mát, form freesize phong cách năng động.' },
-    { id: 'SP002', name: 'Balo Laptop Oh Quao', type: 'Phụ kiện', price: 350000, stock: 8, img: '', desc: 'Balo đựng vừa laptop 15.6 inch, chống nước nhẹ, nhiều ngăn tiện lợi.' },
-    { id: 'SP003', name: 'Giày thể thao Vintage', type: 'Giày dép', price: 890000, stock: 5, img: '', desc: 'Giày sneaker thiết kế cổ điển, đế cao su êm ái thích hợp đi học, đi chơi.' },
-    { id: 'SP004', name: 'Mũ lưỡi trai Concept', type: 'Phụ kiện', price: 90000, stock: 0, img: '', desc: 'Mũ lưỡi trai thêu logo nổi tinh tế, khóa chỉnh size kim loại bền đẹp.' },
-    { id: 'SP005', name: 'Móc khóa Mica Wishy', type: 'Móc khóa', price: 35000, stock: 25, img: '', desc: 'Móc khóa in hình mascot xinh xắn, chất liệu acrylic trong suốt cao cấp.' },
-    { id: 'SP006', name: 'Nam châm tủ lạnh Riso', type: 'Nam châm', price: 45000, stock: 18, img: '', desc: 'Magnet dán tủ lạnh trang trí sinh động, độ bám hút từ tính cực mạnh.' },
-    { id: 'SP007', name: 'Túi vải Canvas Vintage', type: 'Túi vải', price: 120000, stock: 15, img: '', desc: 'Túi vải tote chất liệu canvas dày dặn, quai đeo chắc chắn, phong cách tối giản.' }
-];
 
 var currentPage = 1;
 var ITEMS_PER_PAGE = 6;
 
 function getStoredProducts() {
-    var data = localStorage.getItem('wishy_products');
-    return data ? JSON.parse(data) : defaultProducts;
+    return load('wishy_products', products);
 }
 
 // 1. Hàm chuyển Tab danh mục trên Header + Lọc sản phẩm + Cuộn mượt
@@ -179,9 +169,23 @@ function openProductModal(id) {
     var content = document.getElementById('modal-detail-content');
     var priceFormatted = p.price.toLocaleString('vi-VN') + 'đ';
     var imgHtml = p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<span>' + (p.type || 'SẢN PHẨM') + '</span>';
+    var imgList = (p.images && p.images.length) ? p.images : [p.img];
+    var mainImgSrc = imgList[0] || '';
+
+    var thumbsHtml = '';
+    if (imgList.length > 1) {
+        thumbsHtml = '<div class="modal-thumbs-list" style="display:flex; gap:8px; margin-top:10px;">' +
+            imgList.map(function (src) {
+                return '<img src="' + src + '" style="width:45px; height:45px; object-fit:cover; border:1px solid #ccc; cursor:pointer; border-radius:4px;" onclick="document.getElementById(\'modal-main-img\').src=\'' + src + '\'">';
+            }).join('') +
+            '</div>';
+    }
     content.innerHTML =
         '<div class="modal-grid-2col">' +
-        '<div class="modal-left-img">' + imgHtml + '</div>' +
+        '<div class="modal-left-img" style="flex-direction:column;">' +
+        '<img id="modal-main-img" src="' + mainImgSrc + '" alt="' + esc(p.name) + '" style="width:100%; border-radius:8px;">' +
+        thumbsHtml +
+        '</div>' +
         '<div class="modal-right-info">' +
         '<div class="modal-brand">OHQUAO CONCEPT</div>' +
         '<div class="modal-title">' + p.name + '</div>' +
@@ -225,6 +229,7 @@ function addToCart(pid) {
 
     localStorage.setItem('wishy_cart', JSON.stringify(cart));
     alert('Đã thêm "' + p.name + '" vào giỏ hàng thành công!');
+    if (typeof renderHeader === 'function') renderHeader();
     closeProductModal();
 }
 
