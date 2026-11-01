@@ -233,3 +233,9 @@ function renderAll() {
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') closeModal();
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof renderAll === 'function') {
+    renderAll();
+  }
+});
