@@ -6,19 +6,158 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wishy - Trang chủ</title>
     <link rel="stylesheet" href="css/style.css">
-
 </head>
 
 <body>
 
+    <header class="site-header">
+        <div class="header-top">
+            <div class="header-left-space"></div>
+            <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">WISHY</a></div>
+            <div id="user-header-box" class="header-right-icons">
+                <!-- Icon User: Bấm vào mở ngay Overlay Đăng nhập -->
+                <a href="#" class="icon-btn" title="Tài khoản" onclick="event.preventDefault(); openAuth('login');">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+    </svg>
+</a>
+                <!-- Icon Giỏ hàng: Bấm vào kiểm tra đăng nhập -> qua cart.html hoặc bật Overlay Đăng nhập -->
+                <a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng" onclick="checkCartAccess(event)">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-badge" id="cart-count-badge">0</span>
+                </a>
+            </div>
+        </div>
+        <nav class="main-nav-equal" id="category-nav-list">
+            <a class="cat-tab active" href="index.html"
+                onclick="if(typeof selectCategory==='function') selectCategory('home', this)">Trang chủ</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('all', this)">Tất cả sản phẩm</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('Túi vải', this)">Túi vải</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('Áo freesize', this)">Áo freesize</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('Phụ kiện', this)">Phụ kiện</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('Móc khóa', this)">Móc khóa</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('Nam châm', this)">Nam châm</a>
+        </nav>
+    </header>
 
-<!--Linh-->
 
 
 
 
-<!--Lieu-->
-        
+    <h1>Phần của Linh</h1>
+
+
+
+
+
+
+    <section class="product-section-wrapper" id="products">
+        <div class="section-title-bar">
+            <h2 id="current-category-title">TẤT CẢ SẢN PHẨM</h2>
+        </div>
+        <div class="container product-page-layout">
+
+
+            <aside class="filter-sidebar">
+                <h3>BỘ LỌC TÌM KIẾM</h3>
+                <div class="filter-group">
+                    <label>Tìm theo tên</label>
+                    <input type="text" id="filter-name" placeholder="Từ khóa...">
+                </div>
+                <div class="filter-group">
+                    <label>Danh mục sản phẩm</label>
+                    <select id="filter-type" onchange="filterProducts()">
+                        <option value="all">Tất cả loại</option>
+                        <option value="Túi vải">Túi vải</option>
+                        <option value="Áo freesize">Áo freesize</option>
+                        <option value="Phụ kiện">Phụ kiện</option>
+                        <option value="Móc khóa">Móc khóa</option>
+                        <option value="Nam châm">Nam châm</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Khoảng giá</label>
+                    <select id="filter-price">
+                        <option value="all">Tất cả mức giá</option>
+                        <option value="under100">Dưới 100.000đ</option>
+                        <option value="100to300">100.000đ - 300.000đ</option>
+                        <option value="over300">Trên 300.000đ</option>
+                    </select>
+                </div>
+                <button id="btn-filter-action" class="btn-filter" onclick="filterProducts()">Lọc sản phẩm</button>
+            </aside>
+
+            <main class="product-content-main">
+                <div id="product-grid" class="product-grid-3col"></div>
+                <div id="pagination-box" class="pagination-container"></div>
+            </main>
+
+        </div>
+    </section>
+
+    <section class="feedback-section">
+        <h2 class="section-title">Feedback</h2>
+        <div class="feedback-slider-container">
+            <button class="slider-arrow left-arrow" onclick="moveFeedback(-1)">&lsaquo;</button>
+            <div class="feedback-cards-wrapper" id="feedback-wrapper">
+                <div class="feedback-card">
+                    <div class="feedback-header">
+                        <div class="user-avatar"></div>
+                        <span class="user-name">Minh Anh</span>
+                    </div>
+                    <p class="feedback-text">Sản phẩm của Wishy siêu đáng yêu, đóng gói cẩn thận và giao hàng rất nhanh
+                        luôn!</p>
+                </div>
+                <div class="feedback-card">
+                    <div class="feedback-header">
+                        <div class="user-avatar"></div>
+                        <span class="user-name">Phương Nam</span>
+                    </div>
+                    <p class="feedback-text">Chất lượng đồ lưu niệm tuyệt vời, mẫu mã độc lạ đúng phong cách Oh Quao
+                        mình thích.</p>
+                </div>
+                <div class="feedback-card">
+                    <div class="feedback-header">
+                        <div class="user-avatar"></div>
+                        <span class="user-name">Khánh Linh</span>
+                    </div>
+                    <p class="feedback-text">Nhân viên hỗ trợ nhiệt tình, móc khóa và túi vải xinh lắm. Sẽ ủng hộ shop
+                        dài dài!</p>
+                </div>
+            </div>
+            <button class="slider-arrow right-arrow" onclick="moveFeedback(1)">&rsaquo;</button>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-logo">WISHY</div>
+            <p>&copy; 2026 Wishy Souvenirs Store. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div class="overlay" id="product-overlay" onclick="closeProductModal(event)">
+        <div class="modal-detail-card" onclick="event.stopPropagation()">
+            <button class="close-modal-btn" onclick="closeProductModal()">&times;</button>
+            <div id="modal-detail-content"></div>
+        </div>
+    </div>
+    <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+        <div class="modal" id="modal"></div>
+    </div>
+    <script src="js/common.js"></script>
+    <script src="js/index.js"></script>
 
 </body>
 

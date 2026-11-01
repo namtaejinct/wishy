@@ -1,32 +1,104 @@
-/*Phần của Linh*/
+/* Phần của Linh - TV2 */
 
 
 
-/*DỮ LIỆU & BIẾN KHỞI TẠO*/
-var categories = load('wishy_categories', ['Áo freesize', 'Ly', 'Móc khóa', 'Phụ kiện']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var defaultProducts = [
+    { id: 'SP001', name: 'Áo thun basic Wishy', type: 'Áo freesize', price: 150000, stock: 12, img: '', desc: 'Áo thun chất liệu cotton 100% thoáng mát, form freesize phong cách năng động.' },
+    { id: 'SP002', name: 'Balo Laptop Oh Quao', type: 'Phụ kiện', price: 350000, stock: 8, img: '', desc: 'Balo đựng vừa laptop 15.6 inch, chống nước nhẹ, nhiều ngăn tiện lợi.' },
+    { id: 'SP003', name: 'Giày thể thao Vintage', type: 'Giày dép', price: 890000, stock: 5, img: '', desc: 'Giày sneaker thiết kế cổ điển, đế cao su êm ái thích hợp đi học, đi chơi.' },
+    { id: 'SP004', name: 'Mũ lưỡi trai Concept', type: 'Phụ kiện', price: 90000, stock: 0, img: '', desc: 'Mũ lưỡi trai thêu logo nổi tinh tế, khóa chỉnh size kim loại bền đẹp.' },
+    { id: 'SP005', name: 'Móc khóa Mica Wishy', type: 'Móc khóa', price: 35000, stock: 25, img: '', desc: 'Móc khóa in hình mascot xinh xắn, chất liệu acrylic trong suốt cao cấp.' },
+    { id: 'SP006', name: 'Nam châm tủ lạnh Riso', type: 'Nam châm', price: 45000, stock: 18, img: '', desc: 'Magnet dán tủ lạnh trang trí sinh động, độ bám hút từ tính cực mạnh.' },
+    { id: 'SP007', name: 'Túi vải Canvas Vintage', type: 'Túi vải', price: 120000, stock: 15, img: '', desc: 'Túi vải tote chất liệu canvas dày dặn, quai đeo chắc chắn, phong cách tối giản.' }
+];
+
 var currentPage = 1;
-var ITEMS_PER_PAGE = 4;
-var currentTab = 'tab-product-list';
+var ITEMS_PER_PAGE = 6;
 
-/*CHUYỂN TAB*/
-function switchTab(tabId) {
-  currentTab = tabId;
-  showTab(tabId);
-  
-  document.querySelectorAll('.sub-menu button').forEach(function(btn) {
-    btn.classList.toggle('active', btn.id === 'btn-' + tabId);
-  });
-
-  if (tabId === 'tab-product-list') renderProductList();
+function getStoredProducts() {
+    var data = localStorage.getItem('wishy_products');
+    return data ? JSON.parse(data) : defaultProducts;
 }
 
-/*LỌC & HIỂN THỊ SẢN PHẨM*/
+// 1. Hàm chuyển Tab danh mục trên Header + Lọc sản phẩm + Cuộn mượt
+// Hàm chuyển Tab danh mục trên Header + Cuộn xuống qua khỏi Header che thanh xanh
+// Hàm chuyển Tab danh mục trên Header
+function selectCategory(catName, element) {
+    // 1. Đổi màu Active cho nút trên Header
+    document.querySelectorAll('.cat-tab').forEach(function (tab) {
+        tab.classList.remove('active');
+    });
+    if (element) {
+        element.classList.add('active');
+    }
+
+    // 2. Nếu bấm vào TRANG CHỦ -> Cuộn lên đầu trang, đặt bộ lọc về tất cả
+    if (catName === 'home') {
+        var selectType = document.getElementById('filter-type');
+        if (selectType) selectType.value = 'all';
+
+        filterProducts();
+
+        // Cuộn mượt về đầu trang
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+        return;
+    }
+
+    // 3. Nếu bấm vào các danh mục sản phẩm (Tất cả SP, Túi vải, Áo freesize...)
+    var selectType = document.getElementById('filter-type');
+    if (selectType) {
+        selectType.value = catName;
+    }
+
+    // Lọc sản phẩm
+    if (typeof filterProducts === 'function') {
+        filterProducts();
+    }
+
+    // Tính toán độ cao Header ghim để cuộn xuống vừa khít không che thanh xanh
+    var header = document.querySelector('.site-header');
+    var section = document.getElementById('products');
+
+    if (section) {
+        var headerOffset = header ? header.offsetHeight : 0;
+        var elementPosition = section.getBoundingClientRect().top;
+        var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+    }
+}
+
+// 2. Lọc sản phẩm 3 tiêu chí
 function getFilteredProducts() {
     var nameVal = document.getElementById('filter-name') ? document.getElementById('filter-name').value.toLowerCase().trim() : '';
     var typeVal = document.getElementById('filter-type') ? document.getElementById('filter-type').value : 'all';
     var priceVal = document.getElementById('filter-price') ? document.getElementById('filter-price').value : 'all';
 
-    return products.filter(function (p) {
+    var list = getStoredProducts();
+
+    return list.filter(function (p) {
+        if (p.status === 'hidden') return false;
+
         if (nameVal && p.name.toLowerCase().indexOf(nameVal) === -1) return false;
         if (typeVal !== 'all' && p.type !== typeVal) return false;
         if (priceVal === 'under100' && p.price >= 100000) return false;
@@ -41,6 +113,7 @@ function filterProducts() {
     renderProductList();
 }
 
+// 3. Render Lưới sản phẩm & Nút phân trang
 function renderProductList() {
     var grid = document.getElementById('product-grid');
     var pagBox = document.getElementById('pagination-box');
@@ -49,7 +122,7 @@ function renderProductList() {
     var list = getFilteredProducts();
 
     if (!list.length) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#7B8BA0; font-style:italic;">Không tìm thấy sản phẩm phù hợp.</div>';
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 60px 20px; color:#7B8BA0; font-weight:600;">Không tìm thấy sản phẩm phù hợp.</div>';
         if (pagBox) pagBox.innerHTML = '';
         return;
     }
@@ -61,24 +134,21 @@ function renderProductList() {
     var pageItems = list.slice(start, start + ITEMS_PER_PAGE);
 
     grid.innerHTML = pageItems.map(function (p) {
-        return '<div class="card-box" style="margin:0; padding:16px; border-radius:12px; background:#fff; border:1px solid var(--border-color); text-align:center; display:flex; flex-direction:column; justify-content:space-between;">' +
-            '<div>' +
-            '<div style="height:140px; background:#EBF3FA; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; font-weight:700; color:var(--primary-color); font-size:14px; text-transform:uppercase;">' + esc(p.type || 'Sản phẩm') + '</div>' +
-            '<p style="font-size:12px; color:#7B8BA0; margin-bottom:4px; text-transform:uppercase; font-weight:700;">OHQUAO CONCEPT</p>' +
-            '<h4 style="margin:4px 0 8px; color:var(--primary-color); font-size:15px;">' + esc(p.name) + '</h4>' +
-            '<p style="color:var(--accent-color); font-weight:700; font-size:16px; margin-bottom:10px;">' + money(p.price) + '</p>' +
-            '</div>' +
-            '<div>' +
-            '<button class="btn-outline btn-sm" style="margin-right:4px;" onclick="showProductDetail(\'' + p.id + '\')">Chi tiết</button>' +
-            '<button class="btn btn-sm" ' + (p.stock <= 0 ? 'disabled style="opacity:0.5"' : '') + ' onclick="addToCart(\'' + p.id + '\')">' + (p.stock <= 0 ? 'Hết hàng' : 'Thêm giỏ') + '</button>' +
-            '</div>' +
+        var priceFormatted = p.price.toLocaleString('vi-VN') + 'đ';
+        var imgHtml = p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<span>' + (p.type || 'SẢN PHẨM') + '</span>';
+
+        return '<div class="product-card" onclick="openProductModal(\'' + p.id + '\')">' +
+            '<div class="product-img-box">' + imgHtml + '</div>' +
+            '<div class="product-brand">OHQUAO CONCEPT</div>' +
+            '<div class="product-title">' + p.name + '</div>' +
+            '<div class="product-price">' + priceFormatted + '</div>' +
             '</div>';
     }).join('');
 
     if (pagBox) {
         var pagHtml = '';
         for (var i = 1; i <= totalPages; i++) {
-            pagHtml += '<button class="' + (i === currentPage ? 'btn' : 'btn-outline') + ' btn-sm" onclick="changePage(' + i + ')">' + i + '</button>';
+            pagHtml += '<button class="page-btn ' + (i === currentPage ? 'active' : '') + '" onclick="changePage(' + i + ')">' + i + '</button>';
         }
         pagBox.innerHTML = pagHtml;
     }
@@ -87,76 +157,85 @@ function renderProductList() {
 function changePage(page) {
     currentPage = page;
     renderProductList();
+    var pSection = document.getElementById('products');
+    if (pSection) pSection.scrollIntoView({ behavior: 'smooth' });
 }
 
-/*POPUP CHI TIẾT 2 CỘT & THÊM GIỎ*/
-function showProductDetail(id) {
+// 4. Modal Overlay Chi tiết sản phẩm
+function openProductModal(id) {
+    var currentUser = JSON.parse(localStorage.getItem('wishy_current'));
     if (!currentUser) {
-        openAuth('login');
+        if (typeof openAuth === 'function') {
+            openAuth('login');
+        } else {
+            alert('Vui lòng đăng nhập để xem chi tiết sản phẩm!');
+        }
         return;
     }
-
-    var p = findProduct(id);
+    var list = getStoredProducts();
+    var p = list.find(function (item) { return item.id === id; });
     if (!p) return;
-
-    var html = '<h3>Chi tiết sản phẩm</h3>' +
-        '<div class="detail-grid-layout" style="margin-top: 15px;">' +
-        '' +
-        '<div class="detail-left-box">' +
-        esc(p.type || 'Sản phẩm') +
-        '</div>' +
-
-        '' +
-        '<div class="detail-right-box">' +
-        '<p style="margin-bottom: 6px;"><b>Mã SP:</b> ' + p.id + '</p>' +
-        '<p style="margin-bottom: 6px;"><b>Tên SP:</b> ' + esc(p.name) + '</p>' +
-        '<p style="margin-bottom: 6px;"><b>Loại SP:</b> ' + esc(p.type || 'Khác') + '</p>' +
-        '<p style="margin-bottom: 6px;"><b>Giá bán:</b> <span style="color:var(--accent-color); font-weight:700;">' + money(p.price) + '</span></p>' +
-        '<p style="margin-bottom: 15px;"><b>Tồn kho:</b> ' + p.stock + '</p>' +
-        '<button class="btn" style="width: 100%;" ' + (p.stock <= 0 ? 'disabled style="opacity:0.5"' : '') + ' onclick="addToCart(\'' + p.id + '\'); closeModal();">' +
-        (p.stock <= 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng') +
+    var overlay = document.getElementById('product-overlay');
+    var content = document.getElementById('modal-detail-content');
+    var priceFormatted = p.price.toLocaleString('vi-VN') + 'đ';
+    var imgHtml = p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<span>' + (p.type || 'SẢN PHẨM') + '</span>';
+    content.innerHTML =
+        '<div class="modal-grid-2col">' +
+        '<div class="modal-left-img">' + imgHtml + '</div>' +
+        '<div class="modal-right-info">' +
+        '<div class="modal-brand">OHQUAO CONCEPT</div>' +
+        '<div class="modal-title">' + p.name + '</div>' +
+        '<div class="modal-price">' + priceFormatted + '</div>' +
+        '<div class="modal-desc">' + (p.desc || 'Sản phẩm lưu niệm độc quyền từ Wishy, thiết kế tinh tế và chất liệu cao cấp.') + '</div>' +
+        '<div class="modal-stock">Mã SP: <b>' + p.id + '</b> &nbsp;|&nbsp; Tồn kho: <b>' + p.stock + '</b></div>' +
+        '<button class="btn-add-cart" ' + (p.stock <= 0 ? 'disabled style="opacity:0.5"' : '') + ' onclick="addToCart(\'' + p.id + '\')">' +
+        (p.stock <= 0 ? 'HẾT HÀNG' : 'THÊM VÀO GIỎ HÀNG') +
         '</button>' +
         '</div>' +
         '</div>';
+    if (overlay) overlay.classList.add('show');
+}
 
-    openModal(html, true);
+function closeProductModal(event) {
+    var overlay = document.getElementById('product-overlay');
+    if (overlay) overlay.classList.remove('show');
 }
 
 function addToCart(pid) {
+    var currentUser = JSON.parse(localStorage.getItem('wishy_current'));
     if (!currentUser) {
-        openAuth('login');
+        alert('Vui lòng đăng nhập để thực hiện thêm sản phẩm vào giỏ hàng!');
         return;
     }
 
-    var cart = load('wishy_cart', []);
-    var item = cart.filter(function (i) { return i.pid === pid; })[0];
-    var p = findProduct(pid);
+    var cart = JSON.parse(localStorage.getItem('wishy_cart')) || [];
+    var products = getStoredProducts();
+    var p = products.find(function (item) { return item.id === pid; });
 
-    if (item) {
-        if (item.qty + 1 > p.stock) { alert('Số lượng vượt quá tồn kho!'); return; }
-        item.qty++;
+    var existing = cart.find(function (item) { return item.pid === pid; });
+    if (existing) {
+        if (existing.qty + 1 > p.stock) {
+            alert('Rất tiếc, số lượng chọn vượt quá tồn kho hiện có!');
+            return;
+        }
+        existing.qty++;
     } else {
         cart.push({ pid: pid, qty: 1, selected: true });
     }
 
-    save('wishy_cart', cart);
-    alert('Đã thêm "' + p.name + '" vào giỏ hàng!');
+    localStorage.setItem('wishy_cart', JSON.stringify(cart));
+    alert('Đã thêm "' + p.name + '" vào giỏ hàng thành công!');
+    closeProductModal();
 }
 
-/*HIỂN THỊ DANH MỤC TRONG BỘ LỌC*/
-function renderCategories() {
-  var selectFilter = document.getElementById('filter-type');
-
-  if (selectFilter) {
-    selectFilter.innerHTML = '<option value="all">Tất cả loại</option>' +
-      categories.map(function(c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
-  }
+function moveFeedback(direction) {
+    var container = document.getElementById('feedback-wrapper');
+    if (container) {
+        container.scrollBy({ left: direction * 280, behavior: 'smooth' });
+    }
 }
 
-/*KHỞI TẠO MÀN HÌNH*/
-function renderPage() {
-  renderCategories();
-  renderProductList();
-}
-
-initSite('products');
+// Chỉ khởi tạo render danh sách sản phẩm khi tải trang
+document.addEventListener('DOMContentLoaded', function () {
+    renderProductList();
+});
