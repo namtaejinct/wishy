@@ -211,7 +211,7 @@ function checkoutOrder() {
 }
 
 function continueShopping() {
-  window.location.href = 'products.html';
+  window.location.href = 'index.html';
 }
 
 /* === ĐIỀU PHỐI CHUNG === */
