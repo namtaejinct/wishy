@@ -220,8 +220,9 @@ function renderAll() {
   var logged = !!currentUser;
   var welcome = document.getElementById('welcome-screen');
   var app = document.getElementById('app-screen');
-  if(welcome) welcome.style.display = logged ? 'none' : '';
-  if(app) app.style.display = logged ? '' : 'none';
+  if (welcome) welcome.style.display = logged ? 'none' : 'block';
+  if (app) app.style.display = logged ? 'block' : 'none';
+  
   if (!logged) return;
 
   switchTab(currentTab);
