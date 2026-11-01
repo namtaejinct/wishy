@@ -11,36 +11,45 @@
 
 <!--Thay thế header cũ-->
 <header class="site-header">
-    <div class="header-top">
-        <div class="header-left-space"></div>
-        <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">WISHY</a></div>
-        <div id="user-header-box" class="header-right-icons">
-            <a href="#" class="icon-btn" title="Tài khoản" onclick="openAuth('login'); return false;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-            </a>
-            <a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng" onclick="checkCartAccess(event)">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-                <span class="cart-badge" id="cart-count-badge">0</span>
-            </a>
+        <div class="header-top">
+            <div class="header-left-space"></div>
+            <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">WISHY</a></div>
+            <div id="user-header-box" class="header-right-icons">
+                <!-- Icon User: Bấm vào mở ngay Overlay Đăng nhập -->
+                <a href="#" class="icon-btn" title="Tài khoản" onclick="event.preventDefault(); openAuth('login');">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+                <!-- Icon Giỏ hàng: Bấm vào kiểm tra đăng nhập -->
+                <a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-badge" id="cart-count-badge">0</span>
+                </a>
+            </div>
         </div>
-    </div>
-    <nav class="main-nav-equal" id="category-nav-list">
-        <a class="cat-tab active" href="index.html" onclick="if(typeof selectCategory==='function') selectCategory('home', this)">Trang chủ</a>
-        <a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory==='function') selectCategory('all', this)">Tất cả sản phẩm</a>
-        <a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory==='function') selectCategory('Túi vải', this)">Túi vải</a>
-        <a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory==='function') selectCategory('Áo freesize', this)">Áo freesize</a>
-        <a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory==='function') selectCategory('Phụ kiện', this)">Phụ kiện</a>
-        <a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory==='function') selectCategory('Móc khóa', this)">Móc khóa</a>
-        <a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory==='function') selectCategory('Nam châm', this)">Nam châm</a>
-    </nav>
-</header>
+        <nav class="main-nav-equal" id="category-nav-list">
+            <a class="cat-tab active" href="index.html"
+                onclick="if(typeof selectCategory==='function') selectCategory('home', this)">Trang chủ</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('all', this)">Tất cả sản phẩm</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('Túi vải', this)">Túi vải</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('Áo thun', this)">Áo thun</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('Phụ kiện', this)">Phụ kiện</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('Móc khóa', this)">Móc khóa</a>
+            <a class="cat-tab" href="index.html#products"
+                onclick="if(typeof selectCategory==='function') selectCategory('Bưu thiếp', this)">Bưu thiếp</a>
+        </nav>
+    </header>
 
 <div id="welcome-screen" class="hero">
   <div class="sea-overlay"></div>

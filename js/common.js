@@ -98,10 +98,10 @@ function siteHeaderHtml(activePage) {
       '<a class="cat-tab ' + (activePage === 'home' ? 'active' : '') + '" href="index.html">Trang chủ</a>' +
       '<a class="cat-tab ' + (activePage === 'all' ? 'active' : '') + '" href="index.html#products">Tất cả sản phẩm</a>' +
       '<a class="cat-tab" href="index.html#products">Túi vải</a>' +
-      '<a class="cat-tab" href="index.html#products">Áo freesize</a>' +
+      '<a class="cat-tab" href="index.html#products">Áo thun</a>' +
       '<a class="cat-tab" href="index.html#products">Phụ kiện</a>' +
       '<a class="cat-tab" href="index.html#products">Móc khóa</a>' +
-      '<a class="cat-tab" href="index.html#products">Nam châm</a>' +
+      '<a class="cat-tab" href="index.html#products">Bưu thiếp</a>' +
     '</nav>' +
   '</header>';
 }
@@ -319,3 +319,219 @@ function checkCartAccess(e) {
     openAuth('login');
   }
 }
+
+
+//san pham
+
+var defaultProducts = [
+  //tui vai
+  { 
+    id: 'SP001', 
+    name: 'Túi tote Dân Địa Phương', 
+    type: 'Túi vải', 
+    price: 150000, 
+    stock: 12, 
+    img: 'images/totebag-dandiaphuong1.png', 
+    images: ['images/totebag-dandiaphuong1.png', 'images/totebag-dandiaphuong2.png'], 
+    desc: 'Túi tote chất liệu vải canvas bền đẹp, in chữ "Dân Địa Phương" phong cách trẻ trung, tiện dụng.' 
+  },
+  { 
+    id: 'SP002', 
+    name: 'Túi tote Bình An Vô Sự', 
+    type: 'Túi vải', 
+    price: 150000, 
+    stock: 12, 
+    img: 'images/totebag-binhanvosu1.png', 
+    images: ['images/totebag-binhanvosu1.png', 'images/totebag-binhanvosu2.png'], 
+    desc: 'Túi tote chất liệu vải canvas bền đẹp, in chữ "Bình An Vô Sự" phong cách trẻ trung, tiện dụng.' 
+  },
+  { 
+    id: 'SP003', 
+    name: 'Túi tote Bạt', 
+    type: 'Túi vải', 
+    price: 150000, 
+    stock: 12, 
+    img: 'images/totebag-bat1.png', 
+    images: ['images/totebag-bat1.png', 'images/totebag-bat2.png'], 
+    desc: 'Túi tote chất liệu vải canvas bền đẹp, lấy cảm hứng từ vải bạt, phong cách trẻ trung, tiện dụng.' 
+  },
+
+  //postcard
+  { 
+    id: 'SP004', 
+    name: 'Bưu thiếp "Địa điểm Việt Nam"', 
+    type: 'Bưu thiếp', 
+    price: 80000, 
+    stock: 12, 
+    img: 'images/postcard-vietnameseplaces1.png', 
+    images: ['images/postcard-vietnameseplaces1.png', 'images/postcard-vietnameseplaces2.png'], 
+    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
+  },
+  { 
+    id: 'SP005', 
+    name: 'Bưu thiếp "Hà Nội"', 
+    type: 'Bưu thiếp', 
+    price: 60000, 
+    stock: 12, 
+    img: 'images/postcard-vietnameseplaces1.png', 
+    images: ['images/postcard-hanoi1.png', 'images/postcard-hanoi2.png'], 
+    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
+  },
+  { 
+    id: 'SP006', 
+    name: 'Bưu thiếp "Vietnamese Street Life"', 
+    type: 'Bưu thiếp', 
+    price: 80000, 
+    stock: 12, 
+    img: 'images/postcard-vietnameseplaces1.png', 
+    images: ['images/postcard-phuongsongdep1.png', 'images/postcard-phuongsongdep2.png'], 
+    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
+  },
+  { 
+    id: 'SP007', 
+    name: 'Bưu thiếp "Hồ Chí Minh"', 
+    type: 'Bưu thiếp', 
+    price: 60000, 
+    stock: 12, 
+    img: 'images/postcard-hochiminh1.png', 
+    images: ['images/postcard-hochiminh1.png', 'images/postcard-hochiminh2.png'], 
+    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
+  },
+  { 
+    id: 'SP008', 
+    name: 'Bưu thiếp "Đi Chợ"', 
+    type: 'Bưu thiếp', 
+    price: 60000, 
+    stock: 12, 
+    img: 'images/postcard-dicho1.png', 
+    images: ['images/postcard-dicho1.png', 'images/postcard-dicho2.png'], 
+    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
+  },
+
+  //moc khoa
+  { 
+    id: 'SP009', 
+    name: 'Móc khoá Đĩa Than "Mountain Child"', 
+    type: 'Móc khóa', 
+    price: 40000, 
+    stock: 12, 
+    img: 'images/keychain-mountain1.png', 
+    images: ['images/keychain-mountain1.png', 'images/keychain-mountain2.png'], 
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "Mountain" thuộc bộ sưu tập Music of the city.' 
+  },
+  { 
+    id: 'SP010', 
+    name: 'Móc khoá Đĩa Than "Đà Lạt"', 
+    type: 'Móc khóa', 
+    price: 40000, 
+    stock: 12, 
+    img: 'images/keychain-dalat1.png', 
+    images: ['images/keychain-dalat1.png', 'images/keychain-dalat2.png'], 
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.' 
+  },
+  { 
+    id: 'SP011', 
+    name: 'Móc khoá Đĩa Than "Hà Nội"', 
+    type: 'Móc khóa', 
+    price: 40000, 
+    stock: 12, 
+    img: 'images/keychain-hanoi1.png', 
+    images: ['images/keychain-hanoi1.png', 'images/keychain-hanoi2.png'], 
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.' 
+  },
+  { 
+    id: 'SP012', 
+    name: 'Móc khoá Đĩa Than "Sài Gòn"', 
+    type: 'Móc khóa', 
+    price: 40000, 
+    stock: 12, 
+    img: 'images/keychain-saigon1.png', 
+    images: ['images/keychain-saigon1.png', 'images/keychain-saigon2.png'], 
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.' 
+  },
+  { 
+    id: 'SP013', 
+    name: 'Móc khoá Đĩa Than "Ocean"', 
+    type: 'Móc khóa', 
+    price: 40000, 
+    stock: 12, 
+    img: 'images/keychain-ocean1.png', 
+    images: ['images/keychain-ocean1.png', 'images/keychain-ocean2.png'], 
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "Ocean" thuộc bộ sưu tập Music of the city.' 
+  },
+  { 
+    id: 'SP014', 
+    name: 'Móc khoá Đĩa Than "Việt Nam"', 
+    type: 'Móc khóa', 
+    price: 40000, 
+    stock: 12, 
+    img: 'images/keychain-vietnam1.png', 
+    images: ['images/keychain-vietnam1.png', 'images/keychain-vietnam2.png'], 
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "Vietnam" thuộc bộ sưu tập Music of the city.' 
+  },
+  
+  //jewelry
+  { 
+    id: 'SP015', 
+    name: 'Dây chuyền "Vỏ sò 1"', 
+    type: 'Phụ kiện', 
+    price: 200000, 
+    stock: 12, 
+    img: 'images/jewelry-v11.png', 
+    images: ['images/jewelry-v11.png', 'images/jewelry-v11.png'], 
+    desc: 'Dây chuyền hạt cườm sáng màu kết hợp mặt vỏ sò lớn và charm sao biển phong cách mùa hè, biển cả.' 
+  },{ 
+    id: 'SP016', 
+    name: 'Dây chuyền "Vỏ sò 2"', 
+    type: 'Phụ kiện', 
+    price: 200000, 
+    stock: 12, 
+    img: 'images/jewelry-v21.png', 
+    images: ['images/jewelry-v21.png', 'images/jewelry-v21.png'], 
+    desc: 'Dây chuyền hạt cườm sáng màu kết hợp mặt vỏ sò lớn và charm sao biển phong cách mùa hè, biển cả.' 
+  },
+
+  //aothun
+  { 
+    id: 'SP017', 
+    name: 'Áo thun Wishy "Hà Nội"', 
+    type: 'Áo thun', 
+    price: 150000, 
+    stock: 12, 
+    img: 'images/aohanoi1.png', 
+    images: ['images/aohanoi1.png', 'images/ao-matsau.png'],
+    desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
+  },
+  { 
+    id: 'SP018', 
+    name: 'Áo thun Wishy "Phú Quốc"', 
+    type: 'Áo thun', 
+    price: 150000, 
+    stock: 12, 
+    img: 'images/aophuquoc1.png', 
+    images: ['images/aophuquoc1.png', 'images/ao-matsau.png'],
+    desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
+  },
+  { 
+    id: 'SP019', 
+    name: 'Áo thun Wishy "Đà Lạt"', 
+    type: 'Áo thun', 
+    price: 150000, 
+    stock: 12, 
+    img: 'images/aodalat1.png', 
+    images: ['images/aodalat1.png', 'images/ao-matsau.png'],
+    desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
+  },
+  { 
+    id: 'SP020', 
+    name: 'Áo thun Wishy "Sài Gòn"', 
+    type: 'Áo thun', 
+    price: 150000, 
+    stock: 12, 
+    img: 'images/aosaigon1.png', 
+    images: ['images/aosaigon1.png', 'images/ao-matsau.png'],
+    desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
+  },
+];
+
+var products = load('wishy_products', defaultProducts);
