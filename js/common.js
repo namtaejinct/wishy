@@ -22,10 +22,23 @@ function save(key, val) {
 }
 
 var users = load('wishy_users', [
-  { username: 'admin', password: 'admin123', fullname: 'Quản trị viên', role: 'admin' },
-  { username: 'nam', password: '123456', fullname: 'Đặng Phương Nam', role: 'customer' },
-  { username: 'lan', password: '123456', fullname: 'Nguyễn Thị Lan', role: 'customer' }
+  { username: 'admin', email: 'admin@wishy.vn', password: 'admin123', fullname: 'Quản trị viên', role: 'admin' },
+  { username: 'nam', email: 'nam@gmail.com', password: '123456', fullname: 'Đặng Phương Nam', role: 'customer' },
+  { username: 'lan', email: 'lan@gmail.com', password: '123456', fullname: 'Nguyễn Thị Lan', role: 'customer' }
 ]);
+
+(function () {
+  var seedEmails = { admin: 'admin@wishy.vn', nam: 'nam@gmail.com', lan: 'lan@gmail.com' };
+  var changed = false;
+  users.forEach(function (u) {
+    if (!u.email) {
+      u.email = seedEmails[u.username] || (u.username + '@wishy.vn');
+      changed = true;
+    }
+  });
+  if (changed) save('wishy_users', users);
+})();
+
 var products = load('wishy_products', [
   { id: 'SP001', name: 'Áo thun biển Phú Quốc', type: 'Áo freesize', price: 150000, stock: 3 },
   { id: 'SP002', name: 'Ly sứ Mặt Trời',        type: 'Ly',          price: 350000, stock: 40 },
@@ -49,6 +62,10 @@ if (currentUser && currentUser.role === 'admin') {
 
 function findProduct(id) { return products.filter(function (p) { return p.id === id; })[0]; }
 function findUser(u) { return users.filter(function (x) { return x.username === u; })[0]; }
+function findUserByEmail(e) {
+  e = String(e).trim().toLowerCase();
+  return users.filter(function (x) { return String(x.email || '').toLowerCase() === e; })[0];
+}
 function orderTotal(o) {
   return o.items.reduce(function (s, it) { var p = findProduct(it.pid); return s + (p ? p.price * it.qty : 0); }, 0);
 }
@@ -185,8 +202,8 @@ function openAuth(mode) {
 }
 
 function loginForm() {
-  return '<div class="form-row"><label>Tên đăng nhập</label><input id="lg-user" autocomplete="username"></div>' +
-         '<div class="form-row"><label>Mật khẩu</label><input id="lg-pass" type="password" autocomplete="current-password"></div>' +
+  return '<div class="form-row"><label>Email</label><input id="lg-email" type="email" placeholder="Nhập email..." autocomplete="email"></div>' +
+         '<div class="form-row"><label>Mật khẩu</label><input id="lg-pass" type="password" placeholder="Nhập mật khẩu..." autocomplete="current-password"></div>' +
          '<div class="form-error" id="auth-error"></div>' +
          '<button class="btn" style="width:100%" onclick="doLogin()">Đăng nhập</button>' +
          '<p class="hint">Chưa có tài khoản? <a href="#" onclick="openAuth(\'register\');return false;">Đăng ký ngay</a></p>';
@@ -199,6 +216,9 @@ function registerForm() {
     '      <label for="fullname">Họ và tên</label>',
     '      <input type="text" id="fullname" placeholder="Nguyễn Văn A">',
     '      <div class="error" id="err-fullname"></div>',
+    '      <label for="email">Email</label>',
+    '      <input type="email" id="email" placeholder="ten@gmail.com" autocomplete="email">',
+    '      <div class="error" id="err-email"></div>',
     '      <label for="address">Địa chỉ</label>',
     '      <input type="text" id="address" placeholder="Số nhà, đường, phường/xã, tỉnh/thành">',
     '      <div class="error" id="err-address"></div>',
@@ -227,13 +247,12 @@ function registerForm() {
 function authError(msg) { document.getElementById('auth-error').textContent = msg; }
 
 function doLogin() {
-  var u = document.getElementById('lg-user').value.trim();
+  var email = document.getElementById('lg-email').value.trim();
   var p = document.getElementById('lg-pass').value;
-  if (!u || !p) return authError('Vui lòng nhập đủ tên đăng nhập và mật khẩu.');
-  var user = findUser(u);
-  // Admin độc lập với client: tài khoản admin không đăng nhập được ở trang khách.
-  // Dùng chung thông báo lỗi để không lộ việc tài khoản đó tồn tại.
-  if (!user || user.role === 'admin' || user.password !== p) return authError('Sai tên đăng nhập hoặc mật khẩu.');
+  if (!email || !p) return authError('Vui lòng nhập đầy đủ Email và Mật khẩu!');
+  var user = findUserByEmail(email);
+  if (!user || user.role === 'admin' || user.password !== p) return authError('Email hoặc mật khẩu không chính xác!');
+  if (user.status === 'locked') return authError('Tài khoản của bạn đã bị khóa!');
   currentUser = { username: user.username, fullname: user.fullname, role: user.role };
   save('wishy_current', currentUser);
   closeModal();
@@ -241,19 +260,22 @@ function doLogin() {
 }
 function handleRegister(e) {
   if (e) e.preventDefault();
-  var fields = ['fullname', 'address', 'phone', 'username', 'password', 'confirm'];
+  var fields = ['fullname', 'email', 'address', 'phone', 'username', 'password', 'confirm'];
   var v = {};
   fields.forEach(function (f) {
     v[f] = document.getElementById(f).value;
     document.getElementById('err-' + f).textContent = '';
   });
   v.fullname = v.fullname.trim();
+  v.email = v.email.trim().toLowerCase();
   v.address = v.address.trim();
   v.phone = v.phone.trim();
   v.username = v.username.trim();
 
   var errors = {};
   if (v.fullname.length < 2) errors.fullname = 'Vui lòng nhập họ và tên.';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) errors.email = 'Email không hợp lệ (VD: ten@gmail.com).';
+  else if (findUserByEmail(v.email)) errors.email = 'Email này đã được đăng ký.';
   if (v.address.length < 5) errors.address = 'Vui lòng nhập địa chỉ đầy đủ.';
   if (!/^(0|\+84)\d{9}$/.test(v.phone)) errors.phone = 'Số điện thoại không hợp lệ (VD: 0901234567).';
   if (!/^[A-Za-z0-9_]{4,20}$/.test(v.username)) errors.username = 'Tên đăng nhập 4-20 ký tự: chữ không dấu, số, dấu _.';
@@ -268,7 +290,7 @@ function handleRegister(e) {
     return false;
   }
 
-  users.push({ username: v.username, password: v.password, fullname: v.fullname, address: v.address, phone: v.phone, role: 'customer' });
+  users.push({ username: v.username, email: v.email, password: v.password, fullname: v.fullname, address: v.address, phone: v.phone, role: 'customer' });
   save('wishy_users', users);
   currentUser = { username: v.username, fullname: v.fullname, role: 'customer' };
   save('wishy_current', currentUser);
@@ -286,7 +308,7 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') closeModal();
   if (e.key === 'Enter') {
     var ov = document.getElementById('overlay');
-    if (ov && ov.classList.contains('show') && document.getElementById('lg-user')) doLogin();
+    if (ov && ov.classList.contains('show') && document.getElementById('lg-email')) doLogin();
   }
 });
 
