@@ -228,7 +228,7 @@ function renderAll() {
   switchTab(currentTab);
   if (typeof renderCart === 'function') {
     renderCart();
-}
+}}
 
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') closeModal();
