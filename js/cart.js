@@ -1,4 +1,4 @@
-/* === DỮ LIỆU MẶC ĐỊNH & KHO CHUNG === */
+/* === DỮ LIỆU MẶC ĐỊNH === */
 products.forEach(function(p) {
   var salePrice = Number(p.price) || 0;
   p.cost = p.cost || Math.round(salePrice * 0.7);
