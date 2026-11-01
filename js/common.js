@@ -257,6 +257,7 @@ function doLogin() {
   save('wishy_current', currentUser);
   closeModal();
   refreshPage();
+  setTimeout(function () { alert('Đã đăng nhập thành công'); }, 100);
 }
 function handleRegister(e) {
   if (e) e.preventDefault();
