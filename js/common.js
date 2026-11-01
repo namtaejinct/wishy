@@ -54,25 +54,40 @@ var PAGE_LINKS = {
   orders: 'orders.html'
 };
 
-function siteHeaderHtml(active) {
-  function cls(key) { return key === active ? ' class="active"' : ''; }
+function siteHeaderHtml(activePage) {
+  var cart = load('wishy_cart', []);
+  var cartCount = cart.reduce(function(s, i) { return s + (i.qty || 0); }, 0);
+
   return '<header class="site-header">' +
     '<div class="header-top">' +
-      '<div></div>' +
-      '<div class="logo">wishy</div>' +
-      '<div id="user-header-box"></div>' +
+      '<div class="header-left-space"></div>' +
+      '<div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">WISHY</a></div>' +
+      '<div id="user-header-box" class="header-right-icons">' +
+        '<!-- Icon User: Bấm vào là bật ngay Overlay Đăng nhập -->' +
+        '<a href="#" class="icon-btn" title="Tài khoản" onclick="openAuth(\'login\'); return false;">' +
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+            '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>' +
+            '<circle cx="12" cy="7" r="4"></circle>' +
+          '</svg>' +
+        '</a>' +
+        '<!-- Icon Giỏ hàng: Đã đăng nhập -> vào cart.html | Chưa đăng nhập -> Overlay Đăng nhập -->' +
+        '<a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng" onclick="checkCartAccess(event)">' +
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+            '<circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>' +
+            '<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>' +
+          '</svg>' +
+          '<span class="cart-badge">' + cartCount + '</span>' +
+        '</a>' +
+      '</div>' +
     '</div>' +
-    '<nav class="main-nav">' +
-      '<a href="' + PAGE_LINKS.home + '"' + cls('home') + '>Trang chủ</a>' +
-      '<div class="has-mega">' +
-        '<a href="' + PAGE_LINKS.products + '"' + cls('products') + '>Sản phẩm</a>' +
-        '<div class="mega-menu" id="mega-menu"></div>' +
-      '</div>' +
-      '<a href="' + PAGE_LINKS.cart + '"' + cls('cart') + '>Giỏ hàng</a>' +
-      '<div id="nav-orders">' +
-        '<a href="' + PAGE_LINKS.orders + '"' + cls('orders') + '>Đơn hàng</a>' +
-        '<div class="drop-menu" id="orders-menu"></div>' +
-      '</div>' +
+    '<nav class="main-nav-equal" id="category-nav-list">' +
+      '<a class="cat-tab ' + (activePage==='home'?'active':'') + '" href="index.html">Trang chủ</a>' +
+      '<a class="cat-tab ' + (activePage==='all'?'active':'') + '" href="index.html#products">Tất cả sản phẩm</a>' +
+      '<a class="cat-tab" href="index.html#products">Túi vải</a>' +
+      '<a class="cat-tab" href="index.html#products">Áo freesize</a>' +
+      '<a class="cat-tab" href="index.html#products">Phụ kiện</a>' +
+      '<a class="cat-tab" href="index.html#products">Móc khóa</a>' +
+      '<a class="cat-tab" href="index.html#products">Nam châm</a>' +
     '</nav>' +
   '</header>';
 }
@@ -117,15 +132,32 @@ function renderHeader() {
   renderOrdersMenu();
   var box = document.getElementById('user-header-box');
   if (!box) return;
+  
   if (currentUser) {
-    box.innerHTML =
-      '<span>Xin chào, <span class="user-name">' + esc(currentUser.fullname) + '</span></span>' +
-      '<span class="role-tag ' + (isAdmin() ? 'admin' : '') + '">' + (isAdmin() ? 'Admin' : 'Khách hàng') + '</span>' +
+    box.innerHTML = 
+      '<span style="font-size:13px; font-weight:700; color:var(--primary-color);">' + esc(currentUser.fullname) + '</span>' +
+      '<a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng">' +
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>' +
+      '</a>' +
       '<button class="btn-outline btn-sm" onclick="logout()">Đăng xuất</button>';
   } else {
-    box.innerHTML =
-      '<button class="btn-outline btn-sm" onclick="openAuth(\'login\')">Đăng nhập</button>' +
-      '<button class="btn btn-sm" onclick="openAuth(\'register\')">Đăng ký</button>';
+    // Khi chưa đăng nhập 
+    var cart = load('wishy_cart', []);
+    var cartCount = cart.reduce(function(s, i) { return s + (i.qty || 0); }, 0);
+    box.innerHTML = 
+      '<a href="#" class="icon-btn" title="Tài khoản" onclick="openAuth(\'login\'); return false;">' +
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+          '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>' +
+          '<circle cx="12" cy="7" r="4"></circle>' +
+        '</svg>' +
+      '</a>' +
+      '<a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng" onclick="checkCartAccess(event)">' +
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+          '<circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>' +
+          '<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>' +
+        '</svg>' +
+        '<span class="cart-badge">' + cartCount + '</span>' +
+      '</a>';
   }
 }
 
@@ -170,18 +202,38 @@ function showTab(tabId) {
 function tabFromHash() { return location.hash ? location.hash.slice(1) : ''; }
 
 function openAuth(mode) {
+  var ov = document.getElementById('overlay');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.id = 'overlay';
+    ov.innerHTML = '<div class="modal" id="modal"></div>';
+    ov.onclick = function (e) { if (e.target === ov) closeModal(); };
+    document.body.appendChild(ov);
+  }
+  
   var m = document.getElementById('modal');
+  if (!m) return;
   m.className = 'modal' + (mode === 'register' ? ' wide' : '');
   m.innerHTML =
     '<button class="modal-close" onclick="closeModal()">&times;</button>' +
     '<div class="auth-tabs">' +
-      '<button id="auth-tab-login" onclick="openAuth(\'login\')">Đăng nhập</button>' +
-      '<button id="auth-tab-register" onclick="openAuth(\'register\')">Đăng ký</button>' +
+      '<button id="auth-tab-login" class="' + (mode === 'login' ? 'active' : '') + '" onclick="openAuth(\'login\')">Đăng nhập</button>' +
+      '<button id="auth-tab-register" class="' + (mode === 'register' ? 'active' : '') + '" onclick="openAuth(\'register\')">Đăng ký</button>' +
     '</div>' +
     (mode === 'login' ? loginForm() : registerForm());
-  document.getElementById('auth-tab-' + mode).classList.add('active');
-  document.getElementById('overlay').classList.add('show');
+
+  ov.style.cssText = 'display: flex !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 99999; align-items: center; justify-content: center;';
 }
+
+function closeModal() {
+  var ov = document.getElementById('overlay');
+  if (ov) {
+    ov.style.display = 'none';
+  }
+}
+ 
+
 function loginForm() {
   return '<div class="form-row"><label>Tên đăng nhập</label><input id="lg-user" autocomplete="username"></div>' +
          '<div class="form-row"><label>Mật khẩu</label><input id="lg-pass" type="password" autocomplete="current-password"></div>' +
@@ -284,3 +336,29 @@ document.addEventListener('keydown', function (e) {
     if (document.getElementById('lg-user')) doLogin();
   }
 });
+
+// Bật/tắt menu khi bấm Icon User
+function toggleUserDropdown(e) {
+  if (e) e.preventDefault();
+  var menu = document.getElementById('user-drop-menu');
+  if (menu) {
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+  }
+}
+
+// Click ra ngoài thì đóng menu
+document.addEventListener('DOMContentLoaded', function() {
+  var cart = load('wishy_cart', []);
+  var cartCount = cart.reduce(function(s, i) { return s + (i.qty || 0); }, 0);
+  var badge = document.getElementById('cart-count-badge');
+  if (badge) badge.textContent = cartCount;
+});
+
+// Kiểm tra giỏ hàng khi chưa đăng nhập
+function checkCartAccess(e) {
+  var currentUser = JSON.parse(localStorage.getItem('wishy_current'));
+  if (!currentUser) {
+    if (e) e.preventDefault();
+    openAuth('login');
+  }
+}
