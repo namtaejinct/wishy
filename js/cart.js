@@ -1,14 +1,3 @@
-/* === PHÂN QUYỀN & CHUYỂN TAB === */
-var currentTab = 'tab-cart-view';
-function switchTab(id) {
-  if (isAdmin()) id = 'tab-admin-pricing';
-  currentTab = id;
-  document.querySelectorAll('.tab-content').forEach(function (t) { t.classList.toggle('active', t.id === id); });
-  if (id === 'tab-admin-pricing') renderPricing();
-  else if (id === 'tab-cart-view') renderCart();
-}
-function goCart() { if (!currentUser) { openAuth('login'); return; } switchTab(currentTab); }
-
 /* === GIỎ HÀNG === */
 function renderCart() {
   var container = document.getElementById('cart-items-container');
