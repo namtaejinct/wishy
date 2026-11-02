@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>wishy - Trang chủ</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/png" href="images/logo/logo.png">
 </head>
 
 <body>
@@ -87,42 +86,46 @@
 
         <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
 
-            <button class="btn btn-outline" id="prev-prod-btn"
-                style="border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;">&lt;</button>
 
             <div id="signature-products-container"
-                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 900px;">
+                style="display: flex; gap: 30px; width: 100%; max-width: 1000px;">
 
                 <!-- Sản phẩm 1 -->
-                <div class="card-box" style="margin: 0; padding: 15px; text-align: center;">
-                    <img src="images/ao-matsau.png" alt="Sản phẩm 1"
+                <div class="card-box" style="margin: 0; padding: 15px; text-align: center;cursor:pointer;"onclick="openProductModal('SP020')">
+                    <img src="images/aosaigon1.png" alt="Sản phẩm 1"
                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;">
-                    <p style="font-size: 13px; color: #7B8BA0; margin: 0 0 5px 0; font-weight: 600;">Brand 1</p>
-                    <h4 style="font-size: 15px; margin: 0 0 8px 0; color: var(--text-color);">Ao Da Lat</h4>
-                    <p style="font-size: 15px; font-weight: 700; color: var(--accent-color); margin: 0;">100.000đ</p>
+                    <p style="font-size: 13px; color: #7B8BA0; margin: 0 0 5px 0; font-weight: 600;">WISHY CONCEPT</p>
+                    <h4 style="font-size: 15px; margin: 0 0 8px 0; color: var(--text-color);">Áo thun Wishy "Sài Gòn"</h4>
+                    <p style="font-size: 15px; font-weight: 700; color: var(--accent-color); margin: 0;">360.000đ</p>
                 </div>
                 <!-- Sản phẩm 2 -->
-                <div class="card-box" style="margin: 0; padding: 15px; text-align: center;">
-                    <img src="images/ao-matsau.png" alt="Sản phẩm 2"
+                <div class="card-box" style="margin: 0; padding: 15px; text-align: center;cursor:pointer;"onclick="openProductModal('SP015')">
+                    <img src="images/jewelry-v11.png" alt="Sản phẩm 2"
                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;">
-                    <p style="font-size: 13px; color: #7B8BA0; margin: 0 0 5px 0; font-weight: 600;">Brand 2</p>
-                    <h4 style="font-size: 15px; margin: 0 0 8px 0; color: var(--text-color);">Moc khoa Viet Nam</h4>
-                    <p style="font-size: 15px; font-weight: 700; color: var(--accent-color); margin: 0;">50.000đ</p>
+                    <p style="font-size: 13px; color: #7B8BA0; margin: 0 0 5px 0; font-weight: 600;">WISHY CONCEPT</p>
+                    <h4 style="font-size: 15px; margin: 0 0 8px 0; color: var(--text-color);">Dây chuyền "Vỏ sò 1"</h4>
+                    <p style="font-size: 15px; font-weight: 700; color: var(--accent-color); margin: 0;">200.000đ</p>
                 </div>
 
                 <!-- Sản phẩm 3 -->
-                <div class="card-box" style="margin: 0; padding: 15px; text-align: center;">
-                    <img src="images/ao-matsau.png" alt="Sản phẩm 3"
+                <div class="card-box" style="margin: 0; padding: 15px; text-align: center;cursor:pointer;"onclick="openProductModal('SP010')">
+                    <img src="images/keychain-dalat1.png" alt="Sản phẩm 3"
                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;">
-                    <p style="font-size: 13px; color: #7B8BA0; margin: 0 0 5px 0; font-weight: 600;">Brand 3</p>
-                    <h4 style="font-size: 15px; margin: 0 0 8px 0; color: var(--text-color);">Tui Binh An Vo Su</h4>
+                    <p style="font-size: 13px; color: #7B8BA0; margin: 0 0 5px 0; font-weight: 600;">WISHY CONCEPT</p>
+                    <h4 style="font-size: 15px; margin: 0 0 8px 0; color: var(--text-color);">Móc khoá Đĩa Than "Đà Lạt"</h4>
+                    <p style="font-size: 15px; font-weight: 700; color: var(--accent-color); margin: 0;">40.000đ</p>
+                </div>
+
+                <!-- Sản phẩm 4 -->
+                <div class="card-box" style="margin: 0; padding: 15px; text-align: center;cursor:pointer;" onclick="openProductModal('SP001')">
+                    <img src="images/totebag-dandiaphuong1.png" alt="Sản phẩm 3"
+                        style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;">
+                    <p style="font-size: 13px; color: #7B8BA0; margin: 0 0 5px 0; font-weight: 600;">WISHY CONCEPT</p>
+                    <h4 style="font-size: 15px; margin: 0 0 8px 0; color: var(--text-color);">Túi tote Dân Địa Phương</h4>
                     <p style="font-size: 15px; font-weight: 700; color: var(--accent-color); margin: 0;">150.000đ</p>
                 </div>
 
             </div>
-
-            <button class="btn btn-outline" id="next-prod-btn"
-                style="border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;">&gt;</button>
 
         </div>
     </section>

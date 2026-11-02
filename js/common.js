@@ -492,7 +492,7 @@ var defaultProducts = [
     price: 200000, 
     stock: 15, 
     img: 'images/jewelry-v11.png', 
-    images: ['images/jewelry-v11.png', 'images/jewelry-v11.png'], 
+    images: ['images/jewelry-v11.png', 'images/jewelry-v12.png'], 
     desc: 'Dây chuyền hạt cườm sáng màu kết hợp mặt vỏ sò lớn và charm sao biển phong cách mùa hè, biển cả.' 
   },{ 
     id: 'SP016', 
@@ -501,7 +501,7 @@ var defaultProducts = [
     price: 200000, 
     stock: 20, 
     img: 'images/jewelry-v21.png', 
-    images: ['images/jewelry-v21.png', 'images/jewelry-v21.png'], 
+    images: ['images/jewelry-v21.png', 'images/jewelry-v22.png'], 
     desc: 'Dây chuyền hạt cườm sáng màu kết hợp mặt vỏ sò lớn và charm sao biển phong cách mùa hè, biển cả.' 
   },
 

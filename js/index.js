@@ -1,4 +1,6 @@
 /* Phần của Linh - TV2 */
+
+
 document.addEventListener("DOMContentLoaded", function () {
     
     const slideImages = document.querySelectorAll(".slide-img");
@@ -46,39 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
         startInterval();
     }
 
-    const productPool = [
-        { brand: "Brand 1", name: "Áo Da Lat", price: "120.000đ", img: "D:\\Download\\sp1.jpg" },
-        { brand: "Brand 2", name: "Móc Khóa Sài Gòn", price: "45.000đ", img: "D:\\Download\\sp2.jpg" },
-        { brand: "Brand 3", name: "Túi Bình An Vô Sự", price: "150.000đ", img: "D:\\Download\\sp3.jpg" },
-        { brand: "Brand 4", name: "Nam Châm Lưu Niệm", price: "35.000đ", img: "D:\\Download\\sp1.jpg" },
-        { brand: "Brand 5", name: "Huy Hiệu Wishy", price: "25.000đ", img: "D:\\Download\\sp2.jpg" },
-        { brand: "Brand 6", name: "Sổ Tay Vintage", price: "80.000đ", img: "D:\\Download\\sp3.jpg" }
-    ];
-
-    const prevBtn = document.getElementById("prev-prod-btn");
-    const nextBtn = document.getElementById("next-prod-btn");
-    const container = document.getElementById("signature-products-container");
-
-    function renderRandomProducts() {
-        if (!container) return;
-
-        let shuffled = [...productPool].sort(() => 0.5 - Math.random());
-        let selectedProducts = shuffled.slice(0, 3);
-       
-        let htmlContent = "";
-        selectedProducts.forEach(prod => {
-            htmlContent += `
-                <div class="card-box" style="margin: 0; padding: 15px; text-align: center; animation: fadeIn 0.4s ease;">
-                    <img src="${prod.img}" alt="${prod.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;">
-                    <p style="font-size: 13px; color: #7B8BA0; margin: 0 0 5px 0; font-weight: 600;">${prod.brand}</p>
-                    <h4 style="font-size: 15px; margin: 0 0 8px 0; color: var(--text-color);">${prod.name}</h4>
-<p style="font-size: 15px; font-weight: 700; color: var(--accent-color); margin: 0;">${prod.price}</p>
-                </div>
-            `;
-        });
-
-        container.innerHTML = htmlContent;
-    }
+ 
 
     if (nextBtn) {
         nextBtn.addEventListener("click", renderRandomProducts);
