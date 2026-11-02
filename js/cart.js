@@ -1,5 +1,11 @@
 /* === GIỎ HÀNG === */
-var cart = load('wishy_cart', []);
+function getCartKey() {
+  if (typeof currentUser !== 'undefined' && currentUser && currentUser.username) {
+    return 'wishy_cart_' + currentUser.username;
+  }
+  return 'wishy_cart_guest'; // Trường hợp chưa đăng nhập
+}
+var cart = load(getCartKey(), []);
 function renderCart() {
   var container = document.getElementById('cart-items-container');
   if (!container) return;
@@ -60,13 +66,13 @@ function renderCart() {
 
 function toggleSelectItem(pid, isChecked) {
   var item = cart.filter(function (i) { return i.pid === pid; })[0];
-  if (item) { item.selected = isChecked; save('wishy_cart', cart); renderCart(); }
+  if (item) { item.selected = isChecked; save(getCartKey(), cart); renderCart(); }
 }
 
 function toggleSelectAll(master) {
   var isChecked = master.checked;
   cart.forEach(function (i) { i.selected = isChecked; });
-  save('wishy_cart', cart);
+  save(getCartKey(), cart);
   renderCart();
 }
 
@@ -82,7 +88,7 @@ function updateQty(pid, delta) {
 
   item.qty += delta;
   if (item.qty <= 0) cart = cart.filter(function (i) { return i.pid !== pid; });
-  save('wishy_cart', cart);
+  save(getCartKey(), cart);
   renderCart();
 }
 
@@ -91,13 +97,13 @@ function removeCartItem(pid) {
     return; // Nếu bấm Hủy thì dừng lại, không xóa
   }
   cart = cart.filter(function (i) { return i.pid !== pid; });
-  save('wishy_cart', cart);
+  save(getCartKey(), cart);
   renderCart();
 }
 
 function removeSelectedItems() {
   cart = cart.filter(function (i) { return !i.selected; });
-  save('wishy_cart', cart);
+  save(getCartKey(), cart);
   renderCart();
 }
 
@@ -180,7 +186,7 @@ function checkoutOrder() {
   orderItems.forEach(function (it) {
     findProduct(it.pid).stock -= it.qty;
   });
-  save('wishy_products', products);
+  save(getCartKey(), products);
 
   var newOrder = {
     id: orderId, user: currentUser.username, date: dateStr, status: 'Chờ xác nhận',
@@ -191,7 +197,7 @@ function checkoutOrder() {
   save('wishy_orders', orders);
 
   cart = cart.filter(function (i) { return !i.selected; });
-  save('wishy_cart', cart);
+  save(getCartKey(), cart);
   if (typeof renderHeader === 'function') renderHeader();   // Bước 9: cập nhật số trên icon giỏ
 
   var itemsHtml = newOrder.items.map(function (it) {
@@ -233,7 +239,7 @@ function refreshPage() {
   
   if (logged) {
     if (typeof load === 'function') {
-      cart = load('wishy_cart', []);
+      cart = load(getCartKey(), []);
     }
     renderCart();
   }
