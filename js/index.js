@@ -266,8 +266,8 @@ function addToCart(pid) {
         window.location.href = 'cart.html';
         return;
     }
-
-    var cart = JSON.parse(localStorage.getItem('wishy_cart')) || [];
+    var cartKey = 'wishy_cart_' + currentUser.username; //Sử dụng key tùy theo tên tk đăng nhập
+    var cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     var p = getStoredProducts().find(function (item) { return item.id === pid; });
 
     var existing = cart.find(function (item) { return item.pid === pid; });
@@ -281,7 +281,7 @@ function addToCart(pid) {
         cart.push({ pid: pid, qty: 1, selected: true });
     }
 
-    localStorage.setItem('wishy_cart', JSON.stringify(cart));
+    localStorage.setItem(cartKey, JSON.stringify(cart));
     alert('Đã thêm "' + p.name + '" vào giỏ hàng thành công!');
     
     if (typeof renderHeader === 'function') renderHeader();
