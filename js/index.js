@@ -48,14 +48,6 @@ document.addEventListener("DOMContentLoaded", function () {
         startInterval();
     }
 
- 
-
-    if (nextBtn) {
-        nextBtn.addEventListener("click", renderRandomProducts);
-    }
-    if (prevBtn) {
-        prevBtn.addEventListener("click", renderRandomProducts);
-    }
 
 });
 
@@ -286,11 +278,6 @@ function addToCart(pid) {
     
     if (typeof renderHeader === 'function') renderHeader();
     closeProductModal();
-}
-
-function moveFeedback(direction) {
-    var container = document.getElementById('feedback-wrapper');
-    if (container) container.scrollBy({ left: direction * 280, behavior: 'smooth' });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
