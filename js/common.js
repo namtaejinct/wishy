@@ -78,8 +78,8 @@ function orderTotal(o) {
 function isAdmin() { return !!currentUser && currentUser.role === 'admin'; }
 
 function cartCount() {
-  if (!currentUser) return 0; 
-  var cart = load('wishy_cart', []);
+  if (!currentUser || !currentUser.username) return 0; 
+  var cart = load('wishy_cart_' + currentUser.username, []);
   return cart.reduce(function (s, i) { return s + (i.qty || 0); }, 0);
 }
 
