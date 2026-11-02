@@ -1,4 +1,5 @@
 /* === GIỎ HÀNG === */
+var cart = load('wishy_cart', []);
 function renderCart() {
   var container = document.getElementById('cart-items-container');
   if (!container) return;
@@ -21,26 +22,34 @@ function renderCart() {
   });
 
   container.innerHTML = cart.map(function (item) {
-    var p = findProduct(item.pid);
-    if (!p) return '';
-    var sub = p.price * item.qty;
-    if (item.selected) total += sub;
-    else allChecked = false;
+  var p = findProduct(item.pid);
+  var isHidden = !p || p.status === 'hidden';
+  var sub = isHidden ? 0 : p.price * item.qty;
 
-    return '<div class="cart-item-row">' +
-      '<div class="col-chk"><input type="checkbox" ' + (item.selected ? 'checked' : '') + ' onchange="toggleSelectItem(\'' + item.pid + '\', this.checked)"></div>' +
-      '<div class="col-img"><img src="' + esc(p.img || NO_IMAGE) + '" alt="' + esc(p.name) + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"></div>' +
-      '<div class="col-name">' + esc(p.name) + '</div>' +
-      '<div class="col-price">' + money(p.price) + '</div>' +
-      '<div class="col-qty">' +
-        '<button class="btn-outline btn-sm" onclick="updateQty(\'' + item.pid + '\', -1)">-</button>' +
-        '<span>' + item.qty + '</span>' +
-        '<button class="btn-outline btn-sm" onclick="updateQty(\'' + item.pid + '\', 1)">+</button>' +
-      '</div>' +
-      '<div class="col-subtotal">' + money(sub) + '</div>' +
-      '<div class="col-action"><button class="btn-danger btn-sm" onclick="removeCartItem(\'' + item.pid + '\')">Xóa</button></div>' +
-    '</div>';
-  }).join('');
+  // Nếu sản phẩm đã bị ẩn, tự động bỏ chọn item đó
+  if (isHidden) item.selected = false;
+  if (item.selected) total += sub;
+  else if (!isHidden) allChecked = false;
+
+  return '<div class="cart-item-row ' + (isHidden ? 'item-hidden' : '') + '">' +
+    '<div class="col-chk">' +
+      '<input type="checkbox" ' + (isHidden ? 'disabled' : (item.selected ? 'checked' : '')) + ' onchange="toggleSelectItem(\'' + item.pid + '\', this.checked)">' +
+    '</div>' +
+    '<div class="col-img"><img src="' + esc(p ? p.img : NO_IMAGE) + '" alt="' + esc(p ? p.name : item.pid) + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"></div>' +
+    '<div class="col-name">' + 
+      esc(p ? p.name : item.pid) + 
+      (isHidden ? '<br><span style="color: var(--danger); font-size: 12px; font-weight: 600;">⚠️ Ngừng kinh doanh</span>' : '') + 
+    '</div>' +
+    '<div class="col-price">' + money(p ? p.price : 0) + '</div>' +
+    '<div class="col-qty">' +
+      '<button class="btn-outline btn-sm" ' + (isHidden ? 'disabled' : '') + ' onclick="updateQty(\'' + item.pid + '\', -1)">-</button>' +
+      '<span>' + item.qty + '</span>' +
+      '<button class="btn-outline btn-sm" ' + (isHidden ? 'disabled' : '') + ' onclick="updateQty(\'' + item.pid + '\', 1)">+</button>' +
+    '</div>' +
+    '<div class="col-subtotal">' + money(sub) + '</div>' +
+    '<div class="col-action"><button class="btn-danger btn-sm" onclick="removeCartItem(\'' + item.pid + '\')">Xóa</button></div>' +
+  '</div>';
+}).join('');
 
   var masterChk = document.getElementById('select-all-chk');
   if (masterChk) masterChk.checked = cart.length > 0 && allChecked;
@@ -78,6 +87,9 @@ function updateQty(pid, delta) {
 }
 
 function removeCartItem(pid) {
+  if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?')) {
+    return; // Nếu bấm Hủy thì dừng lại, không xóa
+  }
   cart = cart.filter(function (i) { return i.pid !== pid; });
   save('wishy_cart', cart);
   renderCart();
@@ -154,7 +166,7 @@ function checkoutOrder() {
     // Bước 5: lấy thông tin thật từ tài khoản
     var u = findUser(currentUser.username) || {};
     if (!u.address || !u.phone) {
-      alert('Tài khoản chưa có địa chỉ hoặc SĐT, vui lòng chọn "Giao đến địa chỉ khác".');
+      alert('Tài khoản chưa có địa chỉ hoặc SĐT, vui lòng chọn "Nhập địa chỉ giao hàng mới".');
       return;
     }
     shipInfo = u.fullname + ' - ' + u.phone + ' (' + u.address + ')';
