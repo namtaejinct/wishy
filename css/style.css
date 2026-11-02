@@ -751,9 +751,8 @@ select:focus {
 
 /* Các cột nội dung trong giỏ hàng */
 .col-chk {
-  width: 4%;
+  width: 5%;
   text-align: center;
-  padding-right: px;
 }
 
 .col-img {
@@ -762,16 +761,16 @@ select:focus {
 }
 
 .col-img img {
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 8px;
   display: block;
   margin: 0 auto;
 }
 
 .col-name {
-  width: %;
+  width: 33%;
   font-weight: 700;
   padding-left: 10px;
   padding-right: 10px;
@@ -779,11 +778,11 @@ select:focus {
 
 .col-price {
   width: 15%;
-  padding-right: 10px;
+  font-weight: 600;
 }
 
 .col-qty {
-  width: %;
+  width: 15%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -795,7 +794,7 @@ select:focus {
 }
 
 .col-subtotal {
-  width: 12%;
+  width: 14%;
   font-weight: 700;
   color: var(--primary-color);
 }
@@ -804,7 +803,6 @@ select:focus {
   width: 8%;
   text-align: right;
 }
-
 /* Cột Admin Quản lý giá */
 .col-admin-id {
   width: 12%;
