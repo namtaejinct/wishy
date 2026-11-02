@@ -136,7 +136,10 @@ function checkoutOrder() {
   for (var i = 0; i < selectedItems.length; i++) {
     var it = selectedItems[i];
     var p = findProduct(it.pid);
-    if (!p) continue;
+    if (!p || p.status === 'hidden') {
+    alert('Sản phẩm "' + (p ? p.name : it.pid) + '" hiện đã ngừng kinh doanh và không thể đặt hàng!');
+    return;
+  }
     if (it.qty > p.stock) {
       alert('Sản phẩm "' + p.name + '" vượt quá tồn kho (Còn lại: ' + p.stock + ')');
       return;
