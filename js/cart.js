@@ -226,7 +226,6 @@ function refreshPage() {
   var welcome = document.getElementById('welcome-screen');
   var app = document.getElementById('app-screen');
   
-  // Dùng '' (rỗng) thay vì 'block' để trả lại CSS căn giữa ban đầu cho welcome-screen
   if (welcome) welcome.style.display = logged ? 'none' : '';
   if (app) app.style.display = logged ? '' : 'none';
   
