@@ -219,7 +219,35 @@
     <div class="overlay" id="product-overlay" onclick="closeProductModal(event)">
         <div class="modal-detail-card" onclick="event.stopPropagation()">
             <button class="close-modal-btn" onclick="closeProductModal()">&times;</button>
-            <div id="modal-detail-content"></div>
+            <div id="modal-detail-content">
+                <div class="modal-grid-2col">
+        <div class="modal-left-col">
+            <div class="modal-left-img">
+                <img id="modal-main-img" src="" alt="">
+            </div>
+            <div id="modal-dots-container"></div>
+        </div>
+        <div class="modal-right-info">
+            <div class="modal-brand">WISHY CONCEPT</div>
+            <div class="modal-title" id="modal-title-text"></div>
+            <div class="modal-price" id="modal-price-text"></div>
+            <div class="modal-desc" id="modal-desc-text"></div>
+            <div class="modal-stock" id="modal-stock-text"></div>
+            
+            <div id="modal-variants-container"></div>
+            
+            <div class="qty-row">
+                <span class="variant-label">Số lượng:</span>
+                <div class="qty-control">
+                    <button type="button" class="qty-btn" onclick="changeModalQty(-1)">-</button>
+                    <input type="number" id="modal-qty-input" value="1" min="1" max="99" readonly>
+                    <button type="button" class="qty-btn" onclick="changeModalQty(1)">+</button>
+                </div>
+            </div>
+            <button id="modal-add-btn" class="btn-add-cart">THÊM VÀO GIỎ HÀNG</button>
+        </div>
+    </div>
+            </div>
         </div>
     </div>
     <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">

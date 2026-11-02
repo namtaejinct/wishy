@@ -174,67 +174,57 @@ function openProductModal(id) {
     var p = list.find(function (item) { return item.id === id; });
     if (!p) return;
 
-    currentModalProduct = p; // Lưu sản phẩm đang mở
+    currentModalProduct = p; 
+    var mainImgSrc = (p.images && p.images.length) ? p.images[0] : p.img;
+
+    // Bắn dữ liệu văn bản và hình ảnh vào các thẻ đã tạo sẵn bên HTML
+    document.getElementById('modal-main-img').src = mainImgSrc;
+    document.getElementById('modal-title-text').textContent = p.name;
+    document.getElementById('modal-price-text').textContent = p.price.toLocaleString('vi-VN') + 'đ';
+    document.getElementById('modal-desc-text').textContent = p.desc || 'Sản phẩm lưu niệm độc quyền từ Wishy.';
+    document.getElementById('modal-stock-text').innerHTML = 'Mã SP: <b>' + p.id + '</b> &nbsp;|&nbsp; Tồn kho: <b>' + p.stock + '</b>';
+
+    // Xử lý 2 chấm tròn đổi ảnh (chỉ hiển thị nếu có > 1 ảnh)
+    var dotsContainer = document.getElementById('modal-dots-container');
+    if (p.images && p.images.length > 1) {
+        dotsContainer.innerHTML = '<div class="modal-dots-list">' +
+            '<span class="dot-btn active" onclick="changeModalImg(0, this)"></span>' +
+            '<span class="dot-btn" onclick="changeModalImg(1, this)"></span>' +
+        '</div>';
+    } else {
+        dotsContainer.innerHTML = '';
+    }
+
+    // Xử lý nút phân loại
+    var variantContainer = document.getElementById('modal-variants-container');
+    if (p.variants && p.variants.length > 0) {
+        var vHtml = '<div class="variant-row"><span class="variant-label">Phân loại:</span><div class="variant-list">';
+        p.variants.forEach(function (v, idx) {
+            vHtml += '<button type="button" class="variant-btn ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(this)">' + v + '</button>';
+        });
+        variantContainer.innerHTML = vHtml + '</div></div>';
+    } else {
+        variantContainer.innerHTML = '';
+    }
+
+    // Xử lý số lượng tối đa và Nút Thêm giỏ hàng
+    document.getElementById('modal-qty-input').value = 1;
+    document.getElementById('modal-qty-input').max = p.stock;
+
+    var addBtn = document.getElementById('modal-add-btn');
+    if (p.stock <= 0) {
+        addBtn.disabled = true;
+        addBtn.style.opacity = '0.5';
+        addBtn.textContent = 'HẾT HÀNG';
+        addBtn.onclick = null;
+    } else {
+        addBtn.disabled = false;
+        addBtn.style.opacity = '1';
+        addBtn.textContent = 'THÊM VÀO GIỎ HÀNG';
+        addBtn.onclick = function() { addToCart(p.id); };
+    }
 
     var overlay = document.getElementById('product-overlay');
-    var content = document.getElementById('modal-detail-content');
-    var priceFormatted = p.price.toLocaleString('vi-VN') + 'đ';
-    var imgList = (p.images && p.images.length) ? p.images : [p.img];
-    var mainImgSrc = imgList[0] || '';
-
-    // 1. HTML cho 2 chấm tròn
-    var dotsHtml = '';
-    if (imgList.length > 1) {
-        dotsHtml = 
-            '<div class="modal-dots-list">' +
-                '<span class="dot-btn active" onclick="changeModalImg(0, this)"></span>' +
-                '<span class="dot-btn" onclick="changeModalImg(1, this)"></span>' +
-            '</div>';
-    }
-
-    // 2. HTML cho Phân loại (Tối đa 2 loại, tự ẩn nếu không có)
-    var variantsHtml = '';
-    if (p.variants && p.variants.length > 0) {
-        variantsHtml = '<div class="variant-row"><span class="variant-label">Phân loại:</span><div class="variant-list">';
-        p.variants.forEach(function (v, idx) {
-            variantsHtml += '<button type="button" class="variant-btn ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(this)">' + v + '</button>';
-        });
-        variantsHtml += '</div></div>';
-    }
-
-    // 3. HTML cho Tăng / Giảm số lượng
-    var qtyHtml = 
-        '<div class="qty-row">' +
-            '<span class="variant-label">Số lượng:</span>' +
-            '<div class="qty-control">' +
-                '<button type="button" class="qty-btn" onclick="changeModalQty(-1)">-</button>' +
-                '<input type="number" id="modal-qty-input" value="1" min="1" max="' + p.stock + '" readonly>' +
-                '<button type="button" class="qty-btn" onclick="changeModalQty(1)">+</button>' +
-            '</div>' +
-        '</div>';
-
-    content.innerHTML =
-        '<div class="modal-grid-2col">' +
-            '<div class="modal-left-col">' +  /* <--- BỔ SUNG LẠI THẺ NÀY */
-                '<div class="modal-left-img">' +
-                    '<img id="modal-main-img" src="' + mainImgSrc + '" alt="' + p.name + '">' +
-                '</div>' +
-                dotsHtml +
-            '</div>' +                       /* <--- ĐÓNG THẺ BÊN TRÁI */
-            '<div class="modal-right-info">' +
-                '<div class="modal-brand">WISHY CONCEPT</div>' +
-                '<div class="modal-title">' + p.name + '</div>' +
-                '<div class="modal-price">' + priceFormatted + '</div>' +
-                '<div class="modal-desc">' + (p.desc || 'Sản phẩm lưu niệm độc quyền từ Wishy.') + '</div>' +
-                '<div class="modal-stock">Mã SP: <b>' + p.id + '</b> &nbsp;|&nbsp; Tồn kho: <b>' + p.stock + '</b></div>' +
-                variantsHtml +
-                qtyHtml +
-                '<button class="btn-add-cart" ' + (p.stock <= 0 ? 'disabled style="opacity:0.5"' : '') + ' onclick="addToCart(\'' + p.id + '\')">' +
-                    (p.stock <= 0 ? 'HẾT HÀNG' : 'THÊM VÀO GIỎ HÀNG') +
-                '</button>' +
-            '</div>' +
-        '</div>';
-
     if (overlay) overlay.classList.add('show');
 }
 

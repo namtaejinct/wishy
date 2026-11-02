@@ -1339,15 +1339,17 @@ select:focus {
   padding: 0 10px;
 }
 
-.modal-detail-card {
-  background: #ffffff;
-  border-radius: 18px;
-  width: 80%;
-  max-width: 1200px;
-  height: 85%;
-  padding: 35px;
-  position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+.modal-detail-card { 
+  background: #ffffff; 
+  border-radius: 18px; 
+  width: 90%; 
+  max-width: 1000px; 
+  height: auto; 
+  max-height: 90vh; 
+  padding: 30px; 
+  position: relative; 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); 
+  overflow-y: auto; 
 }
 
 .close-modal-btn {
