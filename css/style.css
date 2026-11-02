@@ -751,41 +751,57 @@ select:focus {
 
 /* Các cột nội dung trong giỏ hàng */
 .col-chk {
-  width: 5%;
+  width: 4%;
   text-align: center;
-  padding-right: 10px;
+  padding-right: px;
+}
+
+.col-img {
+  width: 10%;
+  text-align: center;
+}
+
+.col-img img {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+  margin: 0 auto;
 }
 
 .col-name {
-  width: 35%;
+  width: %;
   font-weight: 700;
-  padding-right: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .col-price {
-  width: 18%;
+  width: 15%;
   padding-right: 10px;
 }
 
 .col-qty {
-  width: 18%;
+  width: %;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .col-qty span {
-  margin: 0 10px;
+  margin: 0 8px;
   font-weight: 700;
 }
 
 .col-subtotal {
-  width: 14%;
+  width: 12%;
   font-weight: 700;
   color: var(--primary-color);
 }
 
 .col-action {
-  width: 10%;
+  width: 8%;
   text-align: right;
 }
 
