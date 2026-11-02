@@ -588,7 +588,7 @@ function renderPricing() {
 function saveProductMargin() {
   var pid = document.getElementById('pricing-prod-select').value;
   var marginVal = parseFloat(document.getElementById('pricing-margin-input').value);
-  if (isNaN(marginVal) || marginVal < 0) { alert('Vui lòng nhập % hợp lệ.'); return; }
+  if (isNaN(marginVal) || marginVal < 0) { alert('Vui lòng nhập % hợp lệ (Lưu ý không được âm)'); return; }
 
   var p = findProduct(pid);
   if (!p) return;
