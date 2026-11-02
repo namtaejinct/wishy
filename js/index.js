@@ -21,9 +21,6 @@ var ITEMS_PER_PAGE = 6;
 var currentModalProduct = null;
 
 function getStoredProducts() {
-    if (typeof defaultProducts !== 'undefined' && defaultProducts.length > 0) {
-        return defaultProducts;
-    }
     return products;
 }
 
