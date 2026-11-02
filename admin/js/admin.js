@@ -45,6 +45,171 @@ window.addEventListener('DOMContentLoaded', function () {
   if (logged) admin_enter();
 });
 
+//TV2: Liểu
+/* === 5. ADMIN: QUẢN LÝ LOẠI SẢN PHẨM === */
+function renderCategories() {
+  var selectFilter = document.getElementById('filter-type');
+  var selectProd = document.getElementById('prod-type');
+
+  if (selectFilter) {
+    selectFilter.innerHTML = '<option value="all">Tất cả loại</option>' +
+      categories.map(function(c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
+  }
+
+  if (selectProd) {
+    selectProd.innerHTML = categories.map(function(c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
+  }
+}
+
+function addCategory() {
+    var name = document.getElementById('new-cat-name').value.trim();
+    if (!name) { alert('Vui lòng nhập tên loại sản phẩm!'); return; }
+    if (categories.indexOf(name) !== -1) { alert('Loại sản phẩm này đã tồn tại!'); return; }
+
+    categories.push(name);
+    save('wishy_categories', categories);
+    document.getElementById('new-cat-name').value = '';
+    renderCategories();
+    alert('Thêm loại sản phẩm thành công!');
+}
+
+function editCategory(index) {
+    var oldName = categories[index];
+    var newName = prompt('Sửa tên loại sản phẩm:', oldName);
+    if (newName && newName.trim() !== '') {
+        categories[index] = newName.trim();
+        save('wishy_categories', categories);
+        renderCategories();
+        renderProductList();
+    }
+}
+
+function deleteCategory(index) {
+    if (confirm('Bạn có chắc muốn xóa loại sản phẩm này?')) {
+        categories.splice(index, 1);
+        save('wishy_categories', categories);
+        renderCategories();
+    }
+}
+
+/* === 6. ADMIN: QUẢN LÝ SẢN PHẨM === */
+function renderAdminProducts() {
+  var tb = document.getElementById('tbody-admin-products');
+  if (!tb) return;
+
+  tb.innerHTML = products.map(function(p) {
+    return '<tr>' +
+      '<td>' + p.id + '</td>' +
+      '<td><b>' + esc(p.name) + '</b></td>' +
+      '<td>' + esc(p.type || 'Khác') + '</td>' +
+      '<td>' + money(p.price) + '</td>' +
+      '<td>' + p.stock + '</td>' +
+      '<td>' +
+        '<button class="btn-outline btn-sm" style="margin-right: 6px;" onclick="editProduct(\'' + p.id + '\')">Sửa</button>' +
+        '<button class="btn-danger btn-sm" onclick="deleteProduct(\'' + p.id + '\')">Xóa</button>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function saveProduct() {
+    var editId = document.getElementById('edit-prod-id').value;
+    var id = document.getElementById('prod-id').value.trim();
+    var name = document.getElementById('prod-name').value.trim();
+    var type = document.getElementById('prod-type').value;
+    var price = parseInt(document.getElementById('prod-price').value, 10);
+    var stock = parseInt(document.getElementById('prod-stock').value, 10);
+
+    if (!id || !name || isNaN(price) || isNaN(stock)) {
+        alert('Vui lòng điền đầy đủ thông tin hợp lệ!');
+        return;
+    }
+
+    if(price<0){
+      alert('Giá bán không được âm');
+      document.getElementById('prod-price').focus();
+      return;
+    }
+    if (stock < 0) {
+    alert('Số lượng tồn kho không được nhỏ hơn 0!');
+    document.getElementById('prod-stock').focus();
+    return; // Dừng hàm, không lưu
+  }
+
+    if (editId) {
+        var p = findProduct(editId);
+        if (p) {
+            p.name = name;
+            p.type = type;
+            p.price = price;
+            p.stock = stock;
+        }
+    } else {
+        if (findProduct(id)) { alert('Mã sản phẩm đã tồn tại!'); return; }
+        products.push({ id: id, name: name, type: type, price: price, stock: stock });
+    }
+
+    save('wishy_products', products);
+    cancelEditProduct();
+    renderAdminProducts();
+    renderProductList();
+    alert('Lưu sản phẩm thành công!');
+}
+
+function editProduct(id) {
+    var p = findProduct(id);
+    if (!p) return;
+
+    document.getElementById('edit-prod-id').value = p.id;
+    document.getElementById('prod-id').value = p.id;
+    document.getElementById('prod-id').disabled = true;
+    document.getElementById('prod-name').value = p.name;
+    document.getElementById('prod-type').value = p.type;
+    document.getElementById('prod-price').value = p.price;
+    document.getElementById('prod-stock').value = p.stock;
+
+    document.getElementById('form-product-title').textContent = 'Sửa sản phẩm: ' + p.id;
+    document.getElementById('btn-save-prod').textContent = 'Cập nhật sản phẩm';
+    document.getElementById('btn-cancel-prod').style.display = 'inline-block';
+}
+
+function cancelEditProduct() {
+    document.getElementById('edit-prod-id').value = '';
+    document.getElementById('prod-id').value = '';
+    document.getElementById('prod-id').disabled = false;
+    document.getElementById('prod-name').value = '';
+    document.getElementById('prod-price').value = '';
+    document.getElementById('prod-stock').value = '';
+
+    document.getElementById('form-product-title').textContent = 'Thêm sản phẩm mới';
+    document.getElementById('btn-save-prod').textContent = 'Lưu sản phẩm';
+    document.getElementById('btn-cancel-prod').style.display = 'none';
+}
+
+function deleteProduct(id) {
+    if (confirm('Bạn có chắc muốn xóa sản phẩm ' + id + '?')) {
+        products = products.filter(function (p) { return p.id !== id; });
+        save('wishy_products', products);
+        renderAdminProducts();
+        renderProductList();
+    }
+}
+
+/* === 7. KHỞI TẠO MÀN HÌNH === */
+function renderPage() {
+  renderCategories();
+  renderProductList();
+
+  var adminSubMenu = document.getElementById('admin-sub-menu');
+  if (adminSubMenu) {
+    adminSubMenu.style.display = isAdmin() ? 'flex' : 'none';
+  }
+
+  if (isAdmin()) {
+    renderAdminProducts();
+  }
+}
+
 
 /* TV4 (NAM): ĐƠN HÀNG, NHẬP HÀNG, TỒN KHO */
 
