@@ -566,4 +566,4 @@ var categories = load('wishy_categories', ['Túi vải', 'Áo thun', 'Phụ ki�
 })();
 
 // Ảnh tạm cho sản phẩm admin thêm mới chưa có ảnh
-var NO_IMAGE = '../images/placeholder.jpg';
+var NO_IMAGE = 'images/placeholder.jpg';
