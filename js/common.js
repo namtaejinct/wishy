@@ -116,15 +116,19 @@ function siteHeaderHtml(activePage) {
 function renderHeader() {
   var box = document.getElementById('user-header-box');
   if (!box) return;
+  
   var cartBtn =
     '<a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng" onclick="checkCartAccess(event)">' +
-      ICON_CART + '<span class="cart-badge" id="cart-count-badge">' + cartCount() + '</span>' +
+      '<img src="images/logo/cart.png" alt="Cart">' +
+      '<span class="cart-badge" id="cart-count-badge">' + cartCount() + '</span>' +
     '</a>';
 
   if (currentUser) {
     box.innerHTML =
       '<div class="user-dropdown-wrapper">' +
-        '<a href="profile.html" class="icon-btn" title="Tài khoản">' + ICON_USER + '</a>' +
+        '<a href="profile.html" class="icon-btn" title="Tài khoản">' +
+          '<img src="images/logo/user.png" alt="User">' +
+        '</a>' +
         '<div class="user-dropdown-menu">' +
           '<a href="profile.html">Trang cá nhân</a>' +
           '<button onclick="logout()">Đăng xuất</button>' +
@@ -133,7 +137,9 @@ function renderHeader() {
       cartBtn;
   } else {
     box.innerHTML =
-      '<a href="#" class="icon-btn" title="Tài khoản" onclick="openAuth(\'login\'); return false;">' + ICON_USER + '</a>' +
+      '<a href="#" class="icon-btn" title="Tài khoản" onclick="openAuth(\'login\'); return false;">' +
+        '<img src="images/logo/user.png" alt="User">' +
+      '</a>' +
       cartBtn;
   }
 }

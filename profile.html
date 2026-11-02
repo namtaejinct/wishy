@@ -17,18 +17,11 @@
             <div id="user-header-box" class="header-right-icons">
                 <!-- Icon User: Bấm vào mở ngay Overlay Đăng nhập -->
                 <a href="#" class="icon-btn" title="Tài khoản" onclick="event.preventDefault(); openAuth('login');">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
+                    <img src="images/logo/user.png" alt="User">
                 </a>
                 <!-- Icon Giỏ hàng: Bấm vào kiểm tra đăng nhập -->
                 <a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
+                  <img src="images/logo/cart.png" alt="Cart">
                     <span class="cart-badge" id="cart-count-badge">0</span>
                 </a>
             </div>
@@ -62,7 +55,7 @@
         <!-- SIDEBAR TRÁI: ĐIỀU HƯỚNG TÀI KHOẢN -->
         <div class="card-box" style="margin-top: 0; padding: 20px;">
             <h3 style="font-size: 18px; margin-bottom: 10px;">TRANG TÀI KHOẢN</h3>
-            <p style="margin-bottom: 20px; font-weight: 600; color: var(--text-color);">Xin chào, <span id="sidebar-username">name</span>!</p>
+            <p style="margin-left:10px; margin-bottom: 16px; font-weight: 600; color: var(--text-color);">Xin chào, <span id="sidebar-username">name</span>!</p>
             
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <button class="profile-nav-btn active" onclick="switchProfileTab('info')">Thông tin tài khoản</button>
