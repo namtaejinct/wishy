@@ -353,7 +353,7 @@ var defaultProducts = [
     name: 'Túi tote Bình An Vô Sự', 
     type: 'Túi vải', 
     price: 150000, 
-    stock: 12, 
+    stock: 16, 
     img: 'images/totebag-binhanvosu1.png', 
     images: ['images/totebag-binhanvosu1.png', 'images/totebag-binhanvosu2.png'], 
     desc: 'Túi tote chất liệu vải canvas bền đẹp, in chữ "Bình An Vô Sự" phong cách trẻ trung, tiện dụng.' 
@@ -363,7 +363,7 @@ var defaultProducts = [
     name: 'Túi tote Bạt', 
     type: 'Túi vải', 
     price: 150000, 
-    stock: 12, 
+    stock: 4, 
     img: 'images/totebag-bat1.png', 
     images: ['images/totebag-bat1.png', 'images/totebag-bat2.png'], 
     desc: 'Túi tote chất liệu vải canvas bền đẹp, lấy cảm hứng từ vải bạt, phong cách trẻ trung, tiện dụng.' 
@@ -375,7 +375,7 @@ var defaultProducts = [
     name: 'Bưu thiếp "Địa điểm Việt Nam"', 
     type: 'Bưu thiếp', 
     price: 80000, 
-    stock: 12, 
+    stock: 15, 
     img: 'images/postcard-vietnameseplaces1.png', 
     images: ['images/postcard-vietnameseplaces1.png', 'images/postcard-vietnameseplaces2.png'], 
     desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
@@ -385,7 +385,7 @@ var defaultProducts = [
     name: 'Bưu thiếp "Hà Nội"', 
     type: 'Bưu thiếp', 
     price: 60000, 
-    stock: 12, 
+    stock: 7, 
     img: 'images/postcard-hanoi1.png', 
     images: ['images/postcard-hanoi1.png', 'images/postcard-hanoi2.png'], 
     desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
@@ -395,7 +395,7 @@ var defaultProducts = [
     name: 'Bưu thiếp "Vietnamese Street Life"', 
     type: 'Bưu thiếp', 
     price: 80000, 
-    stock: 12, 
+    stock: 9, 
     img: 'images/postcard-phuongsongdep1.png', 
     images: ['images/postcard-phuongsongdep1.png', 'images/postcard-phuongsongdep2.png'], 
     desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
@@ -405,7 +405,7 @@ var defaultProducts = [
     name: 'Bưu thiếp "Hồ Chí Minh"', 
     type: 'Bưu thiếp', 
     price: 60000, 
-    stock: 12, 
+    stock: 13, 
     img: 'images/postcard-hochiminh1.png', 
     images: ['images/postcard-hochiminh1.png', 'images/postcard-hochiminh2.png'], 
     desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
@@ -415,7 +415,7 @@ var defaultProducts = [
     name: 'Bưu thiếp "Đi Chợ"', 
     type: 'Bưu thiếp', 
     price: 60000, 
-    stock: 12, 
+    stock: 19, 
     img: 'images/postcard-dicho1.png', 
     images: ['images/postcard-dicho1.png', 'images/postcard-dicho2.png'], 
     desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
@@ -427,7 +427,7 @@ var defaultProducts = [
     name: 'Móc khoá Đĩa Than "Mountain Child"', 
     type: 'Móc khóa', 
     price: 40000, 
-    stock: 12, 
+    stock: 15, 
     img: 'images/keychain-mountain1.png', 
     images: ['images/keychain-mountain1.png', 'images/keychain-mountain2.png'], 
     desc: 'Móc khóa acrylic hình đĩa than chủ đề "Mountain" thuộc bộ sưu tập Music of the city.' 
@@ -437,7 +437,7 @@ var defaultProducts = [
     name: 'Móc khoá Đĩa Than "Đà Lạt"', 
     type: 'Móc khóa', 
     price: 40000, 
-    stock: 12, 
+    stock: 18, 
     img: 'images/keychain-dalat1.png', 
     images: ['images/keychain-dalat1.png', 'images/keychain-dalat2.png'], 
     desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.' 
@@ -447,7 +447,7 @@ var defaultProducts = [
     name: 'Móc khoá Đĩa Than "Hà Nội"', 
     type: 'Móc khóa', 
     price: 40000, 
-    stock: 12, 
+    stock: 5, 
     img: 'images/keychain-hanoi1.png', 
     images: ['images/keychain-hanoi1.png', 'images/keychain-hanoi2.png'], 
     desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.' 
@@ -457,7 +457,7 @@ var defaultProducts = [
     name: 'Móc khoá Đĩa Than "Sài Gòn"', 
     type: 'Móc khóa', 
     price: 40000, 
-    stock: 12, 
+    stock: 9, 
     img: 'images/keychain-saigon1.png', 
     images: ['images/keychain-saigon1.png', 'images/keychain-saigon2.png'], 
     desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.' 
@@ -467,7 +467,7 @@ var defaultProducts = [
     name: 'Móc khoá Đĩa Than "Ocean"', 
     type: 'Móc khóa', 
     price: 40000, 
-    stock: 12, 
+    stock: 13, 
     img: 'images/keychain-ocean1.png', 
     images: ['images/keychain-ocean1.png', 'images/keychain-ocean2.png'], 
     desc: 'Móc khóa acrylic hình đĩa than chủ đề "Ocean" thuộc bộ sưu tập Music of the city.' 
@@ -477,7 +477,7 @@ var defaultProducts = [
     name: 'Móc khoá Đĩa Than "Việt Nam"', 
     type: 'Móc khóa', 
     price: 40000, 
-    stock: 12, 
+    stock: 6, 
     img: 'images/keychain-vietnam1.png', 
     images: ['images/keychain-vietnam1.png', 'images/keychain-vietnam2.png'], 
     desc: 'Móc khóa acrylic hình đĩa than chủ đề "Vietnam" thuộc bộ sưu tập Music of the city.' 
@@ -489,7 +489,7 @@ var defaultProducts = [
     name: 'Dây chuyền "Vỏ sò 1"', 
     type: 'Phụ kiện', 
     price: 200000, 
-    stock: 12, 
+    stock: 15, 
     img: 'images/jewelry-v11.png', 
     images: ['images/jewelry-v11.png', 'images/jewelry-v11.png'], 
     desc: 'Dây chuyền hạt cườm sáng màu kết hợp mặt vỏ sò lớn và charm sao biển phong cách mùa hè, biển cả.' 
@@ -498,7 +498,7 @@ var defaultProducts = [
     name: 'Dây chuyền "Vỏ sò 2"', 
     type: 'Phụ kiện', 
     price: 200000, 
-    stock: 12, 
+    stock: 20, 
     img: 'images/jewelry-v21.png', 
     images: ['images/jewelry-v21.png', 'images/jewelry-v21.png'], 
     desc: 'Dây chuyền hạt cườm sáng màu kết hợp mặt vỏ sò lớn và charm sao biển phong cách mùa hè, biển cả.' 
@@ -509,8 +509,8 @@ var defaultProducts = [
     id: 'SP017', 
     name: 'Áo thun Wishy "Hà Nội"', 
     type: 'Áo thun', 
-    price: 150000, 
-    stock: 12, 
+    price: 360000, 
+    stock: 7, 
     img: 'images/aohanoi1.png', 
     images: ['images/aohanoi1.png', 'images/ao-matsau.png'],
     desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
@@ -519,8 +519,8 @@ var defaultProducts = [
     id: 'SP018', 
     name: 'Áo thun Wishy "Phú Quốc"', 
     type: 'Áo thun', 
-    price: 150000, 
-    stock: 12, 
+    price: 360000, 
+    stock: 13, 
     img: 'images/aophuquoc1.png', 
     images: ['images/aophuquoc1.png', 'images/ao-matsau.png'],
     desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
@@ -529,8 +529,8 @@ var defaultProducts = [
     id: 'SP019', 
     name: 'Áo thun Wishy "Đà Lạt"', 
     type: 'Áo thun', 
-    price: 150000, 
-    stock: 12, 
+    price: 360000, 
+    stock: 6, 
     img: 'images/aodalat1.png', 
     images: ['images/aodalat1.png', 'images/ao-matsau.png'],
     desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
@@ -539,8 +539,8 @@ var defaultProducts = [
     id: 'SP020', 
     name: 'Áo thun Wishy "Sài Gòn"', 
     type: 'Áo thun', 
-    price: 150000, 
-    stock: 12, 
+    price: 360000, 
+    stock: 19, 
     img: 'images/aosaigon1.png', 
     images: ['images/aosaigon1.png', 'images/ao-matsau.png'],
     desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
