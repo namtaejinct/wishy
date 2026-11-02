@@ -36,7 +36,9 @@ function admin_enter() {
 function renderAll() {
   if (typeof renderUsers === 'function') renderUsers();   // Linh
   if (typeof renderPricing === 'function') renderPricing(); // Mai (TV3)
-  renderOrdersAndStock();                                 // Đơn hàng, nhập hàng, tồn kho
+  renderAdminOrders();
+  renderStockIn();
+  renderInventory();
 }
 
 window.addEventListener('DOMContentLoaded', function () {
@@ -227,11 +229,6 @@ var stockIns = load('wishy_stockins', [
 
 var editingStockId = null;
 
-function renderOrdersAndStock() {
-  renderAdminOrders();
-  renderStockIn();
-  renderInventory();
-}
 
 function statusBadge(s) {
   var colors = {
@@ -287,7 +284,21 @@ function renderAdminOrders() {
 function updateOrderStatus(id) {
   var o = orders.filter(function (x) { return x.id === id; })[0];
   if (!o) return;
-  o.status = document.getElementById('st-' + id).value;
+  var newSt = document.getElementById('st-' + id).value;
+
+  if (o.status === 'Đã hủy' && newSt !== 'Đã hủy') {
+    alert('Đơn đã hủy không thể mở lại.');
+    renderOrdersAndStock();
+    return;
+  }
+  if (newSt === 'Đã hủy' && o.status !== 'Đã hủy') {
+    o.items.forEach(function (it) {
+      var p = findProduct(it.pid);
+      if (p) p.stock += it.qty;
+    });
+    save('wishy_products', products);
+  }
+  o.status = newSt;
   save('wishy_orders', orders);
   renderOrdersAndStock();
 }
@@ -449,7 +460,7 @@ function rpt_fillProducts() {
 
 // Đơn được tính là đã xuất kho
 function rpt_exported(o) {
-  return o.status !== 'Chờ xác nhận' && o.status !== 'Đã hủy';
+  return o.status !== 'Đã hủy';
 }
 
 function rpt_sum(pid, from, to) {
@@ -496,14 +507,6 @@ function rpt_run() {
 }
 /* ============ TV3: ADMIN QUẢN LÝ GIÁ ========= */
 function renderPricing() {
-  products.forEach(function(p) {
-    var salePrice = Number(p.price) || 0;
-    p.cost = p.cost || Math.round(salePrice * 0.7);
-    p.margin = p.margin || 30;
-    p.price = salePrice;
-  });
-  save('wishy_products', products);
-
   var select = document.getElementById('pricing-prod-select');
   if (select) {
     select.innerHTML = products.map(function (p) {

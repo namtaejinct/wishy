@@ -39,18 +39,18 @@ var users = load('wishy_users', [
   if (changed) save('wishy_users', users);
 })();
 
-var products = load('wishy_products', [
-  { id: 'SP001', name: 'Áo thun biển Phú Quốc', type: 'Áo freesize', price: 150000, stock: 3 },
-  { id: 'SP002', name: 'Ly sứ Mặt Trời',        type: 'Ly',          price: 350000, stock: 40 },
-  { id: 'SP003', name: 'Móc khóa Cá heo',       type: 'Móc khóa',    price: 75000,  stock: 12 },
-  { id: 'SP004', name: 'Miếng dán Đảo Lý Sơn',  type: 'Phụ kiện',    price: 90000,  stock: 0 }
-]);
 // Dữ liệu đơn hàng mẫu
 var orders = load('wishy_orders', [
   { id: 'DH001', user: 'nam', date: '2026-10-15', status: 'Đã giao', items: [{ pid: 'SP002', qty: 1 }] },
-  { id: 'DH002', user: 'nam', date: '2026-10-19', status: 'Mới đặt', items: [{ pid: 'SP001', qty: 2 }] },
-  { id: 'DH003', user: 'lan', date: '2026-10-20', status: 'Đã xử lý', items: [{ pid: 'SP003', qty: 1 }, { pid: 'SP004', qty: 2 }] }
+  { id: 'DH002', user: 'nam', date: '2026-10-19', status: 'Chờ xác nhận', items: [{ pid: 'SP001', qty: 2 }] },
+  { id: 'DH003', user: 'lan', date: '2026-10-20', status: 'Chờ lấy hàng', items: [{ pid: 'SP003', qty: 1 }, { pid: 'SP004', qty: 2 }] }
 ]);
+
+orders.forEach(function (o) {
+  if (o.status === 'Mới đặt') o.status = 'Chờ xác nhận';
+  if (o.status === 'Đã xử lý') o.status = 'Chờ lấy hàng';
+});
+save('wishy_orders', orders);
 
 // Trang khách (client) KHÔNG được có phiên admin.
 // Nếu localStorage còn phiên admin cũ thì xóa đi.
@@ -66,8 +66,14 @@ function findUserByEmail(e) {
   e = String(e).trim().toLowerCase();
   return users.filter(function (x) { return String(x.email || '').toLowerCase() === e; })[0];
 }
+
+function linePrice(it) {
+  if (it.price !== undefined) return it.price;   // giá đã lưu lúc mua
+  var p = findProduct(it.pid);
+  return p ? p.price : 0;                        // đơn cũ chưa có giá thì dùng giá hiện tại
+}
 function orderTotal(o) {
-  return o.items.reduce(function (s, it) { var p = findProduct(it.pid); return s + (p ? p.price * it.qty : 0); }, 0);
+  return o.items.reduce(function (s, it) { return s + linePrice(it) * it.qty; }, 0);
 }
 function isAdmin() { return !!currentUser && currentUser.role === 'admin'; }
 
@@ -542,3 +548,9 @@ var defaultProducts = [
 ];
 
 var products = load('wishy_products', defaultProducts);
+products.forEach(function (p) {
+  p.price = Number(p.price) || 0;
+  if (p.cost === undefined) p.cost = Math.round(p.price * 0.7);
+  if (p.margin === undefined) p.margin = Math.round((p.price / p.cost - 1) * 100);
+});
+save('wishy_products', products);

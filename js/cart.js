@@ -1,12 +1,3 @@
-/* === DỮ LIỆU MẶC ĐỊNH === */
-products.forEach(function(p) {
-  var salePrice = Number(p.price) || 0;
-  p.cost = p.cost || Math.round(salePrice * 0.7);
-  p.margin = p.margin || 30;
-  p.price = salePrice;
-});
-save('wishy_products', products);
-
 /* === PHÂN QUYỀN & CHUYỂN TAB === */
 var currentTab = 'tab-cart-view';
 function switchTab(id) {
@@ -28,6 +19,7 @@ function renderCart() {
     document.getElementById('cart-grand-total').textContent = 'Tổng tiền: 0đ';
     var chkAll = document.getElementById('select-all-chk');
     if(chkAll) chkAll.checked = false;
+    if (typeof renderHeader === 'function') renderHeader();
     return;
   }
 
@@ -139,15 +131,19 @@ function checkoutOrder() {
   var selectedItems = cart.filter(function (i) { return i.selected; });
   if (!selectedItems.length) return;
 
-  // Kiểm tra số lượng tồn kho trước khi chốt đơn
+  // Chỉ giữ các món còn tồn tại trong danh sách sản phẩm, đồng thời kiểm tra tồn kho
+  var orderItems = [];
   for (var i = 0; i < selectedItems.length; i++) {
     var it = selectedItems[i];
     var p = findProduct(it.pid);
-    if (p && it.qty > p.stock) {
+    if (!p) continue;
+    if (it.qty > p.stock) {
       alert('Sản phẩm "' + p.name + '" vượt quá tồn kho (Còn lại: ' + p.stock + ')');
       return;
     }
+    orderItems.push({ pid: it.pid, qty: it.qty, price: p.price });   // Bước 4: lưu giá lúc mua
   }
+  if (!orderItems.length) { alert('Các sản phẩm đã chọn không còn tồn tại.'); return; }
 
   var payMethod = document.querySelector('input[name="pay-method"]:checked').value;
   var payText = payMethod === 'COD' ? 'Tiền mặt khi nhận hàng (COD)' : 'Chuyển khoản ngân hàng';
@@ -159,29 +155,31 @@ function checkoutOrder() {
     var phone = document.getElementById('ship-phone').value.trim();
     var addr = document.getElementById('ship-addr').value.trim();
     if (!name || !phone || !addr) { alert('Vui lòng nhập đầy đủ thông tin giao hàng mới!'); return; }
+    if (!/^(0|\+84)\d{9}$/.test(phone)) { alert('Số điện thoại không hợp lệ (VD: 0901234567).'); return; }
     shipInfo = name + ' - ' + phone + ' (' + addr + ')';
   } else {
-    shipInfo = currentUser.fullname + ' - ' + (currentUser.phone || '0901234567') + ' (' + (currentUser.address || 'Địa chỉ mặc định') + ')';
+    // Bước 5: lấy thông tin thật từ tài khoản
+    var u = findUser(currentUser.username) || {};
+    if (!u.address || !u.phone) {
+      alert('Tài khoản chưa có địa chỉ hoặc SĐT, vui lòng chọn "Giao đến địa chỉ khác".');
+      return;
+    }
+    shipInfo = u.fullname + ' - ' + u.phone + ' (' + u.address + ')';
   }
 
   var orderId = 'DH' + String(orders.length + 1).padStart(3, '0');
-  var d = new Date();
-  var dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  var dateStr = today();   // hàm today() có sẵn trong common.js
 
-  var total = selectedItems.reduce(function (sum, item) {
-    var p = findProduct(item.pid);
-    return sum + (p ? p.price * item.qty : 0);
-  }, 0);
+  var total = orderItems.reduce(function (sum, item) { return sum + item.price * item.qty; }, 0);
 
-  selectedItems.forEach(function(it) {
-    var p = findProduct(it.pid);
-    if (p) p.stock -= it.qty;
+  orderItems.forEach(function (it) {
+    findProduct(it.pid).stock -= it.qty;
   });
   save('wishy_products', products);
 
   var newOrder = {
-    id: orderId, user: currentUser.username, date: dateStr, status: 'Mới đặt',
-    payment: payText, shipInfo: shipInfo, items: JSON.parse(JSON.stringify(selectedItems)), total: total
+    id: orderId, user: currentUser.username, date: dateStr, status: 'Chờ xác nhận',
+    payment: payText, shipInfo: shipInfo, items: orderItems, total: total
   };
 
   orders.push(newOrder);
@@ -189,15 +187,16 @@ function checkoutOrder() {
 
   cart = cart.filter(function (i) { return !i.selected; });
   save('wishy_cart', cart);
+  if (typeof renderHeader === 'function') renderHeader();   // Bước 9: cập nhật số trên icon giỏ
 
   var itemsHtml = newOrder.items.map(function (it) {
     var p = findProduct(it.pid);
-    return '<tr><td style="padding: 10px;">' + esc(p ? p.name : '') + '</td><td style="padding: 10px; text-align:center;">' + it.qty + '</td><td style="padding: 10px; text-align:right;">' + money(p ? p.price * it.qty : 0) + '</td></tr>';
+    return '<tr><td style="padding: 10px;">' + esc(p ? p.name : '') + '</td><td style="padding: 10px; text-align:center;">' + it.qty + '</td><td style="padding: 10px; text-align:right;">' + money(linePrice(it) * it.qty) + '</td></tr>';
   }).join('');
 
   document.getElementById('invoice-content').innerHTML =
     '<p style="margin-bottom: 6px;"><b>Mã đơn hàng:</b> ' + newOrder.id + '</p>' +
-    '<p style="margin-bottom: 6px;"><b>Ngày đặt:</b> ' + newOrder.date + '</p>' +
+    '<p style="margin-bottom: 6px;"><b>Ngày đặt:</b> ' + fmtDate(newOrder.date) + '</p>' +
     '<p style="margin-bottom: 6px;"><b>Người nhận & Địa chỉ:</b> ' + esc(newOrder.shipInfo) + '</p>' +
     '<p style="margin-bottom: 12px;"><b>Thanh toán:</b> ' + newOrder.payment + '</p>' +
     '<table style="width:100%; border-collapse:collapse; margin: 15px 0;">' +
