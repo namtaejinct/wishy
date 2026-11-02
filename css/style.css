@@ -1308,6 +1308,13 @@ select:focus {
   background-color: #D6E2EC;
 }
 
+.user-avatar img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  border-radius:50%; /* Giúp ảnh không bị méo khi co giãn */
+}
+
 .user-name {
   font-weight: 700;
   font-size: 13px;
