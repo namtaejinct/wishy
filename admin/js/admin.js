@@ -576,6 +576,7 @@ function rpt_run() {
 }
 /* ============ TV3: ADMIN QUẢN LÝ GIÁ ========= */
 function renderPricing() {
+  products = load('wishy_products', defaultProducts);
   var select = document.getElementById('pricing-prod-select');
   if (select) {
     select.innerHTML = products.map(function (p) {
