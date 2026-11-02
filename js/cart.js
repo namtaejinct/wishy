@@ -186,7 +186,7 @@ function checkoutOrder() {
   orderItems.forEach(function (it) {
     findProduct(it.pid).stock -= it.qty;
   });
-  save(getCartKey(), products);
+  save('wishy_products', products);
 
   var newOrder = {
     id: orderId, user: currentUser.username, date: dateStr, status: 'Chờ xác nhận',
