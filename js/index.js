@@ -181,10 +181,10 @@ function renderProductList() {
         htmlContent += `
             <div class="product-card" onclick="openProductModal('${p.id}')">
                 <div class="product-img-box">
-                    <img src="${p.img || NO_IMAGE}" alt="${esc(p.name)}">
+                    <img src="${p.img}" alt="${p.name}">
                 </div>
                 <div class="product-brand">WISHY CONCEPT</div>
-                <div class="product-title">${esc(p.name)}</div>
+                <div class="product-title">${p.name}</div>
                 <div class="product-price">${p.price.toLocaleString('vi-VN')}đ</div>
             </div>
         `;
@@ -208,14 +208,19 @@ function changePage(page) {
 
 // 4. Modal Chi tiết sản phẩm
 function openProductModal(id) {
-    var p = getStoredProducts().find(function (item) { return item.id === id; });
+    var list = getStoredProducts();
+    var p = list.find(function (item) { return item.id === id; });
     if (!p) return;
 
-    currentModalProduct = p;
+    currentModalProduct = p; // Lưu sản phẩm đang mở
+
     var overlay = document.getElementById('product-overlay');
     var content = document.getElementById('modal-detail-content');
-    var imgList = (p.images && p.images.length) ? p.images : [p.img || NO_IMAGE];
+    var priceFormatted = p.price.toLocaleString('vi-VN') + 'đ';
+    var imgList = (p.images && p.images.length) ? p.images : [p.img];
+    var mainImgSrc = imgList[0] || '';
 
+    // 1. HTML cho 2 chấm tròn
     var dotsHtml = '';
     if (imgList.length > 1) {
         dotsHtml = 
@@ -225,20 +230,43 @@ function openProductModal(id) {
             '</div>';
     }
 
+    // 2. HTML cho Phân loại (Tối đa 2 loại, tự ẩn nếu không có)
+    var variantsHtml = '';
+    if (p.variants && p.variants.length > 0) {
+        variantsHtml = '<div class="variant-row"><span class="variant-label">Phân loại:</span><div class="variant-list">';
+        p.variants.forEach(function (v, idx) {
+            variantsHtml += '<button type="button" class="variant-btn ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(this)">' + v + '</button>';
+        });
+        variantsHtml += '</div></div>';
+    }
+
+    // 3. HTML cho Tăng / Giảm số lượng
+    var qtyHtml = 
+        '<div class="qty-row">' +
+            '<span class="variant-label">Số lượng:</span>' +
+            '<div class="qty-control">' +
+                '<button type="button" class="qty-btn" onclick="changeModalQty(-1)">-</button>' +
+                '<input type="number" id="modal-qty-input" value="1" min="1" max="' + p.stock + '" readonly>' +
+                '<button type="button" class="qty-btn" onclick="changeModalQty(1)">+</button>' +
+            '</div>' +
+        '</div>';
+
     content.innerHTML =
         '<div class="modal-grid-2col">' +
-            '<div class="modal-left-col">' +
+            '<div class="modal-left-col">' +  /* <--- BỔ SUNG LẠI THẺ NÀY */
                 '<div class="modal-left-img">' +
-                    '<img id="modal-main-img" src="' + imgList[0] + '" alt="' + esc(p.name) + '">' +
+                    '<img id="modal-main-img" src="' + mainImgSrc + '" alt="' + p.name + '">' +
                 '</div>' +
                 dotsHtml +
-            '</div>' +
+            '</div>' +                       /* <--- ĐÓNG THẺ BÊN TRÁI */
             '<div class="modal-right-info">' +
                 '<div class="modal-brand">WISHY CONCEPT</div>' +
-                '<div class="modal-title">' + esc(p.name) + '</div>' +
-                '<div class="modal-price">' + p.price.toLocaleString('vi-VN') + 'đ</div>' +
+                '<div class="modal-title">' + p.name + '</div>' +
+                '<div class="modal-price">' + priceFormatted + '</div>' +
                 '<div class="modal-desc">' + (p.desc || 'Sản phẩm lưu niệm độc quyền từ Wishy.') + '</div>' +
                 '<div class="modal-stock">Mã SP: <b>' + p.id + '</b> &nbsp;|&nbsp; Tồn kho: <b>' + p.stock + '</b></div>' +
+                variantsHtml +
+                qtyHtml +
                 '<button class="btn-add-cart" ' + (p.stock <= 0 ? 'disabled style="opacity:0.5"' : '') + ' onclick="addToCart(\'' + p.id + '\')">' +
                     (p.stock <= 0 ? 'HẾT HÀNG' : 'THÊM VÀO GIỎ HÀNG') +
                 '</button>' +
@@ -295,14 +323,23 @@ function moveFeedback(direction) {
     if (container) container.scrollBy({ left: direction * 280, behavior: 'smooth' });
 }
 
-function fillTypeFilter() {
-    var sel = document.getElementById('filter-type');
-    if (!sel) return;
-    sel.innerHTML = '<option value="all">Tất cả loại</option>' +
-        categories.map(function (c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
-}
-
 document.addEventListener('DOMContentLoaded', function () {
-    fillTypeFilter();
     renderProductList();
 });
+
+function selectVariant(btn) {
+    var buttons = btn.parentElement.querySelectorAll('.variant-btn');
+    buttons.forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+}
+
+function changeModalQty(delta) {
+    var input = document.getElementById('modal-qty-input');
+    if (!input) return;
+    var current = parseInt(input.value) || 1;
+    var max = parseInt(input.max) || 99;
+    var next = current + delta;
+    if (next >= 1 && next <= max) {
+        input.value = next;
+    }
+}

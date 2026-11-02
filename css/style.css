@@ -1747,3 +1747,95 @@ html {
   background-color: var(--bg-color);
   color: var(--primary-color);
 }
+
+/* 1. Hàng bọc chữ Tiêu đề & Nội dung chọn */
+.variant-row, .qty-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 16px;
+}
+
+/* Nhãn chữ "Phân loại:" và "Số lượng:" */
+.variant-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary-color);
+    min-width: 80px; /* Cố định chiều rộng nhãn để các ô thẳng hàng */
+}
+
+/* 2. Danh sách các nút phân loại */
+.variant-list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.variant-btn {
+    padding: 6px 16px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.variant-btn:hover {
+    border-color: var(--accent-color);
+}
+
+/* Kiểu dáng cho nút Phân loại ĐANG ĐƯỢC CHỌN (Active) */
+.variant-btn.active {
+    border-color: var(--primary-color);
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* 3. Khung bo viền gộp chung cho bộ Tăng / Giảm số lượng */
+.qty-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* Nút bấm - và + */
+.qty-btn {
+    width: 34px;
+    height: 32px;
+    background: #ffffff;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--primary-color);
+    transition: background 0.2s;
+}
+
+.qty-btn:hover {
+    background: #EBF3FA;
+}
+
+/* Ô hiển thị số lượng ở giữa */
+#modal-qty-input {
+    width: 45px;
+    height: 32px;
+    border: none;
+    border-left: 1px solid var(--border-color);  /* Viền ngăn cách với nút - */
+    border-right: 1px solid var(--border-color); /* Viền ngăn cách với nút + */
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    outline: none;
+}
+
+/* Ẩn mũi tên lên xuống mặc định của ô input number trên các trình duyệt */
+#modal-qty-input::-webkit-outer-spin-button,
+#modal-qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
