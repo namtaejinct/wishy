@@ -40,6 +40,7 @@ function renderCart() {
 
     return '<div class="cart-item-row">' +
       '<div class="col-chk"><input type="checkbox" ' + (item.selected ? 'checked' : '') + ' onchange="toggleSelectItem(\'' + item.pid + '\', this.checked)"></div>' +
+      '<div class="col-img"><img src="' + esc(p.img || NO_IMAGE) + '" alt="' + esc(p.name) + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"></div>' +
       '<div class="col-name">' + esc(p.name) + '</div>' +
       '<div class="col-price">' + money(p.price) + '</div>' +
       '<div class="col-qty">' +
