@@ -93,10 +93,10 @@ function renderProductList() {
         htmlContent += `
             <div class="product-card" onclick="openProductModal('${p.id}')">
                 <div class="product-img-box">
-                    <img src="${p.img}" alt="${p.name}">
+                    <img src="${p.img || NO_IMAGE}" alt="${esc(p.name)}">
                 </div>
                 <div class="product-brand">WISHY CONCEPT</div>
-                <div class="product-title">${p.name}</div>
+                <div class="product-title">${esc(p.name)}</div>
                 <div class="product-price">${p.price.toLocaleString('vi-VN')}đ</div>
             </div>
         `;
@@ -126,7 +126,7 @@ function openProductModal(id) {
     currentModalProduct = p;
     var overlay = document.getElementById('product-overlay');
     var content = document.getElementById('modal-detail-content');
-    var imgList = (p.images && p.images.length) ? p.images : [p.img];
+    var imgList = (p.images && p.images.length) ? p.images : [p.img || NO_IMAGE];
 
     var dotsHtml = '';
     if (imgList.length > 1) {
@@ -141,13 +141,13 @@ function openProductModal(id) {
         '<div class="modal-grid-2col">' +
             '<div class="modal-left-col">' +
                 '<div class="modal-left-img">' +
-                    '<img id="modal-main-img" src="' + imgList[0] + '" alt="' + p.name + '">' +
+                    '<img id="modal-main-img" src="' + imgList[0] + '" alt="' + esc(p.name) + '">' +
                 '</div>' +
                 dotsHtml +
             '</div>' +
             '<div class="modal-right-info">' +
                 '<div class="modal-brand">WISHY CONCEPT</div>' +
-                '<div class="modal-title">' + p.name + '</div>' +
+                '<div class="modal-title">' + esc(p.name) + '</div>' +
                 '<div class="modal-price">' + p.price.toLocaleString('vi-VN') + 'đ</div>' +
                 '<div class="modal-desc">' + (p.desc || 'Sản phẩm lưu niệm độc quyền từ Wishy.') + '</div>' +
                 '<div class="modal-stock">Mã SP: <b>' + p.id + '</b> &nbsp;|&nbsp; Tồn kho: <b>' + p.stock + '</b></div>' +
@@ -207,6 +207,14 @@ function moveFeedback(direction) {
     if (container) container.scrollBy({ left: direction * 280, behavior: 'smooth' });
 }
 
+function fillTypeFilter() {
+    var sel = document.getElementById('filter-type');
+    if (!sel) return;
+    sel.innerHTML = '<option value="all">Tất cả loại</option>' +
+        categories.map(function (c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    fillTypeFilter();
     renderProductList();
 });

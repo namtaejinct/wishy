@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>wishy admin - Quản trị Hệ thống</title>
     <link rel="stylesheet" href="css/admin.css">
+    <link rel="icon" type="image/png" href="../images/logo/logo.png">
 </head>
+
 <body>
     <!-- Admin đăng nhập riêng -->
     <div id="admin-login-modal" class="modal-overlay">
@@ -71,13 +73,18 @@
             <section id="tab-categories" class="tab-content">
                 <div class="page-header">
                     <h2>Quản lí Loại Sản phẩm</h2>
-                    <button class="btn btn-primary" onclick="openAddCategoryModal()">+ Thêm loại Sản phẩm mới</button>
+                    <div>
+                        <input type="text" id="new-cat-name" class="input-search" placeholder="Tên loại mới..."
+                               onkeydown="if(event.key==='Enter')addCategory()">
+                        <button class="btn btn-primary" onclick="addCategory()">+ Thêm loại</button>
+                    </div>
                 </div>
                 <div class="card">
                     <table class="data-table">
                         <thead>
-                            <tr><th>Mã Loại</th><th>Tên Loại Sản Phẩm</th><th>Mô Tả</th><th>Trạng Thái</th><th>Thao Tác</th></tr>
+                            <tr><th>STT</th><th>Tên Loại Sản Phẩm</th><th>Số sản phẩm</th><th>Thao Tác</th></tr>
                         </thead>
+                        <tbody id="tbody-categories"></tbody>
                     </table>
                 </div>
             </section>
@@ -202,7 +209,7 @@
                 </div>
                 <div class="card">
                     <table>
-                        <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Tổng tiền</th><th>Trạng thái</th><th>Cập nhật trạng thái</th></tr></thead>
+                        <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Tổng tiền</th><th>Trạng thái</th><th>Cập nhật trạng thái</th><th>Thao tác</th></tr></thead>
                         <tbody id="tbody-orders"></tbody>
                     </table>
                 </div>

@@ -1685,7 +1685,7 @@ html {
 
 .profile-nav-btn:hover,
 .profile-nav-btn.active {
-  color: red;
+  color: var(--danger);
 }
 
 .user-dropdown-wrapper {

@@ -554,3 +554,16 @@ products.forEach(function (p) {
   if (p.margin === undefined) p.margin = Math.round((p.price / p.cost - 1) * 100);
 });
 save('wishy_products', products);
+
+// Danh sách loại sản phẩm dùng chung cho trang khách và trang admin
+var categories = load('wishy_categories', ['Túi vải', 'Áo thun', 'Phụ kiện', 'Móc khóa', 'Bưu thiếp']);
+(function () {
+  var changed = false;
+  products.forEach(function (p) {
+    if (p.type && categories.indexOf(p.type) === -1) { categories.push(p.type); changed = true; }
+  });
+  if (changed) save('wishy_categories', categories);
+})();
+
+// Ảnh tạm cho sản phẩm admin thêm mới chưa có ảnh
+var NO_IMAGE = '../images/placeholder.jpg';
