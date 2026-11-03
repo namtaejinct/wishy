@@ -246,7 +246,7 @@ function registerForm() {
     '      <div class="error" id="err-fullname"></div>',
     '      <label for="email">Email</label>',
     '      <input type="email" id="email" placeholder="ten@gmail.com" autocomplete="email">',
-    '      <div class="error" id="err-email"></div>',,
+    '      <div class="error" id="err-email"></div>',
     '      <label for="phone">Số điện thoại</label>',
     '      <input type="tel" id="phone" placeholder="0901234567">',
     '      <div class="error" id="err-phone"></div>',
@@ -286,7 +286,7 @@ function doLogin() {
 }
 function handleRegister(e) {
   if (e) e.preventDefault();
-  var fields = ['fullname', 'email', 'address', 'phone', 'username', 'password', 'confirm'];
+  var fields = ['fullname', 'email', 'phone', 'username', 'password', 'confirm'];
   var v = {};
   fields.forEach(function (f) {
     v[f] = document.getElementById(f).value;
@@ -294,7 +294,6 @@ function handleRegister(e) {
   });
   v.fullname = v.fullname.trim();
   v.email = v.email.trim().toLowerCase();
-  v.address = v.address.trim();
   v.phone = v.phone.trim();
   v.username = v.username.trim();
 
@@ -302,7 +301,6 @@ function handleRegister(e) {
   if (v.fullname.length < 2) errors.fullname = 'Vui lòng nhập họ và tên.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) errors.email = 'Email không hợp lệ (VD: ten@gmail.com).';
   else if (findUserByEmail(v.email)) errors.email = 'Email này đã được đăng ký.';
-  if (v.address.length < 5) errors.address = 'Vui lòng nhập địa chỉ đầy đủ.';
   if (!/^(0|\+84)\d{9}$/.test(v.phone)) errors.phone = 'Số điện thoại không hợp lệ (VD: 0901234567).';
   if (!/^[A-Za-z0-9_]{4,20}$/.test(v.username)) errors.username = 'Tên đăng nhập 4-20 ký tự: chữ không dấu, số, dấu _.';
   else if (findUser(v.username)) errors.username = 'Tên đăng nhập đã tồn tại.';
@@ -316,7 +314,7 @@ function handleRegister(e) {
     return false;
   }
 
-  users.push({ username: v.username, email: v.email, password: v.password, fullname: v.fullname, address: v.address, phone: v.phone, role: 'customer' });
+  users.push({ username: v.username, email: v.email, password: v.password, fullname: v.fullname, phone: v.phone, role: 'customer' });
   save('wishy_users', users);
   currentUser = { username: v.username, fullname: v.fullname, role: 'customer' };
   save('wishy_current', currentUser);
@@ -595,4 +593,8 @@ function syncData() {
 window.addEventListener('storage', function () {
   syncData();
   if (typeof onDataChanged === 'function') onDataChanged();
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    renderHeader();
 });
