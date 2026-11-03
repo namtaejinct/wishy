@@ -1,54 +1,78 @@
 /* Phần của Linh - TV2 */
 
 
-document.addEventListener("DOMContentLoaded", function () {
+var currentHeroIndex = 0;
+var heroTimer = null;
+
+function showHeroSlide(index) {
+    var slides = document.querySelectorAll('.hero-slide-img');
+    var dots = document.querySelectorAll('.hero-dot');
+    if (!slides.length) return;
+
+    if (index >= slides.length) currentHeroIndex = 0;
+    else if (index < 0) currentHeroIndex = slides.length - 1;
+    else currentHeroIndex = index;
+
+    slides.forEach(function (img, i) {
+        img.classList.toggle('active', i === currentHeroIndex);
+    });
+    dots.forEach(function (dot, i) {
+        dot.classList.toggle('active', i === currentHeroIndex);
+    });
+}
+
+function setHeroSlide(index) {
+    showHeroSlide(index);
+    resetHeroTimer();
+}
+
+function startHeroTimer() {
+    if (!heroTimer) {
+        heroTimer = setInterval(function () {
+            showHeroSlide(currentHeroIndex + 1);
+        }, 4000);
+    }
+}
+
+function resetHeroTimer() {
+    clearInterval(heroTimer);
+    heroTimer = null;
+    startHeroTimer();
+}
+
+
+function renderSignatureProducts() {
+    var container = document.getElementById('signature-products-grid');
+    if (!container) return;
+
+    var list = typeof getStoredProducts === 'function' ? getStoredProducts() : defaultProducts;
+    var signatureItems = [];
+
+    var targetIds = ['SP020', 'SP015', 'SP010', 'SP001']; 
     
-    const slideImages = document.querySelectorAll(".slide-img");
-    const dots = document.querySelectorAll(".dot");
-    let currentSlide = 0;
-    let slideInterval;
-
-    function showSlide(index) {
-       
-        slideImages.forEach(img => img.style.display = "none");
-        dots.forEach(dot => dot.style.background = "#fff");
-
-        if (slideImages[index]) {
-            slideImages[index].style.display = "block";
-        }
-        if (dots[index]) {
-            dots[index].style.background = "var(--primary-color)";
-        }
-    }
-
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % slideImages.length;
-        showSlide(currentSlide);
-    }
-
-    dots.forEach((dot, index) => {
-        dot.addEventListener("click", function () {
-            currentSlide = index;
-            showSlide(currentSlide);
-            resetInterval();
-        });
+    targetIds.forEach(function(id) {
+        var found = list.find(function(p) { return p.id === id; });
+        if (found) signatureItems.push(found);
     });
 
-    function startInterval() {
-        slideInterval = setInterval(nextSlide, 4000);
-    }
+    container.innerHTML = signatureItems.map(function (p) {
+        var priceFormatted = p.price ? p.price.toLocaleString('vi-VN') + 'đ' : '0đ';
+        var imgHtml = p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<span>' + (p.type || 'SẢN PHẨM') + '</span>';
 
-    function resetInterval() {
-        clearInterval(slideInterval);
-        startInterval();
-    }
+        return '<div class="product-card" onclick="openProductModal(\'' + p.id + '\')">' +
+            '<div class="product-img-box">' + imgHtml + '</div>' +
+            '<div class="product-brand">WISHY CONCEPT</div>' +
+            '<div class="product-title">' + p.name + '</div>' +
+            '<div class="product-price">' + priceFormatted + '</div>' +
+            '</div>';
+    }).join('');
+}
 
-    if (slideImages.length > 0) {
-        showSlide(currentSlide);
-        startInterval();
-    }
 
-
+document.addEventListener('DOMContentLoaded', function () {
+    showHeroSlide(0);
+    startHeroTimer();
+    renderSignatureProducts();
 });
 
 
