@@ -70,6 +70,12 @@ function renderSignatureProducts() {
 
 
 document.addEventListener('DOMContentLoaded', function () {
+    if (typeof initSite === 'function') {
+        initSite('home');
+    }
+
+    fillTypeFilter();
+    renderProductList();
     showHeroSlide(0);
     startHeroTimer();
     renderSignatureProducts();
