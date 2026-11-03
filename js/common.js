@@ -27,6 +27,20 @@ var users = load('wishy_users', [
   { username: 'lan', email: 'lan@gmail.com', password: '123456', fullname: 'Nguyễn Thị Lan', role: 'customer' }
 ]);
 
+function initAdminAccount() {
+  var admin = users.filter(function (u) { return u.username === 'admin'; })[0];
+  if (!admin) {
+    users.push({ username: 'admin', email: 'admin@wishy.vn', password: 'admin123', fullname: 'Quản trị viên', role: 'admin' });
+  } else {
+    admin.email = 'admin@wishy.vn';
+    admin.password = 'admin123';
+    admin.fullname = 'Quản trị viên';
+    admin.role = 'admin';
+  }
+  save('wishy_users', users);
+}
+initAdminAccount();
+
 (function () {
   var seedEmails = { admin: 'admin@wishy.vn', nam: 'nam@gmail.com', lan: 'lan@gmail.com' };
   var changed = false;
@@ -233,10 +247,7 @@ function registerForm() {
     '      <div class="error" id="err-fullname"></div>',
     '      <label for="email">Email</label>',
     '      <input type="email" id="email" placeholder="ten@gmail.com" autocomplete="email">',
-    '      <div class="error" id="err-email"></div>',
-    '      <label for="address">Địa chỉ</label>',
-    '      <input type="text" id="address" placeholder="Số nhà, đường, phường/xã, tỉnh/thành">',
-    '      <div class="error" id="err-address"></div>',
+    '      <div class="error" id="err-email"></div>',,
     '      <label for="phone">Số điện thoại</label>',
     '      <input type="tel" id="phone" placeholder="0901234567">',
     '      <div class="error" id="err-phone"></div>',
@@ -574,3 +585,15 @@ var categories = load('wishy_categories', ['Túi vải', 'Áo thun', 'Phụ ki�
 
 // Ảnh tạm cho sản phẩm admin thêm mới chưa có ảnh
 var NO_IMAGE = 'images/placeholder.jpg';
+
+// Đồng bộ dữ liệu giữa các tab
+function syncData() {
+  users = load('wishy_users', users);
+  products = load('wishy_products', products);
+  orders = load('wishy_orders', orders);
+  categories = load('wishy_categories', categories);
+}
+window.addEventListener('storage', function () {
+  syncData();
+  if (typeof onDataChanged === 'function') onDataChanged();
+});
