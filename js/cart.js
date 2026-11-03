@@ -27,7 +27,7 @@ function renderCart() {
     if (typeof item.selected === 'undefined') item.selected = true;
   });
 
-  container.innerHTML = cart.map(function (item) {
+  container.innerHTML = cart.map(function (item, idx) {
   var p = findProduct(item.pid);
   var isHidden = !p || p.status === 'hidden';
   var sub = isHidden ? 0 : p.price * item.qty;
@@ -39,21 +39,21 @@ function renderCart() {
 
   return '<div class="cart-item-row ' + (isHidden ? 'item-hidden' : '') + '">' +
     '<div class="col-chk">' +
-      '<input type="checkbox" ' + (isHidden ? 'disabled' : (item.selected ? 'checked' : '')) + ' onchange="toggleSelectItem(\'' + item.pid + '\', this.checked)">' +
+      '<input type="checkbox" ' + (isHidden ? 'disabled' : (item.selected ? 'checked' : '')) + ' onchange="toggleSelectItem(' + idx + ', this.checked)">' +
     '</div>' +
-    '<div class="col-img"><img src="' + esc(p ? p.img : NO_IMAGE) + '" alt="' + esc(p ? p.name : item.pid) + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"></div>' +
+    '<div class="col-img"><img src="' + esc((p && p.img) || NO_IMAGE) + '" alt="' + esc(p ? p.name : item.pid) + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"></div>' +
     '<div class="col-name">' + 
-      esc(p ? p.name : item.pid) + 
+      esc(p ? p.name : item.pid) + (item.variant ? '<br><small style="color:#7B8BA0;">Phân loại: ' + esc(item.variant) + '</small>' : '') +
       (isHidden ? '<br><span style="color: var(--danger); font-size: 12px; font-weight: 600;">⚠️ Ngừng kinh doanh</span>' : '') + 
     '</div>' +
     '<div class="col-price">' + money(p ? p.price : 0) + '</div>' +
     '<div class="col-qty">' +
-      '<button class="btn-outline btn-sm" ' + (isHidden ? 'disabled' : '') + ' onclick="updateQty(\'' + item.pid + '\', -1)">-</button>' +
+      '<button class="btn-outline btn-sm" ' + (isHidden ? 'disabled' : '') + ' onclick="updateQty(' + idx + ', -1)">-</button>' +
       '<span>' + item.qty + '</span>' +
-      '<button class="btn-outline btn-sm" ' + (isHidden ? 'disabled' : '') + ' onclick="updateQty(\'' + item.pid + '\', 1)">+</button>' +
+      '<button class="btn-outline btn-sm" ' + (isHidden ? 'disabled' : '') + ' onclick="updateQty(' + idx + ', 1)">+</button>' +
     '</div>' +
     '<div class="col-subtotal">' + money(sub) + '</div>' +
-    '<div class="col-action"><button class="btn-danger btn-sm" onclick="removeCartItem(\'' + item.pid + '\')">Xóa</button></div>' +
+    '<div class="col-action"><button class="btn-danger btn-sm" onclick="removeCartItem(' + idx + ')">Xóa</button></div>' +
   '</div>';
 }).join('');
 
@@ -64,8 +64,8 @@ function renderCart() {
   document.getElementById('checkout-grand-total').textContent = 'Tổng thanh toán: ' + money(total);
 }
 
-function toggleSelectItem(pid, isChecked) {
-  var item = cart.filter(function (i) { return i.pid === pid; })[0];
+function toggleSelectItem(idx, isChecked) {
+  var item = cart[idx];
   if (item) { item.selected = isChecked; save(getCartKey(), cart); renderCart(); }
 }
 
@@ -76,27 +76,31 @@ function toggleSelectAll(master) {
   renderCart();
 }
 
-function updateQty(pid, delta) {
-  var item = cart.filter(function (i) { return i.pid === pid; })[0];
+function updateQty(idx, delta) {
+  var item = cart[idx];
   if (!item) return;
-  
-  var p = findProduct(pid);
-  if (p && delta > 0 && (item.qty + delta) > p.stock) {
-    alert('Sản phẩm này chỉ còn ' + p.stock + ' món trong kho!');
-    return;
+
+  var p = findProduct(item.pid);
+  if (p && delta > 0) {
+    // Tồn kho tính theo sản phẩm: cộng cả các dòng khác phân loại
+    var inCart = cart.reduce(function (s, i) { return i.pid === item.pid ? s + i.qty : s; }, 0);
+    if (inCart + delta > p.stock) {
+      alert('Sản phẩm này chỉ còn ' + p.stock + ' món trong kho!');
+      return;
+    }
   }
 
   item.qty += delta;
-  if (item.qty <= 0) cart = cart.filter(function (i) { return i.pid !== pid; });
+  if (item.qty <= 0) cart.splice(idx, 1);
   save(getCartKey(), cart);
   renderCart();
 }
 
-function removeCartItem(pid) {
+function removeCartItem(idx) {
   if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?')) {
-    return; // Nếu bấm Hủy thì dừng lại, không xóa
+    return;
   }
-  cart = cart.filter(function (i) { return i.pid !== pid; });
+  cart.splice(idx, 1);
   save(getCartKey(), cart);
   renderCart();
 }
@@ -141,6 +145,7 @@ function checkoutOrder() {
 
   // Chỉ giữ các món còn tồn tại trong danh sách sản phẩm, đồng thời kiểm tra tồn kho
   var orderItems = [];
+  var qtyByPid = {};   // tồn kho tính theo sản phẩm, cộng cả các dòng khác phân loại
   for (var i = 0; i < selectedItems.length; i++) {
     var it = selectedItems[i];
     var p = findProduct(it.pid);
@@ -148,12 +153,14 @@ function checkoutOrder() {
     alert('Sản phẩm "' + (p ? p.name : it.pid) + '" hiện đã ngừng kinh doanh và không thể đặt hàng!');
     return;
   }
-    if (it.qty > p.stock) {
+        qtyByPid[it.pid] = (qtyByPid[it.pid] || 0) + it.qty;
+    if (qtyByPid[it.pid] > p.stock) {
       alert('Sản phẩm "' + p.name + '" vượt quá tồn kho (Còn lại: ' + p.stock + ')');
       return;
     }
-    orderItems.push({ pid: it.pid, qty: it.qty, price: p.price });   // Bước 4: lưu giá lúc mua
+    orderItems.push({ pid: it.pid, qty: it.qty, price: p.price, variant: it.variant || '' });
   }
+
   if (!orderItems.length) { alert('Các sản phẩm đã chọn không còn tồn tại.'); return; }
 
   var payMethod = document.querySelector('input[name="pay-method"]:checked').value;
@@ -202,8 +209,7 @@ function checkoutOrder() {
 
   var itemsHtml = newOrder.items.map(function (it) {
     var p = findProduct(it.pid);
-    return '<tr><td style="padding: 10px;">' + esc(p ? p.name : '') + '</td><td style="padding: 10px; text-align:center;">' + it.qty + '</td><td style="padding: 10px; text-align:right;">' + money(linePrice(it) * it.qty) + '</td></tr>';
-  }).join('');
+    return '<tr><td style="padding: 10px;">' + esc(p ? p.name : '') + (it.variant ? ' <small>(' + esc(it.variant) + ')</small>' : '') + '</td><td style="padding: 10px; text-align:center;">' + it.qty + '</td><td style="padding: 10px; text-align:right;">' + money(linePrice(it) * it.qty) + '</td></tr>';  }).join('');
 
   document.getElementById('invoice-content').innerHTML =
     '<p style="margin-bottom: 6px;"><b>Mã đơn hàng:</b> ' + newOrder.id + '</p>' +

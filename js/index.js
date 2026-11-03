@@ -143,10 +143,10 @@ function renderProductList() {
         htmlContent += `
             <div class="product-card" onclick="openProductModal('${p.id}')">
                 <div class="product-img-box">
-                    <img src="${p.img}" alt="${p.name}">
+                    <img src="${p.img || NO_IMAGE}" alt="${esc(p.name)}">
                 </div>
                 <div class="product-brand">WISHY CONCEPT</div>
-                <div class="product-title">${p.name}</div>
+                <div class="product-title">${esc(p.name)}</div>
                 <div class="product-price">${p.price.toLocaleString('vi-VN')}đ</div>
             </div>
         `;
@@ -175,8 +175,7 @@ function openProductModal(id) {
     if (!p) return;
 
     currentModalProduct = p; 
-    var mainImgSrc = (p.images && p.images.length) ? p.images[0] : p.img;
-
+    var mainImgSrc = (p.images && p.images.length) ? p.images[0] : (p.img || NO_IMAGE);
     // Bắn dữ liệu văn bản và hình ảnh vào các thẻ đã tạo sẵn bên HTML
     document.getElementById('modal-main-img').src = mainImgSrc;
     document.getElementById('modal-title-text').textContent = p.name;
@@ -200,7 +199,7 @@ function openProductModal(id) {
     if (p.variants && p.variants.length > 0) {
         var vHtml = '<div class="variant-row"><span class="variant-label">Phân loại:</span><div class="variant-list">';
         p.variants.forEach(function (v, idx) {
-            vHtml += '<button type="button" class="variant-btn ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(this)">' + v + '</button>';
+            vHtml += '<button type="button" class="variant-btn ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(this)">' + esc(v) + '</button>';
         });
         variantContainer.innerHTML = vHtml + '</div></div>';
     } else {
@@ -248,19 +247,28 @@ function addToCart(pid) {
         window.location.href = 'cart.html';
         return;
     }
-    var cartKey = 'wishy_cart_' + currentUser.username; //Sử dụng key tùy theo tên tk đăng nhập
+        var cartKey = 'wishy_cart_' + currentUser.username;
     var cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     var p = getStoredProducts().find(function (item) { return item.id === pid; });
+    if (!p) return;
 
-    var existing = cart.find(function (item) { return item.pid === pid; });
+    // Lấy số lượng và phân loại khách đã chọn trong modal
+    var qty = parseInt(document.getElementById('modal-qty-input').value, 10) || 1;
+    var activeVariant = document.querySelector('#modal-variants-container .variant-btn.active');
+    var variant = activeVariant ? activeVariant.textContent : '';
+
+    // Tồn kho tính theo sản phẩm: cộng cả các dòng khác phân loại trong giỏ
+    var inCart = cart.reduce(function (s, i) { return i.pid === pid ? s + i.qty : s; }, 0);
+    if (inCart + qty > p.stock) {
+        alert('Rất tiếc, số lượng chọn vượt quá tồn kho (còn ' + p.stock + ', trong giỏ đã có ' + inCart + ')!');
+        return;
+    }
+
+    var existing = cart.find(function (i) { return i.pid === pid && (i.variant || '') === variant; });
     if (existing) {
-        if (existing.qty + 1 > p.stock) {
-            alert('Rất tiếc, số lượng chọn vượt quá tồn kho hiện có!');
-            return;
-        }
-        existing.qty++;
+        existing.qty += qty;
     } else {
-        cart.push({ pid: pid, qty: 1, selected: true });
+        cart.push({ pid: pid, qty: qty, selected: true, variant: variant });
     }
 
     localStorage.setItem(cartKey, JSON.stringify(cart));
@@ -270,7 +278,15 @@ function addToCart(pid) {
     closeProductModal();
 }
 
+function fillTypeFilter() {
+    var sel = document.getElementById('filter-type');
+    if (!sel) return;
+    sel.innerHTML = '<option value="all">Tất cả loại</option>' +
+        categories.map(function (c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    fillTypeFilter();
     renderProductList();
 });
 

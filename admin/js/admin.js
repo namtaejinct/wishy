@@ -276,7 +276,10 @@ function deleteProduct(id) {
   products = products.filter(function (p) { return p.id !== id; });
   save('wishy_products', products);
   // Gỡ khỏi giỏ hàng để không còn món "ma"
-  save('wishy_cart', load('wishy_cart', []).filter(function (it) { return it.pid !== id; }));
+    users.forEach(function (u) {
+    var key = 'wishy_cart_' + u.username;
+    save(key, load(key, []).filter(function (it) { return it.pid !== id; }));
+  });
   if (document.getElementById('edit-prod-id').value === id) cancelEditProduct();
   refreshCatalogViews();
 }
@@ -318,8 +321,7 @@ function showOrderDetail(id) {
   if (!o) return;
   var rows = o.items.map(function (it) {
     var p = findProduct(it.pid);
-    return '<tr><td>' + it.pid + '</td><td>' + esc(p ? p.name : '(đã xóa)') + '</td><td>' + it.qty + '</td><td>' + money(p ? p.price * it.qty : 0) + '</td></tr>';
-  }).join('');
+    return '<tr><td>' + it.pid + '</td><td>' + esc(p ? p.name : '(đã xóa)') + (it.variant ? ' <small>(' + esc(it.variant) + ')</small>' : '') + '</td><td>' + it.qty + '</td><td>' + money(linePrice(it) * it.qty) + '</td></tr>';  }).join('');
   openModal('<h3>Chi tiết đơn ' + o.id + '</h3><p>Ngày đặt: <b>' + fmtDate(o.date) + '</b> &nbsp; ' + statusBadge(o.status) + '</p>' +
     '<table><thead><tr><th>Mã SP</th><th>Tên</th><th>SL</th><th>Thành tiền</th></tr></thead><tbody>' + rows + '</tbody></table>' +
     '<div class="detail-total">Tổng: ' + money(orderTotal(o)) + '</div>');

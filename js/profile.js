@@ -11,9 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutBtn = document.getElementById("btn-logout");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
-            logout();
             alert("Đã đăng xuất thành công!");
-            window.location.href = "products.html";
+            logout();
         });
     }
 });
@@ -141,8 +140,7 @@ function showOrderDetail(id) {
 
     var rows = o.items.map(function (it) {
         var p = findProduct(it.pid);
-        return '<tr><td>' + it.pid + '</td><td>' + esc(p ? p.name : '(đã xóa)') + '</td><td>' + it.qty + '</td><td>' + money(p ? p.price * it.qty : 0) + '</td></tr>';
-    }).join('');
+        return '<tr><td>' + it.pid + '</td><td>' + esc(p ? p.name : '(đã xóa)') + (it.variant ? ' <small>(' + esc(it.variant) + ')</small>' : '') + '</td><td>' + it.qty + '</td><td>' + money(linePrice(it) * it.qty) + '</td></tr>';    }).join('');
 
     openModal('<h3>Chi tiết đơn ' + o.id + '</h3><p>Ngày đặt: <b>' + fmtDate(o.date) + '</b> &nbsp; ' + statusBadge(o.status) + '</p>' +
         '<table><thead><tr><th>Mã SP</th><th>Tên</th><th>SL</th><th>Thành tiền</th></tr></thead><tbody>' + rows + '</tbody></table>' +
