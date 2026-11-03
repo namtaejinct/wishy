@@ -78,18 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 var currentPage = 1;
 var ITEMS_PER_PAGE = 6;
 var currentModalProduct = null;

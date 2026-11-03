@@ -134,7 +134,6 @@ function renderHeader() {
   var cartBtn =
     '<a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng" onclick="checkCartAccess(event)">' +
       '<img src="images/logo/cart.png" alt="Cart">' +
-      '<span class="cart-badge" id="cart-count-badge">' + cartCount() + '</span>' +
     '</a>';
 
   if (currentUser) {

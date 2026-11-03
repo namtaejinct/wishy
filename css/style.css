@@ -1559,21 +1559,6 @@ html {
   display: block;
 }
 
-.cart-badge {
-  position: absolute;
-  top: 0px;
-  right: -6px;
-  background-color: var(--danger);
-  color: #ffffff;
-  font-size: 10px;
-  font-weight: 800;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 .main-nav-equal {
   display: flex;
