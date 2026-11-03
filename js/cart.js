@@ -1,4 +1,5 @@
 /* === GIỎ HÀNG === */
+// Đặt tên cho từng giỏ hàng ứng với username
 function getCartKey() {
   if (typeof currentUser !== 'undefined' && currentUser && currentUser.username) {
     return 'wishy_cart_' + currentUser.username;
@@ -6,6 +7,7 @@ function getCartKey() {
   return 'wishy_cart_guest'; // Trường hợp chưa đăng nhập
 }
 var cart = load(getCartKey(), []);
+//Hiện giao diện giỏ hàng
 function renderCart() {
   var container = document.getElementById('cart-items-container');
   if (!container) return;
