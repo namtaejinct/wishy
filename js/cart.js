@@ -229,15 +229,8 @@ function checkoutOrder() {
 }
 
 function continueShopping() {
-  function continueShopping() {
-  var current = localStorage.getItem('wishy_current');
-  if (current) {
-    localStorage.setItem('wishy_current', current);
-  }
   window.location.href = 'index.html';
 }
-}
-
 /* === ĐIỀU PHỐI CHUNG === */
 function refreshPage() {
   if (typeof renderHeader === 'function') {
