@@ -68,8 +68,14 @@ function renderSignatureProducts() {
     }).join('');
 }
 
-
+//Thêm vô để đồng bộ header
 document.addEventListener('DOMContentLoaded', function () {
+    if (typeof initSite === 'function') {
+        initSite('home');
+    }
+
+    fillTypeFilter();
+    renderProductList();
     showHeroSlide(0);
     startHeroTimer();
     renderSignatureProducts();
@@ -296,11 +302,6 @@ function fillTypeFilter() {
     sel.innerHTML = '<option value="all">Tất cả loại</option>' +
         categories.map(function (c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    fillTypeFilter();
-    renderProductList();
-});
 
 function selectVariant(btn) {
     var buttons = btn.parentElement.querySelectorAll('.variant-btn');

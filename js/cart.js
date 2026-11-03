@@ -1,4 +1,5 @@
 /* === GIỎ HÀNG === */
+// Đặt tên cho từng giỏ hàng ứng với username
 function getCartKey() {
   if (typeof currentUser !== 'undefined' && currentUser && currentUser.username) {
     return 'wishy_cart_' + currentUser.username;
@@ -6,10 +7,11 @@ function getCartKey() {
   return 'wishy_cart_guest'; // Trường hợp chưa đăng nhập
 }
 var cart = load(getCartKey(), []);
+//Hiện giao diện giỏ hàng
 function renderCart() {
   var container = document.getElementById('cart-items-container');
   if (!container) return;
-  
+  //Giỏ hàng trống
   if (!cart || !cart.length) {
     container.innerHTML = '<div style="text-align:center; padding: 30px; color:#7B8BA0; font-style:italic;">Giỏ hàng của bạn đang trống. Hãy qua trang Sản phẩm để chọn hàng nhé!</div>';
     document.getElementById('cart-grand-total').textContent = 'Tổng tiền: 0đ';
@@ -229,7 +231,6 @@ function checkoutOrder() {
 function continueShopping() {
   window.location.href = 'index.html';
 }
-
 /* === ĐIỀU PHỐI CHUNG === */
 function refreshPage() {
   if (typeof renderHeader === 'function') {
