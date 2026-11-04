@@ -239,8 +239,12 @@ function checkoutOrder() {
     '<p style="margin-bottom: 6px;"><b>Ngày đặt:</b> ' + fmtDate(newOrder.date) + '</p>' +
     '<p style="margin-bottom: 6px;"><b>Người nhận & Địa chỉ:</b> ' + esc(newOrder.shipInfo) + '</p>' +
     '<p style="margin-bottom: 12px;"><b>Thanh toán:</b> ' + newOrder.payment + '</p>' +
-    '<table style="width:100%; border-collapse:collapse; margin: 15px 0;">' +
-      '<thead><tr style="background:#EBF3FA;"><th style="padding:10px; text-align:left;">Sản phẩm</th><th style="padding:10px; text-align:center;">SL</th><th style="padding:10px; text-align:right;">Thành tiền</th></tr></thead>' +
+    '<table style="width:100%; margin: 15px 0;">' +
+      '<thead><tr style="background:#EBF3FA;">
+        <th style="padding:10px; text-align:left;">Sản phẩm</th>
+        <th style="padding:10px; text-align:center;">SL</th>
+        <th style="padding:10px; text-align:right;">Thành tiền</th>
+      </tr></thead>' +
       '<tbody>' + itemsHtml + '</tbody>' +
     '</table>' +
     '<h3 style="text-align:right; color:var(--primary-color); margin-top: 15px;">Tổng thanh toán: ' + money(total) + '</h3>';
