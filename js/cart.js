@@ -19,7 +19,7 @@ function refreshPage() {
   
   if (welcome) welcome.style.display = logged ? 'none' : '';
   if (app) app.style.display = logged ? '' : 'none';
-  
+  // Tải đúng giỏ hàng của tài khoản đó
   if (logged) {
     if (typeof load === 'function') {
       cart = load(getCartKey(), []);
