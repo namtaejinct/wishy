@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,59 +8,61 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="images/logo/logo.png">
 </head>
+
 <body>
 
-<!--Thay thế header cũ-->
-<header class="site-header">
+    <!--Thay thế header cũ-->
+    <header class="site-header">
         <div class="header-top">
             <div class="header-left-space"></div>
             <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">WISHY</a></div>
             <div id="user-header-box" class="header-right-icons">
-                <!-- Icon User: Bấm vào mở ngay Overlay Đăng nhập -->
                 <a href="#" class="icon-btn" title="Tài khoản" onclick="event.preventDefault(); openAuth('login');">
                     <img src="images/logo/user.png" alt="User">
                 </a>
-                <!-- Icon Giỏ hàng: Bấm vào kiểm tra đăng nhập -->
                 <a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng">
-                  <img src="images/logo/cart.png" alt="Cart">
+                    <img src="images/logo/cart.png" alt="Cart">
                 </a>
             </div>
         </div>
         <nav class="main-nav-equal" id="category-nav-list">
-            <a class="cat-tab active" href="index.html"
+            <a class="cat-tab" href="index.html"
                 onclick="if(typeof selectCategory==='function') selectCategory('home', this)">Trang chủ</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=all#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('all', this)">Tất cả sản phẩm</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=Túi vải#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('Túi vải', this)">Túi vải</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=Áo thun#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('Áo thun', this)">Áo thun</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=Phụ kiện#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('Phụ kiện', this)">Phụ kiện</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=Móc khóa#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('Móc khóa', this)">Móc khóa</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=Bưu thiếp#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('Bưu thiếp', this)">Bưu thiếp</a>
         </nav>
     </header>
 
     <div class="sub-menu" style="padding: 12px 40px; font-weight: 600;">
-        <a href="index.html" style="color: var(--primary-color); text-decoration: none;">Trang chủ</a> 
-        <span style="margin: 0 10px; color: var(--border-color);">|</span> 
+        <a href="index.html" style="color: var(--primary-color); text-decoration: none;">Trang chủ</a>
+        <span style="margin: 0 10px; color: var(--border-color);">|</span>
         <span style="color: var(--danger);">Trang khách hàng</span>
     </div>
 
-    <div class="tab-content active" style="display: grid; grid-template-columns: 280px 1fr; gap: 30px; align-items: start; padding: 30px 40px;">
-        
+    <div class="tab-content active"
+        style="display: grid; grid-template-columns: 280px 1fr; gap: 30px; align-items: start; padding: 30px 40px;">
+
         <!-- SIDEBAR TRÁI: ĐIỀU HƯỚNG TÀI KHOẢN -->
         <div class="card-box" style="margin-top: 0; padding: 20px;">
             <h3 style="font-size: 18px; margin-bottom: 10px;">TÀI KHOẢN</h3>
-            <p style="margin-left:10px; margin-bottom: 16px; font-weight: 600; color: var(--text-color);">Xin chào, <span id="sidebar-username">name</span>!</p>
-            
+            <p style="margin-left:10px; margin-bottom: 16px; font-weight: 600; color: var(--text-color);">Xin chào,
+                <span id="sidebar-username">name</span>!</p>
+
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <button class="profile-nav-btn active" onclick="switchProfileTab('info')">Thông tin tài khoản</button>
                 <button class="profile-nav-btn" onclick="switchProfileTab('orders')">Đơn hàng của bạn</button>
-                <button class="btn btn-danger btn-sm" style="margin-top: 15px; text-align: center;" id="btn-logout">Đăng xuất</button>
+                <button class="btn btn-danger btn-sm" style="margin-top: 15px; text-align: center;" id="btn-logout">Đăng
+                    xuất</button>
             </div>
         </div>
 
@@ -76,7 +79,8 @@
                 <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
                     <div>
                         <button class="btn btn-outline btn-sm" onclick="toggleForm('pass')">Đổi mật khẩu</button>
-                        <div id="form-pass" style="display: none; margin-top: 10px; background: var(--bg-color); padding: 15px; border-radius: 8px;">
+                        <div id="form-pass"
+                            style="display: none; margin-top: 10px; background: var(--bg-color); padding: 15px; border-radius: 8px;">
                             <div class="form-row">
                                 <label>Mật khẩu hiện tại</label>
                                 <input type="password" id="old-password" placeholder="Nhập mật khẩu cũ">
@@ -91,7 +95,8 @@
 
                     <div>
                         <button class="btn btn-outline btn-sm" onclick="toggleForm('address')">Đổi địa chỉ</button>
-                        <div id="form-address" style="display: none; margin-top: 10px; background: var(--bg-color); padding: 15px; border-radius: 8px;">
+                        <div id="form-address"
+                            style="display: none; margin-top: 10px; background: var(--bg-color); padding: 15px; border-radius: 8px;">
                             <div class="form-row">
                                 <label>Địa chỉ mới</label>
                                 <input type="text" id="updated-address" placeholder="Nhập địa chỉ giao hàng mới">
@@ -126,14 +131,15 @@
     </div>
 
     <!-- thêm footer dùng chung -->
-<footer class="site-footer">
-    <div class="container footer-inner">
-        <div class="footer-logo">WISHY</div>
-        <p>&copy; 2026 Wishy Souvenirs Store. All rights reserved.</p>
-    </div>
-</footer>
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-logo">WISHY</div>
+            <p>&copy; 2026 Wishy Souvenirs Store. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script src="js/common.js"></script>
     <script src="js/profile.js"></script>
 </body>
+
 </html>
