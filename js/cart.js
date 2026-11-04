@@ -230,9 +230,9 @@ function checkoutOrder() {
   if (typeof renderHeader === 'function') renderHeader();   
 
   var itemsHtml = newOrder.items.map(function (it) {
-    var p = findProduct(it.pid);
-    return '<tr><td style="padding: 10px;">' + esc(p ? p.name : '') + (it.variant ? ' <small>(' + esc(it.variant) + ')</small>' : '') + '</td><td style="padding: 10px; text-align:center;">' + it.qty + '</td><td style="padding: 10px; text-align:right;">' + money(linePrice(it) * it.qty) + '</td></tr>';  
-  }).join('');
+  var p = findProduct(it.pid);
+  return '<tr><td style="padding: 10px;">' + esc(p ? p.name : '') + '</td><td style="padding: 10px; text-align:center;">' + it.qty + '</td><td style="padding: 10px; text-align:right;">' + money(linePrice(it) * it.qty) + '</td></tr>';  
+}).join('');
 
   document.getElementById('invoice-content').innerHTML =
     '<p style="margin-bottom: 6px;"><b>Mã đơn hàng:</b> ' + newOrder.id + '</p>' +
