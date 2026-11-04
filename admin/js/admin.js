@@ -14,8 +14,7 @@ function closeModal() {
   document.getElementById('admin-modal').style.display = 'none';
 }
 
-// Đăng nhập admin TẠM THỜI: Linh thay bằng bản chính thức.
-// Giả định tài khoản admin có role === 'admin' hoặc username === 'admin'.
+
 function handleAdminLogin() {
   var u = document.getElementById('admin-user-input').value.trim();
   var p = document.getElementById('admin-pass-input').value;

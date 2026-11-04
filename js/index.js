@@ -1,6 +1,3 @@
-/* Phần của Linh - TV2 */
-
-
 var currentHeroIndex = 0;
 var heroTimer = null;
 
