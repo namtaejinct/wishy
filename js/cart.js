@@ -150,6 +150,10 @@ function showCheckoutSection() {
       alert('Sản phẩm "' + p.name + '" vượt quá tồn kho (Còn lại: ' + p.stock + ')');
       return;
     }
+    if (it.qty > p.stock) {
+      alert('Sản phẩm "' + p.name + '" vừa cập nhật tồn kho (Chỉ còn lại: ' + p.stock + ' món, giỏ hàng của bạn đang có: ' + it.qty + '). Vui lòng điều chỉnh lại số lượng!');
+      return; // Dừng lại ngay
+    }
   }
   
   document.querySelector('.cart-header-row').style.display = 'none';
