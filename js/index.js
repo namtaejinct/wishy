@@ -159,6 +159,17 @@ function getFilteredProducts() {
 
 function filterProducts() {
     currentPage = 1;
+
+    var selectedType = document.getElementById('filter-type').value;
+    document.querySelectorAll('.cat-tab').forEach(function (tab) {
+        tab.classList.remove('active');
+        if (tab.textContent.trim().toLowerCase() === selectedType.toLowerCase()) {
+            tab.classList.add('active');
+        } else if (selectedType === 'all' && tab.textContent.trim() === 'Tất cả sản phẩm') {
+            tab.classList.add('active');
+        }
+    });
+
     renderProductList();
 }
 
