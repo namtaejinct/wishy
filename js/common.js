@@ -116,17 +116,16 @@ function siteHeaderHtml(activePage) {
       '<div id="user-header-box" class="header-right-icons"></div>' +
     '</div>' +
     '<nav class="main-nav-equal" id="category-nav-list">' +
-      '<a class="cat-tab ' + (activePage === 'home' ? 'active' : '') + '" href="index.html">Trang chủ</a>' +
-      '<a class="cat-tab ' + (activePage === 'all' ? 'active' : '') + '" href="index.html#products">Tất cả sản phẩm</a>' +
-      '<a class="cat-tab" href="index.html#products">Túi vải</a>' +
-      '<a class="cat-tab" href="index.html#products">Áo thun</a>' +
-      '<a class="cat-tab" href="index.html#products">Phụ kiện</a>' +
-      '<a class="cat-tab" href="index.html#products">Móc khóa</a>' +
-      '<a class="cat-tab" href="index.html#products">Bưu thiếp</a>' +
+      '<a class="cat-tab ' + (activePage === 'home' ? 'active' : '') + '" href="index.html" onclick="if(typeof selectCategory===\'function\') { selectCategory(\'home\', this); }">Trang chủ</a>' +
+      '<a class="cat-tab ' + (activePage === 'all' ? 'active' : '') + '" href="index.html#products" onclick="if(typeof selectCategory===\'function\') { selectCategory(\'all\', this); }">Tất cả sản phẩm</a>' +
+      '<a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory===\'function\') { selectCategory(\'Túi vải\', this); }">Túi vải</a>' +
+      '<a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory===\'function\') { selectCategory(\'Áo thun\', this); }">Áo thun</a>' +
+      '<a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory===\'function\') { selectCategory(\'Phụ kiện\', this); }">Phụ kiện</a>' +
+      '<a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory===\'function\') { selectCategory(\'Móc khóa\', this); }">Móc khóa</a>' +
+      '<a class="cat-tab" href="index.html#products" onclick="if(typeof selectCategory===\'function\') { selectCategory(\'Bưu thiếp\', this); }">Bưu thiếp</a>' +
     '</nav>' +
   '</header>';
 }
-
 function renderHeader() {
   var box = document.getElementById('user-header-box');
   if (!box) return;
