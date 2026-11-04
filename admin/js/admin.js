@@ -433,7 +433,7 @@ function lineRowHtml(it) {
 
 function stock_openForm(title, linesHtml) {
   openModal('<h3>' + title + '</h3><div id="stock-lines">' + linesHtml + '</div>' +
-    '<button class="btn-outline btn-sm" onclick="addStockLine()">+ Thêm dòng</button>' +
+    '<button class="btn-outline btn-sm" style="margin: 8px 0px 20px 8px" onclick="addStockLine()">+ Thêm dòng</button>' +
     '<div class="form-error" id="stock-error" style="margin-top:12px"></div>' +
     '<button class="btn" style="width:100%" onclick="saveStock()">Lưu tạm</button>');
 }
