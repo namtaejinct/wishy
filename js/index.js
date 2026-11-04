@@ -75,6 +75,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     fillTypeFilter();
+    var urlParams = new URLSearchParams(window.location.search);
+    var catParam = urlParams.get('cat');
+    if (catParam) {
+        var selectType = document.getElementById('filter-type');
+        if (selectType) selectType.value = catParam;
+        var titleElem = document.getElementById('current-category-title');
+        if (titleElem) titleEmp.textContent = catParam.toUpperCase();
+    }
     renderProductList();
     showHeroSlide(0);
     startHeroTimer();
