@@ -135,6 +135,9 @@ function selectCategory(catName, element) {
         var offsetPosition = section.getBoundingClientRect().top + window.pageYOffset - headerOffset;
         window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
+    if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.pathname + '#products');
+}
 }
 
 // 2. Lọc sản phẩm 3 tiêu chí
