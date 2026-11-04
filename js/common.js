@@ -126,7 +126,6 @@ function siteHeaderHtml(activePage) {
     '</nav>' +
   '</header>';
 }
-
 function renderHeader() {
   var box = document.getElementById('user-header-box');
   if (!box) return;

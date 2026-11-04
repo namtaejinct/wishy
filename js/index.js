@@ -45,10 +45,10 @@ function renderSignatureProducts() {
     var list = typeof getStoredProducts === 'function' ? getStoredProducts() : defaultProducts;
     var signatureItems = [];
 
-    var targetIds = ['SP020', 'SP015', 'SP010', 'SP001']; 
-    
-    targetIds.forEach(function(id) {
-        var found = list.find(function(p) { return p.id === id; });
+    var targetIds = ['SP020', 'SP015', 'SP010', 'SP001'];
+
+    targetIds.forEach(function (id) {
+        var found = list.find(function (p) { return p.id === id; });
         if (found) signatureItems.push(found);
     });
 
@@ -70,11 +70,24 @@ document.addEventListener('DOMContentLoaded', function () {
     if (typeof initSite === 'function') {
         initSite('home');
     }
-
     fillTypeFilter();
-    renderProductList();
-    showHeroSlide(0);
-    startHeroTimer();
+
+    var p = new URLSearchParams(window.location.search).get('cat');
+    if (p && document.getElementById('filter-type')) {
+        document.getElementById('filter-type').value = p;
+
+        document.querySelectorAll('.cat-tab').forEach(function(tab) { tab.classList.remove('active'); });
+        
+        document.querySelectorAll('.cat-tab').forEach(function(tab) {
+            if (tab.textContent.trim().toLowerCase() === p.toLowerCase()) {
+                tab.classList.add('active');
+            }
+        });
+    }
+
+    renderProductList(); 
+    showHeroSlide(0);   
+    startHeroTimer();  
     renderSignatureProducts();
 });
 
@@ -119,6 +132,9 @@ function selectCategory(catName, element) {
         var offsetPosition = section.getBoundingClientRect().top + window.pageYOffset - headerOffset;
         window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
+    if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.pathname + '#products');
+}
 }
 
 // 2. Lọc sản phẩm 3 tiêu chí
@@ -189,7 +205,7 @@ function openProductModal(id) {
     var p = list.find(function (item) { return item.id === id; });
     if (!p) return;
 
-    currentModalProduct = p; 
+    currentModalProduct = p;
     var mainImgSrc = (p.images && p.images.length) ? p.images[0] : (p.img || NO_IMAGE);
     // Bắn dữ liệu văn bản và hình ảnh vào các thẻ đã tạo sẵn bên HTML
     document.getElementById('modal-main-img').src = mainImgSrc;
@@ -204,7 +220,7 @@ function openProductModal(id) {
         dotsContainer.innerHTML = '<div class="modal-dots-list">' +
             '<span class="dot-btn active" onclick="changeModalImg(0, this)"></span>' +
             '<span class="dot-btn" onclick="changeModalImg(1, this)"></span>' +
-        '</div>';
+            '</div>';
     } else {
         dotsContainer.innerHTML = '';
     }
@@ -235,7 +251,7 @@ function openProductModal(id) {
         addBtn.disabled = false;
         addBtn.style.opacity = '1';
         addBtn.textContent = 'THÊM VÀO GIỎ HÀNG';
-        addBtn.onclick = function() { addToCart(p.id); };
+        addBtn.onclick = function () { addToCart(p.id); };
     }
 
     var overlay = document.getElementById('product-overlay');
@@ -262,7 +278,7 @@ function addToCart(pid) {
         window.location.href = 'cart.html';
         return;
     }
-        var cartKey = 'wishy_cart_' + currentUser.username;
+    var cartKey = 'wishy_cart_' + currentUser.username;
     var cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     var p = getStoredProducts().find(function (item) { return item.id === pid; });
     if (!p) return;
@@ -288,7 +304,7 @@ function addToCart(pid) {
 
     localStorage.setItem(cartKey, JSON.stringify(cart));
     alert('Đã thêm "' + p.name + '" vào giỏ hàng thành công!');
-    
+
     if (typeof renderHeader === 'function') renderHeader();
     closeProductModal();
 }

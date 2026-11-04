@@ -1,10 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
-    if (!currentUser) {
+    var userSession = JSON.parse(localStorage.getItem('wishy_current'));
+
+    if (!userSession) {
+        alert("Vui lòng đăng nhập để xem thông tin tài khoản!");
         window.location.href = "index.html";
         return;
     }
 
-    renderHeader();
+    window.currentUser = userSession;
+
+    if (typeof renderHeader === 'function') renderHeader();
     loadUserData();
     renderMyOrders();
 
@@ -12,7 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
             alert("Đã đăng xuất thành công!");
-            logout();
+            if (typeof logout === 'function') logout();
+            else {
+                localStorage.removeItem('wishy_current');
+                window.location.href = 'index.html';
+            }
         });
     }
 });
