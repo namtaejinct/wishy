@@ -87,27 +87,26 @@ function renderCart() {
   document.getElementById('cart-grand-total').textContent = 'Tổng tiền: ' + money(total);
   document.getElementById('checkout-grand-total').textContent = 'Tổng thanh toán: ' + money(total);
 }
-
+// Tích chọn từng checkbox
 function toggleSelectItem(idx, isChecked) {
   var item = cart[idx];
   if (item) { item.selected = isChecked; save(getCartKey(), cart); renderCart(); }
 }
-
+// Tích ô checkbox tổng
 function toggleSelectAll(master) {
   var isChecked = master.checked;
   cart.forEach(function (i) { i.selected = isChecked; });
   save(getCartKey(), cart);
   renderCart();
 }
-
+// Điều chỉnh số lượng mỗi sản phẩm
 function updateQty(idx, delta) {
   var item = cart[idx];
   if (!item) return;
 
   var p = findProduct(item.pid);
   if (p && delta > 0) {
-    var inCart = cart.reduce(function (s, i) { return i.pid === item.pid ? s + i.qty : s; }, 0);
-    if (inCart + delta > p.stock) {
+    if (item.qty + delta > p.stock) {
       alert('Sản phẩm này chỉ còn ' + p.stock + ' món trong kho!');
       return;
     }
@@ -167,8 +166,7 @@ function checkoutOrder() {
   var selectedItems = cart.filter(function (i) { return i.selected; });
   if (!selectedItems.length) return;
 
-  var orderItems = [];
-  var qtyByPid = {};   
+  var orderItems = [];  
   for (var i = 0; i < selectedItems.length; i++) {
     var it = selectedItems[i];
     var p = findProduct(it.pid);
@@ -176,15 +174,17 @@ function checkoutOrder() {
       alert('Sản phẩm "' + (p ? p.name : it.pid) + '" hiện đã ngừng kinh doanh và không thể đặt hàng!');
       return;
     }
-    qtyByPid[it.pid] = (qtyByPid[it.pid] || 0) + it.qty;
-    if (qtyByPid[it.pid] > p.stock) {
+    if (it.qty > p.stock) {
       alert('Sản phẩm "' + p.name + '" vượt quá tồn kho (Còn lại: ' + p.stock + ')');
       return;
     }
-    orderItems.push({ pid: it.pid, qty: it.qty, price: p.price, variant: it.variant || '' });
+    orderItems.push({ pid: it.pid, qty: it.qty, price: p.price});
   }
 
-  if (!orderItems.length) { alert('Các sản phẩm đã chọn không còn tồn tại.'); return; }
+  if (!orderItems.length) { 
+    alert('Các sản phẩm đã chọn không còn tồn tại.'); 
+    return; 
+  }
 
   var payMethod = document.querySelector('input[name="pay-method"]:checked').value;
   var payText = payMethod === 'COD' ? 'Tiền mặt khi nhận hàng (COD)' : 'Chuyển khoản ngân hàng';
@@ -201,7 +201,7 @@ function checkoutOrder() {
   } else {
     var u = findUser(currentUser.username) || {};
     if (!u.address || !u.phone) {
-      alert('Tài khoản chưa có địa chỉ hoặc SĐT, vui lòng chọn "Nhập địa chỉ giao hàng mới".');
+      alert('Tài khoản chưa có địa chỉ hoặc SĐT, vui lòng chọn "Nhập địa chỉ nhận hàng mới".');
       return;
     }
     shipInfo = u.fullname + ' - ' + u.phone + ' (' + u.address + ')';
