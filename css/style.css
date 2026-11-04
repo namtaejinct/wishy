@@ -725,7 +725,6 @@ select:focus {
 .pay-method-title {
   font-weight: 700;
   color: var(--primary-color);
-  display: block;
   margin-bottom: 8px;
 }
 
