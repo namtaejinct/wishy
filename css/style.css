@@ -804,7 +804,6 @@ select:focus {
   font-weight: 700;
   cursor: pointer;
   box-shadow: none;
-  display: inline-block;
 }
 
 #app-screen .cart-item-row .col-action button.btn-danger:hover {
