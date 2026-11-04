@@ -10,10 +10,6 @@
   font-weight: 700;
 }
 
-body {
-  font-family: 'Quicksand', Arial, sans-serif;
-}
-
 :root {
   --bg-color: #F4F7FA;
   --text-color: #1C2541;
@@ -90,9 +86,7 @@ h3 {
   padding: 0 20px;
 }
 
-.main-nav>a,
-.has-mega>a,
-#nav-orders>a {
+.main-nav>a {
   display: block;
   padding: 14px 4px;
   color: var(--text-color);
@@ -103,116 +97,12 @@ h3 {
 }
 
 .main-nav>a:hover,
-.main-nav>a.active,
-#nav-orders>a:hover,
-#nav-orders>a.active,
-.has-mega:hover>a,
-.has-drop:hover>a {
+.main-nav>a.active {
   color: var(--accent-color);
   transform: scale(1.12);
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 6px;
-}
-
-.has-mega>a::after,
-.has-drop>a::after {
-  content: '';
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-left: 8px;
-  border: solid currentColor;
-  border-width: 0 2px 2px 0;
-  transform: translateY(-3px) rotate(45deg);
-}
-
-.has-drop {
-  position: relative;
-}
-
-.drop-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  min-width: 230px;
-  padding: 10px 0;
-  background: #FFFFFF;
-  border-radius: 0 0 14px 14px;
-  box-shadow: 0 14px 30px rgba(13, 43, 58, 0.18);
-  z-index: 5;
-}
-
-.has-drop:hover .drop-menu,
-.has-drop:focus-within .drop-menu {
-  display: block;
-}
-
-.drop-menu a {
-  display: block;
-  padding: 10px 24px;
-  color: var(--text-color);
-  text-decoration: none;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: color 0.2s, background 0.2s;
-}
-
-.drop-menu a:hover,
-.drop-menu a.current {
-  color: var(--accent-color);
-  background: var(--bg-color);
-}
-
-.mega-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(1000px, 94vw);
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 30px;
-  padding: 28px 32px;
-  background: #FFFFFF;
-  border-radius: 0 0 14px 14px;
-  box-shadow: 0 14px 30px rgba(13, 43, 58, 0.18);
-}
-
-.has-mega:hover .mega-menu,
-.has-mega:focus-within .mega-menu {
-  display: grid;
-}
-
-.mega-col h4 {
-  margin: 0 0 12px;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--primary-color);
-}
-
-.mega-col ul {
-  margin: 0;
-  padding: 0 0 0 14px;
-  list-style: none;
-  border-left: 2px solid var(--accent-color);
-}
-
-.mega-col li a {
-  display: block;
-  padding: 6px 0;
-  color: var(--text-color);
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.2s, padding-left 0.2s;
-}
-
-.mega-col li a:hover {
-  color: var(--accent-color);
-  padding-left: 6px;
 }
 
 #user-header-box {
@@ -227,23 +117,8 @@ h3 {
   color: var(--primary-color);
 }
 
-.role-tag {
-  font-size: 12px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 12px;
-  background: #EBF3FA;
-  color: var(--accent-color);
-}
-
-.role-tag.admin {
-  background: #FFF4E0;
-  color: #B9770E;
-}
-
 /* --- BUTTONS --- */
 .btn,
-.btn-blue,
 .btn-primary {
   background-color: var(--primary-color);
   color: white;
@@ -256,7 +131,6 @@ h3 {
 }
 
 .btn:hover,
-.btn-blue:hover,
 .btn-primary:hover {
   background-color: var(--primary-hover);
 }
@@ -684,36 +558,6 @@ select:focus {
   background: var(--primary-hover);
 }
 
-.main-nav #nav-cart {
-  background: transparent;
-  border: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  align-items: center;
-}
-
-.main-nav #nav-cart>a {
-  display: block;
-  padding: 14px 4px;
-  color: var(--text-color);
-  text-decoration: none;
-  font-size: 18px;
-  font-weight: 700;
-  background: transparent;
-  transition: color 0.2s, transform 0.2s;
-}
-
-.main-nav #nav-cart:hover>a,
-.main-nav #nav-cart>a.active {
-  color: var(--accent-color);
-  transform: scale(1.12);
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
-  background: transparent;
-}
-
 .cart-title-row {
   display: flex;
   justify-content: space-between;
@@ -805,34 +649,6 @@ select:focus {
   text-align: right;
 }
 /* Cột Admin Quản lý giá */
-.col-admin-id {
-  width: 12%;
-  font-weight: 700;
-  padding-right: 10px;
-}
-
-.col-admin-name {
-  width: 38%;
-  font-weight: 600;
-  padding-right: 15px;
-}
-
-.col-admin-cost {
-  width: 18%;
-  padding-right: 10px;
-}
-
-.col-admin-margin {
-  width: 14%;
-  font-weight: 700;
-}
-
-.col-admin-price {
-  width: 18%;
-  font-weight: 700;
-  color: var(--accent-color);
-}
-
 .cart-list-container {
   display: flex;
   flex-direction: column;
@@ -963,15 +779,6 @@ select:focus {
   margin-top: 25px;
 }
 
-.pricing-admin-box {
-  max-width: 600px;
-  margin-bottom: 24px;
-}
-
-#tab-admin-pricing h2 {
-  margin-bottom: 15px;
-}
-
 .cart-actions-bar button.btn-danger {
   background-color: var(--danger, #C0392B);
   color: #FFFFFF;
@@ -1035,9 +842,7 @@ select:focus {
     flex-wrap: wrap;
   }
 
-  .main-nav>a,
-  .has-mega>a,
-  #nav-orders>a {
+  .main-nav>a {
     font-size: 15px;
   }
 
@@ -1048,41 +853,6 @@ select:focus {
 
 
 /* ======================KHỐI SẢN PHẨM====================== */
-.category-nav-bar {
-  background-color: #EBF3FA;
-  border-bottom: 1px solid var(--border-color);
-  padding: 12px 0;
-  margin-bottom: 20px;
-}
-
-.category-nav-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 15px;
-}
-
-.cat-nav-item {
-  color: var(--primary-color);
-  font-weight: 700;
-  font-size: 14px;
-  text-decoration: none;
-  cursor: pointer;
-  padding: 6px 16px;
-  border-radius: 20px;
-  transition: all 0.2s;
-}
-
-.cat-nav-item:hover,
-.cat-nav-item.active {
-  background-color: var(--primary-color);
-  color: #ffffff;
-}
-
 .product-section-wrapper {
   padding: 20px 0 40px;
   background-color: var(--bg-color);
@@ -1330,15 +1100,6 @@ select:focus {
   margin: 0;
 }
 
-.slider-arrow {
-  background: none;
-  border: none;
-  font-size: 32px;
-  color: var(--primary-color);
-  cursor: pointer;
-  padding: 0 10px;
-}
-
 .modal-detail-card { 
   background: #ffffff; 
   border-radius: 18px; 
@@ -1489,7 +1250,6 @@ select:focus {
   }
 
 
-
   .modal-left-img,
   .modal-right-info {
     width: 100%;
@@ -1597,7 +1357,6 @@ html {
   color: #ffffff !important;
   font-weight: 800;
 }
-
 
 
 .site-footer {

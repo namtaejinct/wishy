@@ -31,7 +31,6 @@ function admin_enter() {
   renderAll();
 }
 
-// Gọi mọi hàm render của các tab. Mỗi người thêm hàm render của mình vào đây.
 function renderAll() {
   syncData();
   stockIns = load('wishy_stockins', stockIns);
@@ -39,8 +38,11 @@ function renderAll() {
   renderCategories();
   renderAdminProducts();
   renderPricing();
-  renderOrdersAndStock();
+  renderAdminOrders();
+  renderStockIn();
+  renderInventory();
 }
+
   function renderOrdersAndStock() {
   renderAdminOrders();
   renderStockIn();
@@ -59,7 +61,7 @@ window.addEventListener('DOMContentLoaded', function () {
   if (logged) admin_enter();
 });
 
-/* === TV1: QUẢN LÝ NGƯỜI DÙNG === */
+/* QUẢN LÝ NGƯỜI DÙNG */
 function renderUsers() {
   var box = document.getElementById('search-user');
   var kw = box ? box.value.trim().toLowerCase() : '';
@@ -90,7 +92,7 @@ function toggleUserLock(username) {
   renderUsers();
 }
 
-/* === TV2 (Liểu): QUẢN LÝ LOẠI SẢN PHẨM === */
+/* QUẢN LÝ LOẠI SẢN PHẨM */
 function countByType(name) {
   return products.filter(function (p) { return p.type === name; }).length;
 }
@@ -162,12 +164,11 @@ function deleteCategory(index) {
   renderCategories();
 }
 
-/* === TV2 (Liểu): QUẢN LÝ SẢN PHẨM === */
+/* QUẢN LÝ SẢN PHẨM */
 function calcMargin(price, cost) {
   return cost > 0 ? Math.round((price / cost - 1) * 100) : 0;
 }
 
-// Cập nhật mọi nơi đang hiển thị danh sách sản phẩm / loại
 function refreshCatalogViews() {
   renderCategories();
   renderAdminProducts();
@@ -290,9 +291,62 @@ function deleteProduct(id) {
   refreshCatalogViews();
 }
 
+/* QUẢN LÝ LỢI NHUẬN */
+function renderPricing() {
+  products = load('wishy_products', defaultProducts);
+  var select = document.getElementById('pricing-prod-select');
+  if (select) {
+    select.innerHTML = products.map(function (p) {
+      return '<option value="' + p.id + '">' + p.id + ' - ' + esc(p.name) + ' [' + esc(p.type || 'Khác') + ']</option>';
+    }).join('');
+  }
+  filterPricingTable();
+}
 
-/* TV4 (NAM): ĐƠN HÀNG, NHẬP HÀNG, TỒN KHO */
+function saveProductMargin() {
+  var pid = document.getElementById('pricing-prod-select').value;
+  var marginVal = parseFloat(document.getElementById('pricing-margin-input').value);
+  if (isNaN(marginVal) || marginVal < 0) { alert('Vui lòng nhập % hợp lệ (Lưu ý không được âm)'); return; }
 
+  var p = findProduct(pid);
+  if (!p) return;
+  p.margin = marginVal;
+  p.price = Math.round((p.cost || 0) * (1 + marginVal / 100));
+
+  save('wishy_products', products); 
+  renderPricing();
+  alert('Cập nhật lợi nhuận và tính lại giá bán thành công!');
+}
+
+function filterPricingTable() {
+  var searchInput = document.getElementById('search-pricing-input');
+  var keyword = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  var container = document.getElementById('pricing-items-container');
+  if (!container) return;
+
+  var filtered = products.filter(function(p) {
+    return p.id.toLowerCase().indexOf(keyword) !== -1 || 
+           p.name.toLowerCase().indexOf(keyword) !== -1 || 
+           (p.type && p.type.toLowerCase().indexOf(keyword) !== -1);
+  });
+
+  if (!filtered.length) {
+    container.innerHTML = '<div style="text-align:center; padding: 20px; color:#7B8BA0; font-style:italic;">Không tìm thấy sản phẩm phù hợp.</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(function (p) {
+    return '<div class="cart-item-row">' +
+      '<div class="col-admin-id">' + p.id + '</div>' +
+      '<div class="col-admin-name"><b>' + esc(p.name) + '</b><br><small style="color:#7B8BA0;">Loại: ' + esc(p.type || 'Khác') + '</small></div>' +
+      '<div class="col-admin-cost">' + money(p.cost) + '</div>' +
+      '<div class="col-admin-margin">' + (p.margin || 0) + '%</div>' +
+      '<div class="col-admin-price">' + money(p.price) + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ĐƠN HÀNG, NHẬP HÀNG, TỒN KHO */
 var LOW_STOCK = 5;   // cảnh báo khi tồn < 5
 
 // Dữ liệu Phiếu nhập hàng mẫu
@@ -306,7 +360,6 @@ var stockIns = load('wishy_stockins', [
 ]);
 
 var editingStockId = null;
-
 
 function statusBadge(s) {
   var colors = {
@@ -583,57 +636,4 @@ function rpt_run() {
     '<div class="card"><table><thead><tr><th>Sản phẩm</th><th>Tồn đầu kỳ</th><th>Nhập</th><th>Xuất</th><th>Tồn cuối kỳ</th></tr></thead>' +
     '<tbody><tr><td>' + p.id + ' - ' + esc(p.name) + '</td><td>' + dau + '</td><td>' + inRange.nhap + '</td><td>' + inRange.xuat + '</td><td><b>' + cuoi + '</b></td></tr></tbody></table></div>';
 }
-/* ============ TV3: ADMIN QUẢN LÝ GIÁ ========= */
-function renderPricing() {
-  products = load('wishy_products', defaultProducts);
-  var select = document.getElementById('pricing-prod-select');
-  if (select) {
-    select.innerHTML = products.map(function (p) {
-      return '<option value="' + p.id + '">' + p.id + ' - ' + esc(p.name) + ' [' + esc(p.type || 'Khác') + ']</option>';
-    }).join('');
-  }
-  filterPricingTable();
-}
 
-function saveProductMargin() {
-  var pid = document.getElementById('pricing-prod-select').value;
-  var marginVal = parseFloat(document.getElementById('pricing-margin-input').value);
-  if (isNaN(marginVal) || marginVal < 0) { alert('Vui lòng nhập % hợp lệ (Lưu ý không được âm)'); return; }
-
-  var p = findProduct(pid);
-  if (!p) return;
-  p.margin = marginVal;
-  p.price = Math.round((p.cost || 0) * (1 + marginVal / 100));
-
-  save('wishy_products', products); 
-  renderPricing();
-  alert('Cập nhật lợi nhuận và tính lại giá bán thành công!');
-}
-
-function filterPricingTable() {
-  var searchInput = document.getElementById('search-pricing-input');
-  var keyword = searchInput ? searchInput.value.toLowerCase().trim() : '';
-  var container = document.getElementById('pricing-items-container');
-  if (!container) return;
-
-  var filtered = products.filter(function(p) {
-    return p.id.toLowerCase().indexOf(keyword) !== -1 || 
-           p.name.toLowerCase().indexOf(keyword) !== -1 || 
-           (p.type && p.type.toLowerCase().indexOf(keyword) !== -1);
-  });
-
-  if (!filtered.length) {
-    container.innerHTML = '<div style="text-align:center; padding: 20px; color:#7B8BA0; font-style:italic;">Không tìm thấy sản phẩm phù hợp.</div>';
-    return;
-  }
-
-  container.innerHTML = filtered.map(function (p) {
-    return '<div class="cart-item-row">' +
-      '<div class="col-admin-id">' + p.id + '</div>' +
-      '<div class="col-admin-name"><b>' + esc(p.name) + '</b><br><small style="color:#7B8BA0;">Loại: ' + esc(p.type || 'Khác') + '</small></div>' +
-      '<div class="col-admin-cost">' + money(p.cost) + '</div>' +
-      '<div class="col-admin-margin">' + (p.margin || 0) + '%</div>' +
-      '<div class="col-admin-price">' + money(p.price) + '</div>' +
-    '</div>';
-  }).join('');
-}
