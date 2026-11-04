@@ -139,6 +139,19 @@ function showCheckoutSection() {
   var selectedItems = cart.filter(function (i) { return i.selected; });
   if (!selectedItems.length) { alert('Vui lòng chọn ít nhất một sản phẩm để tiến hành đặt hàng!'); return; }
 
+  for (var i = 0; i < selectedItems.length; i++) {
+    var it = selectedItems[i];
+    var p = findProduct(it.pid);
+    if (!p || p.status === 'hidden') {
+      alert('Sản phẩm "' + (p ? p.name : it.pid) + '" hiện đã ngừng kinh doanh. Vui lòng bỏ chọn trước khi thanh toán!');
+      return; // Dừng lại luôn, không cho mở trang điền địa chỉ
+    }
+    if (it.qty > p.stock) {
+      alert('Sản phẩm "' + p.name + '" vượt quá tồn kho (Còn lại: ' + p.stock + ')');
+      return;
+    }
+  }
+  
   document.querySelector('.cart-header-row').style.display = 'none';
   document.getElementById('cart-items-container').style.display = 'none';
   document.getElementById('cart-summary-box').style.display = 'none';
