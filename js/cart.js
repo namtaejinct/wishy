@@ -66,10 +66,9 @@ function renderCart() {
       '<div class="col-chk">' +
         '<input type="checkbox" ' + (isHidden ? 'disabled' : (item.selected ? 'checked' : '')) + ' onchange="toggleSelectItem(' + idx + ', this.checked)">' +
       '</div>' +
-      '<div class="col-img"><img src="' + esc((p && p.img) || NO_IMAGE) + '" alt="' + esc(p ? p.name : item.pid) + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"></div>' +
+      '<div class="col-img"><img src="' + esc((p && p.img) || NO_IMAGE) + '" alt="' + esc(p ? p.name : item.pid) + '"></div>' +
       '<div class="col-name">' + 
-        esc(p ? p.name : item.pid) + (item.variant ? '<br><small style="color:#7B8BA0;">Phân loại: ' + esc(item.variant) + '</small>' : '') +
-        (isHidden ? '<br><span style="color: var(--danger); font-size: 12px; font-weight: 600;">⚠️ Ngừng kinh doanh</span>' : '') + 
+        esc(p ? p.name : item.pid) + (isHidden ? '<br><span style="color: var(--danger); font-size: 12px; font-weight: 600;">⚠️ Ngừng kinh doanh</span>' : '') + 
       '</div>' +
       '<div class="col-price">' + money(p ? p.price : 0) + '</div>' +
       '<div class="col-qty">' +
