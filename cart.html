@@ -16,30 +16,28 @@
             <div class="header-left-space"></div>
             <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">WISHY</a></div>
             <div id="user-header-box" class="header-right-icons">
-                <!-- Icon User: Bấm vào mở ngay Overlay Đăng nhập -->
                 <a href="#" class="icon-btn" title="Tài khoản" onclick="event.preventDefault(); openAuth('login');">
                     <img src="images/logo/user.png" alt="User">
                 </a>
-                <!-- Icon Giỏ hàng: Bấm vào kiểm tra đăng nhập -->
                 <a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng">
-                  <img src="images/logo/cart.png" alt="Cart">
+                    <img src="images/logo/cart.png" alt="Cart">
                 </a>
             </div>
         </div>
         <nav class="main-nav-equal" id="category-nav-list">
-            <a class="cat-tab active" href="index.html"
+            <a class="cat-tab" href="index.html"
                 onclick="if(typeof selectCategory==='function') selectCategory('home', this)">Trang chủ</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=all#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('all', this)">Tất cả sản phẩm</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=Túi vải#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('Túi vải', this)">Túi vải</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=Áo thun#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('Áo thun', this)">Áo thun</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=Phụ kiện#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('Phụ kiện', this)">Phụ kiện</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=Móc khóa#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('Móc khóa', this)">Móc khóa</a>
-            <a class="cat-tab" href="index.html#products"
+            <a class="cat-tab" href="index.html?cat=Bưu thiếp#products"
                 onclick="if(typeof selectCategory==='function') selectCategory('Bưu thiếp', this)">Bưu thiếp</a>
         </nav>
     </header>
