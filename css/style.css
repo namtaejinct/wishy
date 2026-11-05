@@ -912,7 +912,7 @@ select:focus {
   margin:5px auto;
 }
 
-.filter-group-number input[type="number"],
+.filter-group-number input[type="text"],
 .filter-group-number select {
   width: 49%;
   box-sizing: border-box;
