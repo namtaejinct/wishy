@@ -333,9 +333,8 @@ select:focus {
 .col-admin-margin { width: 14%; font-weight: 700; }
 .col-admin-price { width: 18%; font-weight: 700; color: var(--accent-color); }
 .pricing-admin-box {
-    flex: 1;                
-    min-width: 300px;       
-    margin-bottom: 0;       
+  max-width: 600px;
+  margin-bottom: 24px;
 }
 #tab-admin-pricing h2 {
   margin-bottom: 15px;
