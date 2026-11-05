@@ -57,10 +57,18 @@ function renderCart() {
     var isHidden = !p || p.status === 'hidden';
     var sub = isHidden ? 0 : p.price * item.qty;
 
-    // Nếu sản phẩm đã bị ẩn, tự động bỏ chọn item đó
-    if (isHidden) item.selected = false;
-    if (item.selected) total += sub;
-    else if (!isHidden) allChecked = false;
+// Nếu sản phẩm bị ẩn, chắc chắn không được chọn và tiền bằng 0
+  if (isHidden) {
+    item.selected = false;
+} 
+// Nếu sản phẩm hiển thị bình thường
+else {
+  if (item.selected) {
+    total += sub; // Nếu có chọn thì cộng tiền vào tổng
+  } else {
+    allChecked = false; // Bình thường mà KHÔNG ĐƯỢC CHỌN -> Chứng tỏ chưa chọn tất cả!
+  }
+}
 
     return '<div class="cart-item-row ' + (isHidden ? 'item-hidden' : '') + '">' +
       '<div class="col-chk">' +
@@ -152,7 +160,7 @@ function showCheckoutSection() {
     }
     if (it.qty > p.stock) {
       alert('Sản phẩm "' + p.name + '" vừa cập nhật tồn kho (Chỉ còn lại: ' + p.stock + ' món, giỏ hàng của bạn đang có: ' + it.qty + '). Vui lòng điều chỉnh lại số lượng!');
-      return; // Dừng lại ngay
+      return; 
     }
   }
   
