@@ -294,42 +294,58 @@ function deleteProduct(id) {
 /* QUẢN LÝ LỢI NHUẬN */
 function renderPricing() {
   products = load('wishy_products', defaultProducts);
+  // 1. Select sản phẩm lẻ
   var select = document.getElementById('pricing-prod-select');
   if (select) {
     select.innerHTML = products.map(function (p) {
       return '<option value="' + p.id + '">' + p.id + ' - ' + esc(p.name) + ' [' + esc(p.type || 'Khác') + ']</option>';
     }).join('');
   }
+  // 2. Select loại sản phẩm 
+  var catSelect = document.getElementById('pricing-category-select');
+  if (catSelect) {
+    catSelect.innerHTML = categories.map(function (c) {
+      return '<option value="' + esc(c) + '">' + esc(c) + '</option>';
+    }).join('');
+  }
   filterPricingTable();
 }
 
-function saveProductMargin() {
-  var pid = document.getElementById('pricing-prod-select').value;
-  var marginVal = parseFloat(document.getElementById('pricing-margin-input').value);
-  if (isNaN(marginVal) || marginVal < 0) { alert('Vui lòng nhập % hợp lệ (Lưu ý không được âm)'); return; }
-
-  var p = findProduct(pid);
-  if (!p) return;
-  p.margin = marginVal;
-  p.price = Math.round((p.cost || 0) * (1 + marginVal / 100));
-
+function saveCategoryMargin() {
+  var selectedCat = document.getElementById('pricing-category-select').value;
+  var marginVal = parseFloat(document.getElementById('pricing-cat-margin-input').value);
+  if (isNaN(marginVal) || marginVal < 0) { 
+    alert('Vui lòng nhập % hợp lệ (không được âm)'); 
+    return; 
+  }
+  var count = 0;
+  // Duyệt qua tất cả sản phẩm, nếu cùng loại thì cập nhật margin và tính lại giá bán
+  products.forEach(function (p) {
+    if (p.type === selectedCat) {
+      p.margin = marginVal;
+      p.price = Math.round(((p.cost || 0) * (1 + marginVal / 100))/1000)*1000;
+      count++;
+    }
+  });
+  if (count === 0) {
+    alert('Không có sản phẩm nào thuộc loại "' + selectedCat + '" để cập nhật!');
+    return;
+  }
   save('wishy_products', products); 
   renderPricing();
-  alert('Cập nhật lợi nhuận và tính lại giá bán thành công!');
+  alert('Đã cập nhật % lợi nhuận cho ' + count + ' sản phẩm thuộc loại "' + selectedCat + '" thành công!');
 }
-
 function filterPricingTable() {
   var searchInput = document.getElementById('search-pricing-input');
   var keyword = searchInput ? searchInput.value.toLowerCase().trim() : '';
   var container = document.getElementById('pricing-items-container');
   if (!container) return;
-
+  
   var filtered = products.filter(function(p) {
     return p.id.toLowerCase().indexOf(keyword) !== -1 || 
            p.name.toLowerCase().indexOf(keyword) !== -1 || 
            (p.type && p.type.toLowerCase().indexOf(keyword) !== -1);
   });
-
   if (!filtered.length) {
     container.innerHTML = '<div style="text-align:center; padding: 20px; color:#7B8BA0; font-style:italic;">Không tìm thấy sản phẩm phù hợp.</div>';
     return;
@@ -345,6 +361,7 @@ function filterPricingTable() {
     '</div>';
   }).join('');
 }
+
 
 /* ĐƠN HÀNG, NHẬP HÀNG, TỒN KHO */
 var LOW_STOCK = 5;   // cảnh báo khi tồn < 5
