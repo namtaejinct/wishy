@@ -294,13 +294,46 @@ function deleteProduct(id) {
 /* QUẢN LÝ LỢI NHUẬN */
 function renderPricing() {
   products = load('wishy_products', defaultProducts);
+  //Select sản phẩm lẻ
   var select = document.getElementById('pricing-prod-select');
   if (select) {
     select.innerHTML = products.map(function (p) {
       return '<option value="' + p.id + '">' + p.id + ' - ' + esc(p.name) + ' [' + esc(p.type || 'Khác') + ']</option>';
     }).join('');
   }
+  //Select loại
+  var catSelect = document.getElementById('pricing-category-select');
+  if (catSelect) {
+    catSelect.innerHTML = categories.map(function (c) {
+      return '<option value="' + esc(c) + '">' + esc(c) + '</option>';
+    }).join('');
+  }
   filterPricingTable();
+}
+function saveCategoryMargin() {
+  var selectedCat = document.getElementById('pricing-category-select').value;
+  var marginVal = parseFloat(document.getElementById('pricing-cat-margin-input').value);
+  if (isNaN(marginVal) || marginVal < 0) { 
+    alert('Vui lòng nhập % hợp lệ (Lưu ý không được âm)'); 
+    return; 
+  }
+  var count = 0;
+  // Duyệt sản phẩm cùng loại
+  products.forEach(function (p) {
+    if (p.type === selectedCat) {
+      p.margin = marginVal;
+      p.price = Math.round(((p.cost || 0) * (1 + marginVal / 100)) / 1000) * 1000;
+      count++;
+    }
+  });
+
+  if (count === 0) {
+    alert('Không có sản phẩm nào thuộc loại "' + selectedCat + '" để cập nhật!');
+    return;
+  }
+  save('wishy_products', products); 
+  renderPricing();
+  alert('Đã cập nhật % lợi nhuận cho ' + count + ' sản phẩm thuộc loại "' + selectedCat + '" thành công!');
 }
 
 function saveProductMargin() {
