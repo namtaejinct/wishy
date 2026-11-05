@@ -164,21 +164,13 @@
             <!-- 4. Quản lí Lợi nhuận (Mai) -->
             <section id="tab-pricing" class="tab-content">
                 <h2>Quản lí Giá bán &amp; Tỷ suất Lợi nhuận</h2>
-                <div style="display: flex; gap: 20px; margin-bottom: 24px; flex-wrap: wrap;">
+
                 <!-- Cập nhật giá sản phẩm -->
-                <div class="card-box pricing-admin-box">
+                <div class="card-box pricing-admin-box" style="margin-bottom: 24px;">
                     <h3>Cập nhật % Lợi nhuận theo sản phẩm</h3>
                     <div class="form-row"><label>Chọn sản phẩm</label><select id="pricing-prod-select"></select></div>
                     <div class="form-row"><label>Phần trăm lợi nhuận (%)</label><input type="number" id="pricing-margin-input" value="30"></div>
                     <button class="btn" style="margin-top: 10px;" onclick="saveProductMargin()">Lưu &amp; Tính lại giá bán</button>
-                </div>
-                <!-- Cập nhật % lợi nhuận theo LOẠI sản phẩm -->
-                <div class="card-box pricing-admin-box">
-                    <h3>Cập nhật % Lợi nhuận theo Loại sản phẩm</h3>
-                    <div class="form-row"><label>Chọn loại sản phẩm</label><select id="pricing-category-select"></select></div>
-                    <div class="form-row"><label>Phần trăm lợi nhuận chung (%)</label><input type="number" id="pricing-cat-margin-input" value="30"> </div>
-                    <button class="btn" style="margin-top: 10px;" onclick="saveCategoryMargin()">Áp dụng cho toàn bộ loại</button>
-                </div>
                 </div>
 
                 <!-- Bảng tra cứu & Thanh tìm kiếm -->
