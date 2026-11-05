@@ -379,7 +379,6 @@ var defaultProducts = [
     stock: 4, 
     img: 'images/totebag-bat1.png', 
     images: ['images/totebag-bat1.png', 'images/totebag-bat2.png'], 
-    variants: ['You can sit with us', 'Always Hungry'],
     desc: 'Túi tote chất liệu vải canvas bền đẹp, lấy cảm hứng từ vải bạt, phong cách trẻ trung, tiện dụng.' 
   },
 
