@@ -139,6 +139,23 @@ function showCheckoutSection() {
   var selectedItems = cart.filter(function (i) { return i.selected; });
   if (!selectedItems.length) { alert('Vui lòng chọn ít nhất một sản phẩm để tiến hành đặt hàng!'); return; }
 
+  for (var i = 0; i < selectedItems.length; i++) {
+    var it = selectedItems[i];
+    var p = findProduct(it.pid);
+    if (!p || p.status === 'hidden') {
+      alert('Sản phẩm "' + (p ? p.name : it.pid) + '" hiện đã ngừng kinh doanh. Vui lòng bỏ chọn trước khi thanh toán!');
+      return; // Dừng lại luôn, không cho mở trang điền địa chỉ
+    }
+    if (it.qty > p.stock) {
+      alert('Sản phẩm "' + p.name + '" vượt quá tồn kho (Còn lại: ' + p.stock + ')');
+      return;
+    }
+    if (it.qty > p.stock) {
+      alert('Sản phẩm "' + p.name + '" vừa cập nhật tồn kho (Chỉ còn lại: ' + p.stock + ' món, giỏ hàng của bạn đang có: ' + it.qty + '). Vui lòng điều chỉnh lại số lượng!');
+      return; // Dừng lại ngay
+    }
+  }
+  
   document.querySelector('.cart-header-row').style.display = 'none';
   document.getElementById('cart-items-container').style.display = 'none';
   document.getElementById('cart-summary-box').style.display = 'none';
@@ -234,19 +251,23 @@ function checkoutOrder() {
   return '<tr><td style="padding: 10px;">' + esc(p ? p.name : '') + '</td><td style="padding: 10px; text-align:center;">' + it.qty + '</td><td style="padding: 10px; text-align:right;">' + money(linePrice(it) * it.qty) + '</td></tr>';  
 }).join('');
 
-  document.getElementById('invoice-content').innerHTML =
+document.getElementById('invoice-content').innerHTML =
     '<p style="margin-bottom: 6px;"><b>Mã đơn hàng:</b> ' + newOrder.id + '</p>' +
     '<p style="margin-bottom: 6px;"><b>Ngày đặt:</b> ' + fmtDate(newOrder.date) + '</p>' +
     '<p style="margin-bottom: 6px;"><b>Người nhận & Địa chỉ:</b> ' + esc(newOrder.shipInfo) + '</p>' +
     '<p style="margin-bottom: 12px;"><b>Thanh toán:</b> ' + newOrder.payment + '</p>' +
-    '<table style="width:100%; border-collapse:collapse; margin: 15px 0;">' +
-      '<thead><tr style="background:#EBF3FA;"><th style="padding:10px; text-align:left;">Sản phẩm</th><th style="padding:10px; text-align:center;">SL</th><th style="padding:10px; text-align:right;">Thành tiền</th></tr></thead>' +
-      '<tbody>' + itemsHtml + '</tbody>' +
+    '<table style="width:100%; margin: 15px 0;">' +
+        '<thead><tr style="background:#EBF3FA;">' +
+            '<th style="padding:10px; text-align:left;">Sản phẩm</th>' +
+            '<th style="padding:10px; text-align:center;">SL</th>' +
+            '<th style="padding:10px; text-align:right;">Thành tiền</th>' +
+        '</tr></thead>' +
+        '<tbody>' + itemsHtml + '</tbody>' +
     '</table>' +
     '<h3 style="text-align:right; color:var(--primary-color); margin-top: 15px;">Tổng thanh toán: ' + money(total) + '</h3>';
 
-  document.getElementById('checkout-section').style.display = 'none';
-  document.getElementById('invoice-box').style.display = 'block';
+document.getElementById('checkout-section').style.display = 'none';
+document.getElementById('invoice-box').style.display = 'block';
 }
 
 function continueShopping() {

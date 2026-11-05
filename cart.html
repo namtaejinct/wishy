@@ -100,14 +100,19 @@
 
       <div id="new-address-box" class="new-address-box">
         <div class="form-row"><label>Họ và tên người nhận</label><input type="text" id="ship-name" placeholder="Nguyễn Văn A"></div>
-        <div class="form-row"><label>Số điện thoại nhận hàng</label><input type="tel" id="ship-phone" placeholder="0901234567" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+        <div class="form-row">
+            <label>Số điện thoại nhận hàng</label>
+            <input type="tel" 
+                id="ship-phone" placeholder="0901234567 hoặc +84901234567" maxlength="12" 
+                pattern="^(0|\+84)\d{9}$" oninput="this.value = this.value.replace(/[^0-9+]/g, '')">
+        </div>
         <div class="form-row"><label>Địa chỉ nhận hàng chi tiết</label><input type="text" id="ship-addr" placeholder="Số nhà, tên đường, phường/xã..."></div>
       </div>
 
       <div class="payment-method-group">
         <label class="pay-method-title">Phương thức thanh toán:</label>
         <div>
-          <label><input type="radio" name="pay-method" value="COD" checked> <b>Tiền mặt khi nhận hàng (COD)</b> (Mặc định)</label>
+          <label><input type="radio" name="pay-method" value="COD" checked> <b>Tiền mặt khi nhận hàng (COD)</b> </label>
           <label><input type="radio" name="pay-method" value="Banking"> Chuyển khoản ngân hàng (QR Code)</label>
         </div>
       </div>
