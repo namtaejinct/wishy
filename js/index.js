@@ -92,17 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-
-
-var currentPage = 1;
-var ITEMS_PER_PAGE = 6;
-var currentModalProduct = null;
-
-function getStoredProducts() {
-    return products;
-}
-
-// 1. Chuyển Tab danh mục & cuộn mượt
+// Chuyển Tab danh mục & cuộn
 function selectCategory(catName, element) {
     document.querySelectorAll('.cat-tab').forEach(function (tab) {
         tab.classList.remove('active');
@@ -137,23 +127,42 @@ function selectCategory(catName, element) {
 }
 }
 
-// 2. Lọc sản phẩm 3 tiêu chí
+
+let currentPage = 1;
+const ITEMS_PER_PAGE = 6;
+let currentModalProduct = null;
+
+function getStoredProducts() {
+    return products;
+}
+
+
+
+// Lọc sp
 function getFilteredProducts() {
     var nameVal = document.getElementById('filter-name') ? document.getElementById('filter-name').value.toLowerCase().trim() : '';
     var typeVal = document.getElementById('filter-type') ? document.getElementById('filter-type').value : 'all';
     var priceVal = document.getElementById('filter-price') ? document.getElementById('filter-price').value : 'all';
 
     return getStoredProducts().filter(function (p) {
-        if (p.status === 'hidden') return false;
-        if (nameVal && p.name.toLowerCase().indexOf(nameVal) === -1) return false;
-        if (typeVal !== 'all' && p.type !== typeVal) return false;
-        if (priceVal === 'under100' && p.price >= 100000) return false;
-        if (priceVal === '100to300' && (p.price < 100000 || p.price > 300000)) return false;
-        if (priceVal === 'over300' && p.price <= 300000) return false;
+        if (p.status === 'hidden') 
+            return false;
+        if (nameVal && p.name.toLowerCase().indexOf(nameVal) === -1) 
+            return false;
+        if (typeVal !== 'all' && p.type !== typeVal) 
+            return false;
+        if (priceVal === 'under100' && p.price >= 100000) 
+            return false;
+        if (priceVal === '100to300' && (p.price < 100000 || p.price > 300000)) 
+            return false;
+        if (priceVal === 'over300' && p.price <= 300000) 
+            return false;
         return true;
     });
 }
 
+
+// cap nhat header
 function filterProducts() {
     currentPage = 1;
 
@@ -170,11 +179,12 @@ function filterProducts() {
     renderProductList();
 }
 
-// 3. Render Lưới sản phẩm & Phân trang
+// luoi sp & phan trang
 function renderProductList() {
     var grid = document.getElementById('product-grid');
     var pagBox = document.getElementById('pagination-box');
-    if (!grid) return;
+    if (!grid) 
+        return;
 
     var list = getFilteredProducts();
     var start = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -210,7 +220,7 @@ function changePage(page) {
     if (pSection) pSection.scrollIntoView({ behavior: 'smooth' });
 }
 
-// 4. Modal Chi tiết sản phẩm
+// overlay modal
 function openProductModal(id) {
     var list = getStoredProducts();
     var p = list.find(function (item) { return item.id === id; });
@@ -316,7 +326,6 @@ function addToCart(pid) {
     localStorage.setItem(cartKey, JSON.stringify(cart));
     alert('Đã thêm "' + p.name + '" vào giỏ hàng thành công!');
 
-    if (typeof renderHeader === 'function') renderHeader();
     closeProductModal();
 }
 
