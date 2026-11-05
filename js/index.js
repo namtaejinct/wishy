@@ -127,7 +127,6 @@ function selectCategory(catName, element) {
 }
 }
 
-
 let currentPage = 1;
 const ITEMS_PER_PAGE = 6;
 let currentModalProduct = null;
@@ -136,9 +135,6 @@ function getStoredProducts() {
     return products;
 }
 
-
-
-// Lọc sp
 // Lọc sp (dropdown mốc giá + tự nhập khoảng giá)
 function getFilteredProducts() {
     var nameInput  = document.getElementById('filter-name');
