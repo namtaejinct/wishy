@@ -457,6 +457,11 @@ function updateOrderStatus(id) {
     renderOrdersAndStock();
     return;
   }
+  if (o.status === 'Đã giao' && newSt !== 'Đã giao') { 
+    alert('Đơn hàng đã giao thành công, không thể thay đổi trạng thái nữa!'); 
+    renderOrdersAndStock();
+    return;
+  }
   if (newSt === 'Đã hủy' && o.status !== 'Đã hủy') {
     o.items.forEach(function (it) {
       var p = findProduct(it.pid);
