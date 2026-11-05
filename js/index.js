@@ -139,24 +139,49 @@ function getStoredProducts() {
 
 
 // Lọc sp
+// Lọc sp (dropdown mốc giá + tự nhập khoảng giá)
 function getFilteredProducts() {
-    var nameVal = document.getElementById('filter-name') ? document.getElementById('filter-name').value.toLowerCase().trim() : '';
-    var typeVal = document.getElementById('filter-type') ? document.getElementById('filter-type').value : 'all';
-    var priceVal = document.getElementById('filter-price') ? document.getElementById('filter-price').value : 'all';
+    var nameInput  = document.getElementById('filter-name');
+    var typeInput  = document.getElementById('filter-type');
+    var priceInput = document.getElementById('filter-price');
+    var minInput   = document.getElementById('filter-min-price');
+    var maxInput   = document.getElementById('filter-max-price');
+
+    var nameVal  = nameInput  ? nameInput.value.toLowerCase().trim() : '';
+    var typeVal  = typeInput  ? typeInput.value : 'all';
+    var priceVal = priceInput ? priceInput.value : 'all';
+
+    // Khoảng giá tự nhập (NaN nếu để trống / nhập sai)
+    var minPrice = minInput ? parseInt(minInput.value, 10) : NaN;
+    var maxPrice = maxInput ? parseInt(maxInput.value, 10) : NaN;
+
+    // Có nhập tay thì bỏ qua dropdown mốc giá
+    var useCustomRange = !isNaN(minPrice) || !isNaN(maxPrice);
 
     return getStoredProducts().filter(function (p) {
-        if (p.status === 'hidden') 
+        if (p.status === 'hidden')
             return false;
-        if (nameVal && p.name.toLowerCase().indexOf(nameVal) === -1) 
+        if (nameVal && p.name.toLowerCase().indexOf(nameVal) === -1)
             return false;
-        if (typeVal !== 'all' && p.type !== typeVal) 
+        if (typeVal !== 'all' && p.type !== typeVal)
             return false;
-        if (priceVal === 'under100' && p.price >= 100000) 
-            return false;
-        if (priceVal === '100to300' && (p.price < 100000 || p.price > 300000)) 
-            return false;
-        if (priceVal === 'over300' && p.price <= 300000) 
-            return false;
+
+        if (useCustomRange) {
+            // Lọc theo khoảng giá tự nhập
+            if (!isNaN(minPrice) && p.price < minPrice)
+                return false;
+            if (!isNaN(maxPrice) && p.price > maxPrice)
+                return false;
+        } else {
+            // Lọc theo mốc giá có sẵn trong dropdown
+            if (priceVal === 'under100' && p.price >= 100000)
+                return false;
+            if (priceVal === '100to300' && (p.price < 100000 || p.price > 300000))
+                return false;
+            if (priceVal === 'over300' && p.price <= 300000)
+                return false;
+        }
+
         return true;
     });
 }
@@ -246,17 +271,7 @@ function openProductModal(id) {
         dotsContainer.innerHTML = '';
     }
 
-    // Xử lý nút phân loại
-    var variantContainer = document.getElementById('modal-variants-container');
-    if (p.variants && p.variants.length > 0) {
-        var vHtml = '<div class="variant-row"><span class="variant-label">Phân loại:</span><div class="variant-list">';
-        p.variants.forEach(function (v, idx) {
-            vHtml += '<button type="button" class="variant-btn ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(this)">' + esc(v) + '</button>';
-        });
-        variantContainer.innerHTML = vHtml + '</div></div>';
-    } else {
-        variantContainer.innerHTML = '';
-    }
+
 
     // Xử lý số lượng tối đa và Nút Thêm giỏ hàng
     document.getElementById('modal-qty-input').value = 1;

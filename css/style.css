@@ -908,6 +908,22 @@ select:focus {
   font-size: 13px;
 }
 
+.filter-group-number {
+  margin:5px auto;
+}
+
+.filter-group-number input[type="number"],
+.filter-group-number select {
+  width: 49%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  outline: none;
+  font-size: 13px;
+  
+}
+
 .btn-filter {
   width: 100%;
   padding: 12px;
