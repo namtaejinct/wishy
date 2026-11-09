@@ -228,9 +228,13 @@ function renderProductList() {
 
     var totalPages = Math.ceil(list.length / ITEMS_PER_PAGE);
     var pagHtml = '';
-    for (var i = 1; i <= totalPages; i++) {
-        pagHtml += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+    
+    if (totalPages > 1) {
+        for (var i = 1; i <= totalPages; i++) {
+            pagHtml += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+        }
     }
+    
     if (pagBox) pagBox.innerHTML = pagHtml;
 }
 
