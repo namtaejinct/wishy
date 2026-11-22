@@ -38,12 +38,16 @@ body {
     padding: 0;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
     font-family: inherit;
     font-size: 15px;
 }
 
-h2, h3 {
+h2,
+h3 {
     font-weight: 700;
     color: var(--primary-color);
 }
@@ -148,7 +152,8 @@ h2, h3 {
 }
 
 .page-header h2 {
-    margin: 0;   /* page-header đã có margin-bottom riêng */
+    margin: 0;
+    /* page-header đã có margin-bottom riêng */
 }
 
 .card,
@@ -302,43 +307,69 @@ select:focus {
 
 /* ===== TV3 ===== */
 .cart-header-row {
-  display: flex;
-  align-items: center;
-  background: #EBF3FA;
-  padding: 14px 20px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  font-weight: 700;
-  color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    background: #EBF3FA;
+    padding: 14px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    color: var(--primary-color);
 }
 
 .cart-item-row {
-  display: flex;
-  align-items: center;
-  background: #FFFFFF;
-  padding: 16px 20px;
-  margin-bottom: 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    display: flex;
+    align-items: center;
+    background: #FFFFFF;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
 }
+
 .cart-list-container {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
 }
-.col-admin-id { width: 12%; font-weight: 700; padding-right: 10px; }
-.col-admin-name { width: 38%; font-weight: 600; padding-right: 15px; }
-.col-admin-cost { width: 18%; padding-right: 10px; }
-.col-admin-margin { width: 14%; font-weight: 700; }
-.col-admin-price { width: 18%; font-weight: 700; color: var(--accent-color); }
+
+.col-admin-id {
+    width: 12%;
+    font-weight: 700;
+    padding-right: 10px;
+}
+
+.col-admin-name {
+    width: 38%;
+    font-weight: 600;
+    padding-right: 15px;
+}
+
+.col-admin-cost {
+    width: 18%;
+    padding-right: 10px;
+}
+
+.col-admin-margin {
+    width: 14%;
+    font-weight: 700;
+}
+
+.col-admin-price {
+    width: 18%;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
 .pricing-admin-box {
-    flex: 1;                
-    min-width: 300px;       
-    margin-bottom: 0;       
+    flex: 1;
+    min-width: 300px;
+    margin-bottom: 0;
 }
+
 #tab-admin-pricing h2 {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 
@@ -357,12 +388,10 @@ select:focus {
 }
 
 #admin-login-modal {
-    background: linear-gradient(
-        to bottom,
-        #A8D8B0 0%,
-        #4B9B68 45%,
-        #153F2B 100%
-    );
+    background: linear-gradient(to bottom,
+            #A8D8B0 0%,
+            #4B9B68 45%,
+            #153F2B 100%);
 }
 
 .admin-login-card {
@@ -453,7 +482,7 @@ select:focus {
 }
 
 /* Nút ✕ đóng modal: nằm thẳng hàng với tiêu đề */
-.modal-card > .btn-outline.btn-sm {
+.modal-card>.btn-outline.btn-sm {
     float: right;
     margin: -6px -6px 0 0;
 }
@@ -573,6 +602,87 @@ select:focus {
         align-items: flex-start;
         flex-direction: column;
     }
+}
+
+/* 1. Đồng bộ chiều cao & căn giữa các control trên thanh công cụ */
+.page-header>div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.page-header select,
+.page-header .input-search,
+.page-header .btn,
+.filter-box input,
+.filter-box select,
+.filter-box .btn {
+    height: 38px;
+    padding-top: 0;
+    padding-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* 2. Chống tràn ngang khi bảng nhiều cột (Đơn hàng 9 cột, Người dùng 7 cột) */
+.card {
+    overflow-x: auto;
+}
+
+.data-table th,
+.data-table td,
+table th,
+table td {
+    padding: 10px 10px;
+    font-size: 13.5px;
+    vertical-align: middle;
+}
+
+/* Thu gọn select và nút bên trong bảng Đơn hàng cho cân đối */
+#tbody-orders select {
+    padding: 5px 8px;
+    font-size: 13px;
+    max-width: 135px;
+}
+
+#tbody-orders .btn,
+#tbody-orders .btn-outline {
+    padding: 5px 10px;
+    font-size: 12.5px;
+}
+
+/* Nút Xóa màu đỏ đồng bộ */
+.btn-danger {
+    background-color: var(--danger-color);
+    color: #FFFFFF;
+}
+
+.btn-danger:hover {
+    background-color: #A93226;
+}
+
+/* 3. Ô mô tả (textarea) trong form thêm/sửa sản phẩm */
+textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    resize: vertical;
+    background: #FFFFFF;
+}
+
+textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.18);
+}
+
+/* 4. Mở rộng modal để bảng hóa đơn 6 cột thoáng, không rớt chữ */
+#admin-modal .modal-card {
+    width: 680px !important;
+    max-width: 94vw;
 }
 
 @media (max-width: 600px) {

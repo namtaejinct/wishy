@@ -1,3 +1,5 @@
+
+
 function switchTab(id, btn) {
   document.querySelectorAll('.tab-content').forEach(function (t) { t.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
@@ -23,7 +25,7 @@ function handleAdminLogin() {
     return x.username === u && x.password === p && (x.role === 'admin' || x.username === 'admin');
   })[0];
   if (!acc) { alert('Sai tài khoản hoặc mật khẩu quản trị.'); return; }
-  try { sessionStorage.setItem('wishy_admin', u); } catch (e) {}
+  try { sessionStorage.setItem('wishy_admin', u); } catch (e) { }
   admin_enter();
 }
 function admin_enter() {
@@ -43,7 +45,7 @@ function renderAll() {
   renderInventory();
 }
 
-  function renderOrdersAndStock() {
+function renderOrdersAndStock() {
   renderAdminOrders();
   renderStockIn();
   renderInventory();
@@ -51,36 +53,16 @@ function renderAll() {
 
 function onDataChanged() {
   var logged = false;
-  try { logged = !!sessionStorage.getItem('wishy_admin'); } catch (e) {}
+  try { logged = !!sessionStorage.getItem('wishy_admin'); } catch (e) { }
   if (logged) renderAll();
 }
 
 window.addEventListener('DOMContentLoaded', function () {
   var logged = false;
-  try { logged = !!sessionStorage.getItem('wishy_admin'); } catch (e) {}
+  try { logged = !!sessionStorage.getItem('wishy_admin'); } catch (e) { }
   if (logged) admin_enter();
 });
 
-/* QUẢN LÝ NGƯỜI DÙNG */
-function renderUsers() {
-  var box = document.getElementById('search-user');
-  var kw = box ? box.value.trim().toLowerCase() : '';
-  var customers = users.filter(function (u) { return u.role !== 'admin'; });
-  var list = customers.filter(function (u) {
-    return !kw || u.username.toLowerCase().indexOf(kw) !== -1 ||
-           String(u.fullname || '').toLowerCase().indexOf(kw) !== -1;
-  });
-  var tb = document.getElementById('tbody-users');
-  if (!list.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="6">Không có người dùng phù hợp.</td></tr>'; return; }
-  tb.innerHTML = list.map(function (u) {
-    var locked = u.status === 'locked';
-    return '<tr><td>KH' + String(customers.indexOf(u) + 1).padStart(3, '0') + '</td>' +
-      '<td>' + esc(u.username) + '</td><td>' + esc(u.fullname || '') + '</td><td>' + esc(u.email || '') + '</td>' +
-      '<td><span class="badge ' + (locked ? 'warn' : 'ok') + '">' + (locked ? 'Đã khóa' : 'Hoạt động') + '</span></td>' +
-      '<td><button class="btn-outline btn-sm" onclick="toggleUserLock(\'' + esc(u.username) + '\')">' +
-      (locked ? 'Mở khóa' : 'Khóa') + '</button></td></tr>';
-  }).join('');
-}
 
 function toggleUserLock(username) {
   var u = findUser(username);
@@ -90,6 +72,15 @@ function toggleUserLock(username) {
   u.status = lock ? 'locked' : 'active';
   save('wishy_users', users);
   renderUsers();
+}
+
+function resetUserPassword(username) {
+  var u = findUser(username);
+  if (!u || u.role === 'admin') return;
+  if (!confirm('Đặt lại mật khẩu của tài khoản "' + username + '" về mặc định (123456)?')) return;
+  u.password = '123456';
+  save('wishy_users', users);
+  alert('Đã reset mật khẩu của "' + username + '" thành 123456!');
 }
 
 /* QUẢN LÝ LOẠI SẢN PHẨM */
@@ -189,11 +180,18 @@ function renderAdminProducts() {
       '<td>' + money(p.price) + '</td>' +
       '<td>' + p.stock + '</td>' +
       '<td>' +
-        '<button class="btn-outline btn-sm" style="margin-right:6px" onclick="editProduct(\'' + esc(p.id) + '\')">Sửa</button>' +
-        '<button class="btn-outline btn-sm" style="margin-right:6px" onclick="toggleHideProduct(\'' + esc(p.id) + '\')">' + (hidden ? 'Hiện' : 'Ẩn') + '</button>' +
-        '<button class="btn btn-sm" onclick="deleteProduct(\'' + esc(p.id) + '\')">Xóa</button>' +
+      '<button class="btn-outline btn-sm" style="margin-right:6px" onclick="editProduct(\'' + esc(p.id) + '\')">Sửa</button>' +
+      '<button class="btn-outline btn-sm" style="margin-right:6px" onclick="toggleHideProduct(\'' + esc(p.id) + '\')">' + (hidden ? 'Hiện' : 'Ẩn') + '</button>' +
+      '<button class="btn btn-sm" onclick="deleteProduct(\'' + esc(p.id) + '\')">Xóa</button>' +
       '</td></tr>';
   }).join('');
+}
+
+function openProductForm() {
+  cancelEditProduct(true);
+  var box = document.getElementById('product-form-box');
+  box.style.display = 'block';
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function saveProduct() {
@@ -203,6 +201,8 @@ function saveProduct() {
   var type = document.getElementById('prod-type').value;
   var price = parseInt(document.getElementById('prod-price').value, 10);
   var stock = parseInt(document.getElementById('prod-stock').value, 10);
+  var img = document.getElementById('prod-img').value.trim();
+  var desc = document.getElementById('prod-desc').value.trim();
 
   if (!id || !name) { alert('Vui lòng nhập mã và tên sản phẩm!'); return; }
   if (!/^[A-Z0-9_-]{2,20}$/.test(id)) { alert('Mã sản phẩm chỉ gồm chữ, số, dấu - hoặc _ (VD: SP021).'); return; }
@@ -217,12 +217,26 @@ function saveProduct() {
     p.type = type;
     p.price = price;
     p.stock = stock;
-    p.margin = calcMargin(price, p.cost);   // giữ giá vốn, lợi nhuận tính lại theo giá mới
+    p.img = img || p.img || NO_IMAGE;
+    p.images = [p.img];
+    p.desc = desc;
+    p.margin = calcMargin(price, p.cost);
   } else {
     if (findProduct(id)) { alert('Mã sản phẩm đã tồn tại!'); return; }
-    var cost = Math.round(price * 0.7);     // giá vốn tạm tính, chỉnh ở phiếu nhập / tab Lợi nhuận
-    products.push({ id: id, name: name, type: type, price: price, stock: stock,
-      cost: cost, margin: calcMargin(price, cost), desc: '' });
+    var cost = Math.round(price * 0.7);
+    var prodImg = img || NO_IMAGE;
+    products.push({
+      id: id,
+      name: name,
+      type: type,
+      price: price,
+      stock: stock,
+      img: prodImg,
+      images: [prodImg],
+      cost: cost,
+      margin: calcMargin(price, cost),
+      desc: desc
+    });
   }
 
   save('wishy_products', products);
@@ -242,22 +256,30 @@ function editProduct(id) {
   document.getElementById('prod-type').value = p.type;
   document.getElementById('prod-price').value = p.price;
   document.getElementById('prod-stock').value = p.stock;
+  document.getElementById('prod-img').value = p.img || '';
+  document.getElementById('prod-desc').value = p.desc || '';
   document.getElementById('form-product-title').textContent = 'Sửa sản phẩm: ' + p.id;
   document.getElementById('btn-save-prod').textContent = 'Cập nhật sản phẩm';
-  document.getElementById('btn-cancel-prod').style.display = 'inline-block';
-  document.getElementById('form-product-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  var box = document.getElementById('product-form-box');
+  box.style.display = 'block';
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function cancelEditProduct() {
+function cancelEditProduct(keepOpen) {
   document.getElementById('edit-prod-id').value = '';
   document.getElementById('prod-id').value = '';
   document.getElementById('prod-id').disabled = false;
   document.getElementById('prod-name').value = '';
   document.getElementById('prod-price').value = '';
   document.getElementById('prod-stock').value = '';
+  document.getElementById('prod-img').value = '';
+  document.getElementById('prod-desc').value = '';
   document.getElementById('form-product-title').textContent = 'Thêm sản phẩm mới';
   document.getElementById('btn-save-prod').textContent = 'Lưu sản phẩm';
-  document.getElementById('btn-cancel-prod').style.display = 'none';
+  if (!keepOpen) {
+    document.getElementById('product-form-box').style.display = 'none';
+  }
 }
 
 function toggleHideProduct(id) {
@@ -284,9 +306,9 @@ function deleteProduct(id) {
   save('wishy_products', products);
   // Gỡ khỏi giỏ hàng để không còn món "ma"
   users.forEach(function (u) {
-  var key = 'wishy_cart_' + u.username;
-  save(key, load(key, []).filter(function (it) { return it.pid !== id; }));
-});
+    var key = 'wishy_cart_' + u.username;
+    save(key, load(key, []).filter(function (it) { return it.pid !== id; }));
+  });
   if (document.getElementById('edit-prod-id').value === id) cancelEditProduct();
   refreshCatalogViews();
 }
@@ -313,9 +335,9 @@ function renderPricing() {
 function saveCategoryMargin() {
   var selectedCat = document.getElementById('pricing-category-select').value;
   var marginVal = parseFloat(document.getElementById('pricing-cat-margin-input').value);
-  if (isNaN(marginVal) || marginVal < 0) { 
-    alert('Vui lòng nhập % hợp lệ (Lưu ý không được âm)'); 
-    return; 
+  if (isNaN(marginVal) || marginVal < 0) {
+    alert('Vui lòng nhập % hợp lệ (Lưu ý không được âm)');
+    return;
   }
   var count = 0;
   // Duyệt sản phẩm cùng loại
@@ -331,7 +353,7 @@ function saveCategoryMargin() {
     alert('Không có sản phẩm nào thuộc loại "' + selectedCat + '" để cập nhật!');
     return;
   }
-  save('wishy_products', products); 
+  save('wishy_products', products);
   renderPricing();
   alert('Đã cập nhật % lợi nhuận cho ' + count + ' sản phẩm thuộc loại "' + selectedCat + '" thành công!');
 }
@@ -346,7 +368,7 @@ function saveProductMargin() {
   p.margin = marginVal;
   p.price = Math.round(((p.cost || 0) * (1 + marginVal / 100)) / 1000) * 1000;
 
-  save('wishy_products', products); 
+  save('wishy_products', products);
   renderPricing();
   alert('Cập nhật lợi nhuận và tính lại giá bán thành công!');
 }
@@ -357,10 +379,10 @@ function filterPricingTable() {
   var container = document.getElementById('pricing-items-container');
   if (!container) return;
 
-  var filtered = products.filter(function(p) {
-    return p.id.toLowerCase().indexOf(keyword) !== -1 || 
-           p.name.toLowerCase().indexOf(keyword) !== -1 || 
-           (p.type && p.type.toLowerCase().indexOf(keyword) !== -1);
+  var filtered = products.filter(function (p) {
+    return p.id.toLowerCase().indexOf(keyword) !== -1 ||
+      p.name.toLowerCase().indexOf(keyword) !== -1 ||
+      (p.type && p.type.toLowerCase().indexOf(keyword) !== -1);
   });
 
   if (!filtered.length) {
@@ -375,7 +397,7 @@ function filterPricingTable() {
       '<div class="col-admin-cost">' + money(p.cost) + '</div>' +
       '<div class="col-admin-margin">' + (p.margin || 0) + '%</div>' +
       '<div class="col-admin-price">' + money(p.price) + '</div>' +
-    '</div>';
+      '</div>';
   }).join('');
 }
 
@@ -386,12 +408,14 @@ var LOW_STOCK = 5;   // cảnh báo khi tồn < 5
 
 // Dữ liệu Phiếu nhập hàng mẫu
 var stockIns = load('wishy_stockins', [
-  { id: 'PN001', date: '2026-10-10', status: 'Hoàn tất', items: [
-    { pid: 'SP001', qty: 20, cost: 90000 },
-    { pid: 'SP002', qty: 50, cost: 200000 },
-    { pid: 'SP003', qty: 30, cost: 45000 },
-    { pid: 'SP004', qty: 20, cost: 54000 }
-  ] }
+  {
+    id: 'PN001', date: '2026-10-10', status: 'Hoàn tất', items: [
+      { pid: 'SP001', qty: 20, cost: 90000 },
+      { pid: 'SP002', qty: 50, cost: 200000 },
+      { pid: 'SP003', qty: 30, cost: 45000 },
+      { pid: 'SP004', qty: 20, cost: 54000 }
+    ]
+  }
 ]);
 
 var editingStockId = null;
@@ -410,58 +434,125 @@ function statusBadge(s) {
 
 /* Quản lý đơn hàng của khách */
 
+/* Quản lý đơn hàng của khách */
+function getStaffName(staffUsername) {
+  if (!staffUsername) return 'Chưa phân công';
+  var st = findUser(staffUsername);
+  return st ? st.fullname : staffUsername;
+}
+
 function showOrderDetail(id) {
   var o = orders.filter(function (x) { return x.id === id; })[0];
   if (!o) return;
-  var rows = o.items.map(function (it) {
+  var u = findUser(o.user);
+  var maKH = getCustomerCode(o.user);
+  var tenKH = u ? u.fullname : o.user;
+
+  var rows = o.items.map(function (it, idx) {
     var p = findProduct(it.pid);
-    return '<tr><td>' + it.pid + '</td><td>' + esc(p ? p.name : '(đã xóa)') + (it.variant ? ' <small>(' + esc(it.variant) + ')</small>' : '') + '</td><td>' + it.qty + '</td><td>' + money(linePrice(it) * it.qty) + '</td></tr>';
+    var unitPrice = linePrice(it);
+    return '<tr>' +
+      '<td>' + (idx + 1) + '</td>' +
+      '<td>' + esc(it.pid) + '</td>' +
+      '<td>' + esc(p ? p.name : '(đã xóa)') + (it.variant ? ' <small>(' + esc(it.variant) + ')</small>' : '') + '</td>' +
+      '<td>' + it.qty + '</td>' +
+      '<td>' + money(unitPrice) + '</td>' +
+      '<td>' + money(unitPrice * it.qty) + '</td>' +
+      '</tr>';
   }).join('');
-  openModal('<h3>Chi tiết đơn ' + o.id + '</h3><p>Ngày đặt: <b>' + fmtDate(o.date) + '</b> &nbsp; ' + statusBadge(o.status) + '</p>' +
-    '<table><thead><tr><th>Mã SP</th><th>Tên</th><th>SL</th><th>Thành tiền</th></tr></thead><tbody>' + rows + '</tbody></table>' +
-    '<div class="detail-total">Tổng: ' + money(orderTotal(o)) + '</div>');
+
+  openModal(
+    '<div style="border-bottom: 2px dashed var(--border-color); padding-bottom: 12px; margin-bottom: 14px;">' +
+    '<h3 style="margin: 0 0 4px; text-align: center; font-size: 20px;">HÓA ĐƠN BÁN HÀNG WISHY</h3>' +
+    '<p style="margin: 0; text-align: center; font-size: 13px; color: #7F8C8D;">Mã hóa đơn / Đơn hàng: <b>' + esc(o.id) + '</b></p>' +
+    '</div>' +
+    '<div style="font-size: 14px; line-height: 1.7; margin-bottom: 14px;">' +
+    '<div><b>Mã khách hàng:</b> ' + maKH + ' &nbsp;|&nbsp; <b>Khách hàng:</b> ' + esc(tenKH) + '</div>' +
+    '<div><b>Ngày mua:</b> ' + fmtDate(o.date) + ' &nbsp;|&nbsp; <b>Trạng thái:</b> ' + statusBadge(o.status) + '</div>' +
+    '<div><b>Nhân viên phụ trách:</b> ' + esc(getStaffName(o.staff)) + '</div>' +
+    (o.shipInfo ? '<div><b>Giao đến:</b> ' + esc(o.shipInfo) + '</div>' : '') +
+    (o.payment ? '<div><b>Thanh toán:</b> ' + esc(o.payment) + '</div>' : '') +
+    '</div>' +
+    '<table>' +
+    '<thead><tr><th>STT</th><th>Mã SP</th><th>Tên sản phẩm</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody>' +
+    '</table>' +
+    '<div class="detail-total" style="font-size: 16px; border-top: 2px solid var(--border-color); padding-top: 10px;">' +
+    'Tổng cộng thanh toán: ' + money(orderTotal(o)) +
+    '</div>'
+  );
 }
 
 function renderAdminOrders() {
   var from = document.getElementById('filter-from-date').value;
   var to = document.getElementById('filter-to-date').value;
   var st = document.getElementById('filter-status').value;
+
   var list = orders.filter(function (o) {
     if (from && o.date < from) return false;
     if (to && o.date > to) return false;
     if (st !== 'all' && o.status !== st) return false;
     return true;
   });
+
   var tb = document.getElementById('tbody-orders');
-  if (!list.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="6">Không có đơn hàng phù hợp.</td></tr>'; return; }
+  if (!list.length) {
+    tb.innerHTML = '<tr class="empty-row"><td colspan="9">Không có đơn hàng phù hợp.</td></tr>';
+    return;
+  }
+
   var opts = ['Chờ xác nhận', 'Chờ lấy hàng', 'Chờ giao hàng', 'Đã giao', 'Đã hủy'];
+  var staffs = users.filter(function (u) { return u.role === 'staff' || u.role === 'admin'; });
+
   tb.innerHTML = list.map(function (o) {
     var u = findUser(o.user);
-    var select = '<select id="st-' + o.id + '">' + opts.map(function (s) {
-      return '<option value="' + s + '"' + (s === o.status ? ' selected' : '') + '>' + s + '</option>';
-    }).join('') + '</select> ';
-  return '<tr><td>' + o.id + '</td><td>' + esc(u ? u.fullname : o.user) + '</td><td>' + money(orderTotal(o)) + '</td><td>' +
-    statusBadge(o.status) + '</td><td>' + select +
-    '<button class="btn" onclick="updateOrderStatus(\'' + o.id + '\')">Lưu</button></td><td>' +
-    '<button class="btn-outline btn-sm" onclick="showOrderDetail(\'' + o.id + '\')">Xem</button></td></tr>';
+    var maKH = getCustomerCode(o.user);
+    var isLocked = o.status === 'Đã giao' || o.status === 'Đã hủy';
+
+    var staffSelect = '<select id="stf-' + o.id + '" ' + (isLocked ? 'disabled' : '') + '>' +
+      '<option value="">-- Chọn NV --</option>' +
+      staffs.map(function (s) {
+        return '<option value="' + esc(s.username) + '"' + (o.staff === s.username ? ' selected' : '') + '>' + esc(s.fullname) + '</option>';
+      }).join('') +
+      '</select>';
+
+    var statusSelect = '<select id="st-' + o.id + '" ' + (isLocked ? 'disabled' : '') + '>' +
+      opts.map(function (s) {
+        return '<option value="' + s + '"' + (s === o.status ? ' selected' : '') + '>' + s + '</option>';
+      }).join('') +
+      '</select>';
+
+    var actionUpdate = isLocked
+      ? statusSelect + ' <button class="btn" disabled style="opacity: 0.45; cursor: not-allowed;" title="Đơn hàng đã hoàn tất/hủy không thể sửa">Đã khóa</button>'
+      : statusSelect + ' <button class="btn" onclick="updateOrderStatus(\'' + o.id + '\')">Lưu</button>';
+
+    return '<tr>' +
+      '<td><b>' + esc(o.id) + '</b></td>' +
+      '<td>' + maKH + '</td>' +
+      '<td>' + esc(u ? u.fullname : o.user) + '</td>' +
+      '<td>' + fmtDate(o.date) + '</td>' +
+      '<td>' + staffSelect + '</td>' +
+      '<td>' + money(orderTotal(o)) + '</td>' +
+      '<td>' + statusBadge(o.status) + '</td>' +
+      '<td style="white-space:nowrap;">' + actionUpdate + '</td>' +
+      '<td><button class="btn-outline btn-sm" onclick="showOrderDetail(\'' + o.id + '\')">Xem</button></td>' +
+      '</tr>';
   }).join('');
 }
 
 function updateOrderStatus(id) {
   var o = orders.filter(function (x) { return x.id === id; })[0];
   if (!o) return;
-  var newSt = document.getElementById('st-' + id).value;
+  if (o.status === 'Đã giao' || o.status === 'Đã hủy') {
+    alert('Đơn hàng đã giao hoặc đã hủy, không thể chỉnh sửa!');
+    renderOrdersAndStock();
+    return;
+  }
 
-  if (o.status === 'Đã hủy' && newSt !== 'Đã hủy') {
-    alert('Đơn đã hủy không thể mở lại.');
-    renderOrdersAndStock();
-    return;
-  }
-  if (o.status === 'Đã giao' && newSt !== 'Đã giao') { 
-    alert('Đơn hàng đã giao thành công, không thể thay đổi trạng thái nữa!'); 
-    renderOrdersAndStock();
-    return;
-  }
+  var newSt = document.getElementById('st-' + id).value;
+  var staffEl = document.getElementById('stf-' + id);
+  var newStaff = staffEl ? staffEl.value : o.staff;
+
   if (newSt === 'Đã hủy' && o.status !== 'Đã hủy') {
     o.items.forEach(function (it) {
       var p = findProduct(it.pid);
@@ -469,7 +560,9 @@ function updateOrderStatus(id) {
     });
     save('wishy_products', products);
   }
+
   o.status = newSt;
+  o.staff = newStaff;
   save('wishy_orders', orders);
   renderOrdersAndStock();
 }
@@ -491,7 +584,7 @@ function renderStockIn() {
       '<td><span class="badge ' + (done ? 'ok' : 'mid') + '">' + esc(s.status) + '</span></td><td>' +
       '<button class="btn btn-sm" onclick="showStockDetail(\'' + s.id + '\')">Xem</button> ' +
       (done ? '' : '<button class="btn-outline btn-sm" onclick="showEditStockModal(\'' + s.id + '\')">Sửa</button> ' +
-                   '<button class="btn btn-sm" onclick="stock_complete(\'' + s.id + '\')">Hoàn thành</button>') +
+        '<button class="btn btn-sm" onclick="stock_complete(\'' + s.id + '\')">Hoàn thành</button>') +
       '</td></tr>';
   }).join('');
 }
@@ -613,7 +706,7 @@ function renderInventory() {
     tb.innerHTML = list.map(function (p) {
       var badge = p.stock === 0 ? '<span class="badge warn">Hết hàng</span>'
         : p.stock < LOW_STOCK ? '<span class="badge mid">Sắp hết</span>'
-        : '<span class="badge ok">Ổn định</span>';
+          : '<span class="badge ok">Ổn định</span>';
       return '<tr><td>' + p.id + '</td><td>' + esc(p.name) + '</td><td>' + esc(p.type) + '</td><td><b>' + p.stock + '</b></td><td>' + badge + '</td></tr>';
     }).join('');
   }
@@ -677,3 +770,155 @@ function rpt_run() {
     '<tbody><tr><td>' + p.id + ' - ' + esc(p.name) + '</td><td>' + dau + '</td><td>' + inRange.nhap + '</td><td>' + inRange.xuat + '</td><td><b>' + cuoi + '</b></td></tr></tbody></table></div>';
 }
 
+/* QUẢN LÝ NGƯỜI DÙNG (KHÁCH HÀNG & NHÂN VIÊN) */
+function getCustomerCode(username) {
+  var customers = users.filter(function (u) { return u.role !== 'admin' && u.role !== 'staff'; });
+  var idx = customers.findIndex(function (u) { return u.username === username; });
+  return idx !== -1 ? 'KH' + String(idx + 1).padStart(3, '0') : 'KH000';
+}
+
+function renderUsers() {
+  var box = document.getElementById('search-user');
+  var roleFilter = document.getElementById('filter-user-role');
+  var kw = box ? box.value.trim().toLowerCase() : '';
+  var rf = roleFilter ? roleFilter.value : 'all';
+
+  var customers = users.filter(function (u) { return u.role !== 'admin' && u.role !== 'staff'; });
+  var staffs = users.filter(function (u) { return u.role === 'staff'; });
+  var manageList = users.filter(function (u) { return u.role !== 'admin'; });
+
+  var list = manageList.filter(function (u) {
+    var role = u.role === 'staff' ? 'staff' : 'customer';
+    if (rf !== 'all' && role !== rf) return false;
+    return !kw || u.username.toLowerCase().indexOf(kw) !== -1 ||
+      String(u.fullname || '').toLowerCase().indexOf(kw) !== -1 ||
+      String(u.email || '').toLowerCase().indexOf(kw) !== -1;
+  });
+
+  var tb = document.getElementById('tbody-users');
+  if (!list.length) {
+    tb.innerHTML = '<tr class="empty-row"><td colspan="7">Không có người dùng phù hợp.</td></tr>';
+    return;
+  }
+
+  tb.innerHTML = list.map(function (u) {
+    var isStaff = u.role === 'staff';
+    var code = isStaff
+      ? 'NV' + String(staffs.indexOf(u) + 1).padStart(3, '0')
+      : 'KH' + String(customers.indexOf(u) + 1).padStart(3, '0');
+    var locked = u.status === 'locked';
+    var roleBadge = isStaff
+      ? '<span class="badge mid">Nhân viên</span>'
+      : '<span class="badge">Khách hàng</span>';
+
+    return '<tr>' +
+      '<td><b>' + code + '</b></td>' +
+      '<td>' + esc(u.username) + '</td>' +
+      '<td>' + esc(u.fullname || '') + '</td>' +
+      '<td>' + esc(u.email || '') + '</td>' +
+      '<td>' + roleBadge + '</td>' +
+      '<td><span class="badge ' + (locked ? 'warn' : 'ok') + '">' + (locked ? 'Đã khóa' : 'Hoạt động') + '</span></td>' +
+      '<td style="white-space:nowrap;">' +
+        '<button class="btn-outline btn-sm" style="margin-right:4px" onclick="showUserModal(\'' + esc(u.username) + '\')">Sửa</button>' +
+        '<button class="btn-outline btn-sm" style="margin-right:4px" onclick="resetUserPassword(\'' + esc(u.username) + '\')">Reset MK</button>' +
+        '<button class="btn-outline btn-sm" style="margin-right:4px" onclick="toggleUserLock(\'' + esc(u.username) + '\')">' + (locked ? 'Mở khóa' : 'Khóa') + '</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="deleteUser(\'' + esc(u.username) + '\')">Xóa</button>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function showUserModal(username) {
+  var u = username ? findUser(username) : null;
+  var isEdit = !!u;
+  openModal(
+    '<h3>' + (isEdit ? 'Sửa thông tin: ' + esc(u.username) : 'Thêm Khách hàng / Nhân viên') + '</h3>' +
+    '<input type="hidden" id="usr-edit-old" value="' + (isEdit ? esc(u.username) : '') + '">' +
+    '<div class="form-group"><label>Vai trò</label>' +
+    '<select id="usr-role">' +
+    '<option value="customer"' + (!isEdit || u.role !== 'staff' ? ' selected' : '') + '>Khách hàng</option>' +
+    '<option value="staff"' + (isEdit && u.role === 'staff' ? ' selected' : '') + '>Nhân viên</option>' +
+    '</select>' +
+    '</div>' +
+    '<div class="form-group"><label>Tên đăng nhập</label>' +
+    '<input type="text" id="usr-username" value="' + (isEdit ? esc(u.username) : '') + '" ' + (isEdit ? 'disabled' : 'placeholder="4-20 ký tự chữ, số, _"') + '>' +
+    '</div>' +
+    '<div class="form-group"><label>Họ và tên</label>' +
+    '<input type="text" id="usr-fullname" value="' + (isEdit ? esc(u.fullname || '') : '') + '" placeholder="Nhập họ tên">' +
+    '</div>' +
+    '<div class="form-group"><label>Email</label>' +
+    '<input type="text" id="usr-email" value="' + (isEdit ? esc(u.email || '') : '') + '" placeholder="email@gmail.com">' +
+    '</div>' +
+    '<div class="form-group"><label>Số điện thoại</label>' +
+    '<input type="text" id="usr-phone" value="' + (isEdit ? esc(u.phone || '') : '') + '" placeholder="0901234567">' +
+    '</div>' +
+    '<div class="form-group"><label>Mật khẩu ' + (isEdit ? '(để trống nếu giữ nguyên)' : '') + '</label>' +
+    '<input type="password" id="usr-pass" placeholder="Tối thiểu 6 ký tự">' +
+    '</div>' +
+    '<div class="form-error" id="usr-modal-err"></div>' +
+    '<button class="btn" style="width:100%; margin-top:8px;" onclick="saveUserModal()">' + (isEdit ? 'Cập nhật' : 'Thêm mới') + '</button>'
+  );
+}
+
+function saveUserModal() {
+  var oldUsername = document.getElementById('usr-edit-old').value;
+  var role = document.getElementById('usr-role').value;
+  var username = document.getElementById('usr-username').value.trim();
+  var fullname = document.getElementById('usr-fullname').value.trim();
+  var email = document.getElementById('usr-email').value.trim().toLowerCase();
+  var phone = document.getElementById('usr-phone').value.trim();
+  var pass = document.getElementById('usr-pass').value;
+  var err = document.getElementById('usr-modal-err');
+
+  if (fullname.length < 2) { err.textContent = 'Vui lòng nhập họ và tên.'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Email không hợp lệ.'; return; }
+  if (phone && !/^(0|\+84)\d{9}$/.test(phone)) { err.textContent = 'Số điện thoại không hợp lệ.'; return; }
+
+  if (oldUsername) {
+    var u = findUser(oldUsername);
+    if (!u) return;
+    var dupEmail = users.some(function (x) { return x.username !== oldUsername && String(x.email || '').toLowerCase() === email; });
+    if (dupEmail) { err.textContent = 'Email này đã được tài khoản khác sử dụng.'; return; }
+    if (pass && pass.length < 6) { err.textContent = 'Mật khẩu mới phải từ 6 ký tự trở lên.'; return; }
+
+    u.role = role;
+    u.fullname = fullname;
+    u.email = email;
+    u.phone = phone;
+    if (pass) u.password = pass;
+  } else {
+    if (!/^[A-Za-z0-9_]{4,20}$/.test(username)) { err.textContent = 'Tên đăng nhập 4-20 ký tự (chữ, số, _).'; return; }
+    if (findUser(username)) { err.textContent = 'Tên đăng nhập đã tồn tại.'; return; }
+    if (findUserByEmail(email)) { err.textContent = 'Email này đã được đăng ký.'; return; }
+    if (pass.length < 6) { err.textContent = 'Mật khẩu phải từ 6 ký tự trở lên.'; return; }
+
+    users.push({
+      username: username,
+      email: email,
+      password: pass,
+      fullname: fullname,
+      phone: phone,
+      role: role,
+      status: 'active'
+    });
+  }
+
+  save('wishy_users', users);
+  closeModal();
+  renderUsers();
+  renderAdminOrders();
+}
+
+function deleteUser(username) {
+  var u = findUser(username);
+  if (!u || u.role === 'admin') return;
+  var hasOrder = orders.some(function (o) { return o.user === username || o.staff === username; });
+  if (hasOrder) {
+    alert('Tài khoản "' + username + '" đã phát sinh giao dịch/đơn hàng nên không thể xóa.\nHãy dùng nút "Khóa" để vô hiệu hóa.');
+    return;
+  }
+  if (!confirm('Bạn có chắc muốn xóa tài khoản "' + username + '"?')) return;
+  users = users.filter(function (x) { return x.username !== username; });
+  save('wishy_users', users);
+  renderUsers();
+}

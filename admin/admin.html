@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +22,8 @@
                 <label>Mật khẩu:</label>
                 <input type="password" id="admin-pass-input" placeholder="Nhập mật khẩu">
             </div>
-            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="handleAdminLogin()">Đăng nhập</button>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="handleAdminLogin()">Đăng
+                nhập</button>
         </div>
     </div>
 
@@ -45,7 +47,8 @@
                 <div class="nav-section-title">KHO &amp; ĐƠN HÀNG</div>
                 <button class="nav-btn" onclick="switchTab('tab-orders', this)">Quản lí Đơn hàng</button>
                 <button class="nav-btn" onclick="switchTab('tab-stock', this)">Quản lí Nhập hàng</button>
-                <button class="nav-btn" onclick="switchTab('tab-inventory', this)">Quản lí Tồn kho &amp; Báo cáo</button>
+                <button class="nav-btn" onclick="switchTab('tab-inventory', this)">Quản lí Tồn kho &amp; Báo
+                    cáo</button>
             </nav>
         </aside>
 
@@ -55,14 +58,31 @@
             <!-- 1. Quản lí Người dùng (Linh) -->
             <section id="tab-users" class="tab-content active">
                 <div class="page-header">
-                    <h2>Quản lí Người dùng</h2>
-                    <input type="text" id="search-user" class="input-search" placeholder="Tìm tên/username..." onkeyup="renderUsers()">
+                    <h2>Quản lí Khách hàng &amp; Nhân viên</h2>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <select id="filter-user-role" onchange="renderUsers()">
+                            <option value="all">Tất cả vai trò</option>
+                            <option value="customer">Khách hàng</option>
+                            <option value="staff">Nhân viên</option>
+                        </select>
+                        <input type="text" id="search-user" class="input-search" placeholder="Tìm tên/username..."
+                            onkeyup="renderUsers()">
+                        <button class="btn btn-primary" onclick="showUserModal()">+ Thêm tài khoản</button>
+                    </div>
                 </div>
 
                 <div class="card">
                     <table class="data-table">
                         <thead>
-                            <tr><th>Mã KH</th><th>Tên Đăng Nhập</th><th>Họ Tên</th><th>Email</th><th>Trạng Thái</th><th>Thao Tác</th></tr>
+                            <tr>
+                                <th>Mã</th>
+                                <th>Tên Đăng Nhập</th>
+                                <th>Họ Tên</th>
+                                <th>Email</th>
+                                <th>Vai Trò</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
                         </thead>
                         <tbody id="tbody-users"></tbody>
                     </table>
@@ -73,16 +93,30 @@
             <section id="tab-categories" class="tab-content">
                 <div class="page-header">
                     <h2>Quản lí Loại Sản phẩm</h2>
-                    <div>
-                        <input type="text" id="new-cat-name" class="input-search" placeholder="Tên loại mới..."
-                               onkeydown="if(event.key==='Enter')addCategory()">
-                        <button class="btn btn-primary" onclick="addCategory()">+ Thêm loại</button>
-                    </div>
                 </div>
+
+                <div class="card" style="display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 240px;">
+                        <label for="new-cat-name"
+                            style="display: block; font-weight: 700; font-size: 13px; color: var(--primary-color); margin-bottom: 6px;">
+                            Tên loại sản phẩm mới
+                        </label>
+                        <input type="text" id="new-cat-name" style="width: 100%;"
+                            placeholder="VD: Sổ tay, Sticker, Ly sứ..."
+                            onkeydown="if(event.key==='Enter')addCategory()">
+                    </div>
+                    <button class="btn btn-primary" onclick="addCategory()">+ Thêm loại sản phẩm</button>
+                </div>
+
                 <div class="card">
                     <table class="data-table">
                         <thead>
-                            <tr><th>STT</th><th>Tên Loại Sản Phẩm</th><th>Số sản phẩm</th><th>Thao Tác</th></tr>
+                            <tr>
+                                <th>STT</th>
+                                <th>Tên Loại Sản Phẩm</th>
+                                <th>Số sản phẩm</th>
+                                <th>Thao Tác</th>
+                            </tr>
                         </thead>
                         <tbody id="tbody-categories"></tbody>
                     </table>
@@ -91,9 +125,13 @@
 
             <!-- 3. Quản lí Danh mục SP (Liểu) -->
             <section id="tab-products" class="tab-content">
-                <h2>Quản lí Danh mục Sản phẩm</h2>
+                <div class="page-header">
+                    <h2>Quản lí Danh mục Sản phẩm</h2>
+                    <button class="btn btn-primary" id="btn-toggle-prod-form" onclick="openProductForm()">+ Thêm sản
+                        phẩm mới</button>
+                </div>
 
-                <div class="admin-form-container">
+                <div id="product-form-box" class="admin-form-container" style="display: none;">
                     <h3 id="form-product-title"
                         style="color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">
                         Thêm sản phẩm mới</h3>
@@ -102,89 +140,112 @@
                     <div class="admin-form-grid">
                         <div class="form-row">
                             <label
-                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">Mã
-                                sản phẩm (VD: SP005)</label>
+                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">
+                                Mã sản phẩm (VD: SP005)</label>
                             <input type="text" id="prod-id" placeholder="Nhập mã sản phẩm">
                         </div>
 
                         <div class="form-row">
                             <label
-                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">Loại
-                                sản phẩm</label>
+                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">
+                                Loại sản phẩm</label>
                             <select id="prod-type"></select>
                         </div>
 
                         <div class="form-row form-row-full">
                             <label
-                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">Tên
-                                sản phẩm</label>
+                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">
+                                Tên sản phẩm</label>
                             <input type="text" id="prod-name" placeholder="Nhập tên sản phẩm">
                         </div>
 
                         <div class="form-row">
                             <label
-                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">Giá
-                                bán (VNĐ)</label>
+                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">
+                                Giá bán (VNĐ)</label>
                             <input type="number" id="prod-price" placeholder="Nhập giá bán">
                         </div>
 
                         <div class="form-row">
                             <label
-                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">Số
-                                lượng tồn kho</label>
+                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">
+                                Số lượng tồn kho</label>
                             <input type="number" id="prod-stock" placeholder="Nhập số lượng tồn kho">
+                        </div>
+                        <div class="form-row form-row-full">
+                            <label
+                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">
+                                Đường dẫn hình ảnh (VD: images/totebag-bat1.png)</label>
+                            <input type="text" id="prod-img" placeholder="Để trống sẽ dùng ảnh mặc định">
+                        </div>
+
+                        <div class="form-row form-row-full">
+                            <label
+                                style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; color: var(--primary-color);">
+                                Mô tả sản phẩm</label>
+                            <textarea id="prod-desc" rows="2" placeholder="Nhập mô tả chi tiết sản phẩm..."></textarea>
                         </div>
                     </div>
 
                     <div style="margin-top: 25px; text-align: center;">
-                        <button class="btn" id="btn-save-prod" style="padding: 10px 30px;" onclick="saveProduct()">Lưu sản
-                            phẩm</button>
-                        <button class="btn-outline" id="btn-cancel-prod"
-                            style="display:none; padding: 10px 30px; margin-left: 10px;" onclick="cancelEditProduct()">Hủy
-                            sửa</button>
+                        <button class="btn" id="btn-save-prod" style="padding: 10px 30px;" onclick="saveProduct()">Lưu
+                            sản phẩm</button>
+                        <button class="btn-outline" id="btn-cancel-prod" style="padding: 10px 30px; margin-left: 10px;"
+                            onclick="cancelEditProduct()">Hủy / Đóng</button>
                     </div>
                 </div>
 
-                <h3 style="margin-top: 40px;">Danh sách sản phẩm hiện có</h3>
-                <table style="margin-top: 15px;">
-                    <thead>
-                        <tr>
-                            <th>Mã SP</th>
-                            <th>Tên SP</th>
-                            <th>Loại</th>
-                            <th>Giá bán</th>
-                            <th>Tồn kho</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-products"></tbody>
-                </table>
+                <h3 style="margin-top: 10px;">Danh sách sản phẩm hiện có</h3>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã SP</th>
+                                <th>Tên SP</th>
+                                <th>Loại</th>
+                                <th>Giá bán</th>
+                                <th>Tồn kho</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-products"></tbody>
+                    </table>
+                </div>
             </section>
 
             <!-- 4. Quản lí Lợi nhuận (Mai) -->
             <section id="tab-pricing" class="tab-content">
                 <h2>Quản lí Giá bán &amp; Tỷ suất Lợi nhuận</h2>
                 <div style="display: flex; gap: 20px; margin-bottom: 24px; flex-wrap: wrap;">
-                <!-- Cập nhật giá sản phẩm -->
-                <div class="card-box pricing-admin-box">
-                    <h3>Cập nhật % Lợi nhuận theo sản phẩm</h3>
-                    <div class="form-row"><label>Chọn sản phẩm</label><select id="pricing-prod-select"></select></div>
-                    <div class="form-row"><label>Phần trăm lợi nhuận (%)</label><input type="number" id="pricing-margin-input" value="30"></div>
-                    <button class="btn" style="margin-top: 10px;" onclick="saveProductMargin()">Lưu &amp; Tính lại giá bán</button>
-                </div>
-                <!-- Cập nhật % lợi nhuận theo LOẠI sản phẩm -->
-                <div class="card-box pricing-admin-box" >
-                    <h3>Cập nhật % Lợi nhuận theo Loại sản phẩm</h3>
-                    <div class="form-row"><label>Chọn loại sản phẩm</label><select id="pricing-category-select"></select></div>
-                    <div class="form-row"><label>Phần trăm lợi nhuận chung (%)</label><input type="number" id="pricing-cat-margin-input" value="30"></div>
-                <button class="btn" style="margin-top: 10px;" onclick="saveCategoryMargin()">Áp dụng cho toàn bộ loại</button>
-                </div>
+                    <!-- Cập nhật giá sản phẩm -->
+                    <div class="card-box pricing-admin-box">
+                        <h3>Cập nhật % Lợi nhuận theo sản phẩm</h3>
+                        <div class="form-row"><label>Chọn sản phẩm</label><select id="pricing-prod-select"></select>
+                        </div>
+                        <div class="form-row"><label>Phần trăm lợi nhuận (%)</label><input type="number"
+                                id="pricing-margin-input" value="30"></div>
+                        <button class="btn" style="margin-top: 10px;" onclick="saveProductMargin()">Lưu &amp; Tính lại
+                            giá bán</button>
+                    </div>
+                    <!-- Cập nhật % lợi nhuận theo LOẠI sản phẩm -->
+                    <div class="card-box pricing-admin-box">
+                        <h3>Cập nhật % Lợi nhuận theo Loại sản phẩm</h3>
+                        <div class="form-row"><label>Chọn loại sản phẩm</label><select
+                                id="pricing-category-select"></select></div>
+                        <div class="form-row"><label>Phần trăm lợi nhuận chung (%)</label><input type="number"
+                                id="pricing-cat-margin-input" value="30"></div>
+                        <button class="btn" style="margin-top: 10px;" onclick="saveCategoryMargin()">Áp dụng cho toàn bộ
+                            loại</button>
+                    </div>
                 </div>
 
                 <!-- Bảng tra cứu & Thanh tìm kiếm -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
                     <h3 style="margin:0;">Bảng tra cứu Giá vốn, % Lợi nhuận &amp; Giá bán</h3>
-                    <input type="text" id="search-pricing-input" placeholder="Tìm theo tên hoặc mã SP..." onkeyup="filterPricingTable()" style="padding: 8px 16px; width: 300px; border: 1px solid var(--border-color); border-radius: 20px; font-family: inherit;">
+                    <input type="text" id="search-pricing-input" placeholder="Tìm theo tên hoặc mã SP..."
+                        onkeyup="filterPricingTable()"
+                        style="padding: 8px 16px; width: 300px; border: 1px solid var(--border-color); border-radius: 20px; font-family: inherit;">
                 </div>
 
                 <div class="cart-header-row">
@@ -218,7 +279,19 @@
                 </div>
                 <div class="card">
                     <table>
-                        <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Tổng tiền</th><th>Trạng thái</th><th>Cập nhật trạng thái</th><th>Thao tác</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Mã ĐH</th>
+                                <th>Mã KH</th>
+                                <th>Khách hàng</th>
+                                <th>Ngày mua</th>
+                                <th>NV phụ trách</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                                <th>Cập nhật trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
                         <tbody id="tbody-orders"></tbody>
                     </table>
                 </div>
@@ -232,12 +305,21 @@
                 </div>
                 <div class="filter-box">
                     <label>Tìm phiếu:
-                        <input type="text" id="stock-search" placeholder="Mã, ngày, trạng thái..." oninput="renderStockIn()">
+                        <input type="text" id="stock-search" placeholder="Mã, ngày, trạng thái..."
+                            oninput="renderStockIn()">
                     </label>
                 </div>
                 <div class="card">
                     <table>
-                        <thead><tr><th>Mã phiếu</th><th>Ngày nhập</th><th>Tổng tiền nhập</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Mã phiếu</th>
+                                <th>Ngày nhập</th>
+                                <th>Tổng tiền nhập</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
                         <tbody id="tbody-stock"></tbody>
                     </table>
                 </div>
@@ -256,7 +338,15 @@
                 </div>
                 <div class="card">
                     <table>
-                        <thead><tr><th>Mã SP</th><th>Tên SP</th><th>Loại</th><th>SL Tồn</th><th>Cảnh báo</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Mã SP</th>
+                                <th>Tên SP</th>
+                                <th>Loại</th>
+                                <th>SL Tồn</th>
+                                <th>Cảnh báo</th>
+                            </tr>
+                        </thead>
                         <tbody id="tbody-inventory"></tbody>
                     </table>
                 </div>
@@ -282,4 +372,5 @@
     <script src="../js/common.js"></script>
     <script src="js/admin.js"></script>
 </body>
+
 </html>

@@ -13,16 +13,18 @@ function load(key, seed) {
   try {
     var raw = localStorage.getItem(key);
     if (raw) return JSON.parse(raw);
-  } catch (e) {}
+  } catch (e) { }
   save(key, seed);
   return seed;
 }
 function save(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { }
 }
 
 var users = load('wishy_users', [
   { username: 'admin', email: 'admin@wishy.vn', password: 'admin123', fullname: 'Quản trị viên', role: 'admin' },
+  { username: 'nv01', email: 'nv01@wishy.vn', password: '123456', fullname: 'Trần Minh Anh', phone: '0901112222', role: 'staff' },
+  { username: 'nv02', email: 'nv02@wishy.vn', password: '123456', fullname: 'Lê Hoàng Phúc', phone: '0903334444', role: 'staff' },
   { username: 'nam', email: 'nam@gmail.com', password: '123456', fullname: 'Đặng Phương Nam', role: 'customer' },
   { username: 'lan', email: 'lan@gmail.com', password: '123456', fullname: 'Nguyễn Thị Lan', role: 'customer' }
 ]);
@@ -92,65 +94,65 @@ function orderTotal(o) {
 function isAdmin() { return !!currentUser && currentUser.role === 'admin'; }
 
 function cartCount() {
-  if (!currentUser || !currentUser.username) return 0; 
+  if (!currentUser || !currentUser.username) return 0;
   var cart = load('wishy_cart_' + currentUser.username, []);
   return cart.reduce(function (s, i) { return s + (i.qty || 0); }, 0);
 }
 
 var ICON_USER =
   '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-    '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>' +
-    '<circle cx="12" cy="7" r="4"></circle>' +
+  '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>' +
+  '<circle cx="12" cy="7" r="4"></circle>' +
   '</svg>';
 var ICON_CART =
   '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-    '<circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>' +
-    '<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>' +
+  '<circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>' +
+  '<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>' +
   '</svg>';
 
 function siteHeaderHtml(activePage) {
   return '<header class="site-header">' +
     '<div class="header-top">' +
-      '<div class="header-left-space"></div>' +
-      '<div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">WISHY</a></div>' +
-      '<div id="user-header-box" class="header-right-icons"></div>' +
+    '<div class="header-left-space"></div>' +
+    '<div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">WISHY</a></div>' +
+    '<div id="user-header-box" class="header-right-icons"></div>' +
     '</div>' +
     '<nav class="main-nav-equal" id="category-nav-list">' +
-      '<a class="cat-tab ' + (activePage === 'home' ? 'active' : '') + '" href="index.html">Trang chủ</a>' +
-      '<a class="cat-tab ' + (activePage === 'all' ? 'active' : '') + '" href="index.html#products">Tất cả sản phẩm</a>' +
-      '<a class="cat-tab" href="index.html#products">Túi vải</a>' +
-      '<a class="cat-tab" href="index.html#products">Áo thun</a>' +
-      '<a class="cat-tab" href="index.html#products">Phụ kiện</a>' +
-      '<a class="cat-tab" href="index.html#products">Móc khóa</a>' +
-      '<a class="cat-tab" href="index.html#products">Bưu thiếp</a>' +
+    '<a class="cat-tab ' + (activePage === 'home' ? 'active' : '') + '" href="index.html">Trang chủ</a>' +
+    '<a class="cat-tab ' + (activePage === 'all' ? 'active' : '') + '" href="index.html#products">Tất cả sản phẩm</a>' +
+    '<a class="cat-tab" href="index.html#products">Túi vải</a>' +
+    '<a class="cat-tab" href="index.html#products">Áo thun</a>' +
+    '<a class="cat-tab" href="index.html#products">Phụ kiện</a>' +
+    '<a class="cat-tab" href="index.html#products">Móc khóa</a>' +
+    '<a class="cat-tab" href="index.html#products">Bưu thiếp</a>' +
     '</nav>' +
-  '</header>';
+    '</header>';
 }
 function renderHeader() {
   var box = document.getElementById('user-header-box');
   if (!box) return;
-  
+
   var cartBtn =
     '<a href="cart.html" class="icon-btn cart-icon-btn" title="Giỏ hàng" onclick="checkCartAccess(event)">' +
-      '<img src="images/logo/cart.png" alt="Cart">' +
+    '<img src="images/logo/cart.png" alt="Cart">' +
     '</a>';
 
   if (currentUser) {
     box.innerHTML =
       '<div class="user-dropdown-wrapper">' +
-        '<a href="profile.html" class="icon-btn" title="Tài khoản">' +
-          '<img src="images/logo/user.png" alt="User">' +
-        '</a>' +
-        '<div class="user-dropdown-menu">' +
-          '<a href="profile.html">Trang cá nhân</a>' +
-          '<button onclick="logout()">Đăng xuất</button>' +
-        '</div>' +
+      '<a href="profile.html" class="icon-btn" title="Tài khoản">' +
+      '<img src="images/logo/user.png" alt="User">' +
+      '</a>' +
+      '<div class="user-dropdown-menu">' +
+      '<a href="profile.html">Trang cá nhân</a>' +
+      '<button onclick="logout()">Đăng xuất</button>' +
+      '</div>' +
       '</div>' +
       cartBtn;
   } else {
     box.innerHTML =
       '<a href="#" class="icon-btn" title="Tài khoản" onclick="openAuth(\'login\'); return false;">' +
-        '<img src="images/logo/user.png" alt="User">' +
+      '<img src="images/logo/user.png" alt="User">' +
       '</a>' +
       cartBtn;
   }
@@ -221,8 +223,8 @@ function openAuth(mode) {
   m.innerHTML =
     '<button class="modal-close" onclick="closeModal()">&times;</button>' +
     '<div class="auth-tabs">' +
-      '<button id="auth-tab-login" class="' + (mode === 'login' ? 'active' : '') + '" onclick="openAuth(\'login\')">Đăng nhập</button>' +
-      '<button id="auth-tab-register" class="' + (mode === 'register' ? 'active' : '') + '" onclick="openAuth(\'register\')">Đăng ký</button>' +
+    '<button id="auth-tab-login" class="' + (mode === 'login' ? 'active' : '') + '" onclick="openAuth(\'login\')">Đăng nhập</button>' +
+    '<button id="auth-tab-register" class="' + (mode === 'register' ? 'active' : '') + '" onclick="openAuth(\'register\')">Đăng ký</button>' +
     '</div>' +
     (mode === 'login' ? loginForm() : registerForm());
   showOverlay();
@@ -230,35 +232,40 @@ function openAuth(mode) {
 
 function loginForm() {
   return '<div class="form-row"><label>Email</label><input id="lg-email" type="email" placeholder="Nhập email..." autocomplete="email"></div>' +
-         '<div class="form-row"><label>Mật khẩu</label><input id="lg-pass" type="password" placeholder="Nhập mật khẩu..." autocomplete="current-password"></div>' +
-         '<div class="form-error" id="auth-error"></div>' +
-         '<button class="btn" style="width:100%" onclick="doLogin()">Đăng nhập</button>' +
-         '<p class="hint">Chưa có tài khoản? <a href="#" onclick="openAuth(\'register\');return false;">Đăng ký ngay</a></p>';
+    '<div class="form-row"><label>Mật khẩu</label><input id="lg-pass" type="password" placeholder="Nhập mật khẩu..." autocomplete="current-password"></div>' +
+    '<div class="form-error" id="auth-error"></div>' +
+    '<button class="btn" style="width:100%" onclick="doLogin()">Đăng nhập</button>' +
+    '<p class="hint">Chưa có tài khoản? <a href="#" onclick="openAuth(\'register\');return false;">Đăng ký ngay</a></p>';
 }
+function clearRegError(field) {
+  var el = document.getElementById('err-' + field);
+  if (el) el.textContent = '';
+}
+
 function registerForm() {
   return [
     '<form id="register-form" onsubmit="return handleRegister(event)" novalidate>',
     '  <div class="form-row">',
     '    <div class="form-col">',
     '      <label for="fullname">Họ và tên</label>',
-    '      <input type="text" id="fullname" placeholder="Nguyễn Văn A">',
+    '      <input type="text" id="fullname" placeholder="Nguyễn Văn A" oninput="clearRegError(\'fullname\')">',
     '      <div class="error" id="err-fullname"></div>',
     '      <label for="email">Email</label>',
-    '      <input type="email" id="email" placeholder="ten@gmail.com" autocomplete="email">',
+    '      <input type="email" id="email" placeholder="ten@gmail.com" autocomplete="email" oninput="clearRegError(\'email\')">',
     '      <div class="error" id="err-email"></div>',
     '      <label for="phone">Số điện thoại</label>',
-    '      <input type="tel" id="phone" placeholder="0901234567">',
+    '      <input type="tel" id="phone" placeholder="0901234567" oninput="clearRegError(\'phone\')">',
     '      <div class="error" id="err-phone"></div>',
     '    </div>',
     '    <div class="form-col">',
     '      <label for="username">Tên đăng nhập</label>',
-    '      <input type="text" id="username" placeholder="4-20 ký tự: chữ, số, dấu _" autocomplete="username">',
+    '      <input type="text" id="username" placeholder="4-20 ký tự: chữ, số, dấu _" autocomplete="username" oninput="clearRegError(\'username\')">',
     '      <div class="error" id="err-username"></div>',
     '      <label for="password">Mật khẩu</label>',
-    '      <input type="password" id="password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password">',
+    '      <input type="password" id="password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" oninput="clearRegError(\'password\')">',
     '      <div class="error" id="err-password"></div>',
     '      <label for="confirm">Nhập lại mật khẩu</label>',
-    '      <input type="password" id="confirm" autocomplete="new-password">',
+    '      <input type="password" id="confirm" autocomplete="new-password" oninput="clearRegError(\'confirm\')">',
     '      <div class="error" id="err-confirm"></div>',
     '    </div>',
     '  </div>',
@@ -268,6 +275,7 @@ function registerForm() {
     '</form>'
   ].join('');
 }
+
 function authError(msg) { document.getElementById('auth-error').textContent = msg; }
 
 function doLogin() {
@@ -275,7 +283,9 @@ function doLogin() {
   var p = document.getElementById('lg-pass').value;
   if (!email || !p) return authError('Vui lòng nhập đầy đủ Email và Mật khẩu!');
   var user = findUserByEmail(email);
-  if (!user || user.role === 'admin' || user.password !== p) return authError('Email hoặc mật khẩu không chính xác!');
+  if (!user || user.role === 'admin' || user.role === 'staff' || user.password !== p) {
+    return authError('Email hoặc mật khẩu không chính xác!');
+  }
   if (user.status === 'locked') return authError('Tài khoản của bạn đã bị khóa!');
   currentUser = { username: user.username, fullname: user.fullname, role: user.role };
   save('wishy_current', currentUser);
@@ -351,212 +361,212 @@ function checkCartAccess(e) {
 
 var defaultProducts = [
   //tui vai
-  { 
-    id: 'SP001', 
-    name: 'Túi tote Dân Địa Phương', 
-    type: 'Túi vải', 
-    price: 150000, 
-    stock: 12, 
-    img: 'images/totebag-dandiaphuong1.png', 
-    images: ['images/totebag-dandiaphuong1.png', 'images/totebag-dandiaphuong2.png'], 
-    desc: 'Túi tote chất liệu vải canvas bền đẹp, in chữ "Dân Địa Phương" phong cách trẻ trung, tiện dụng.' 
+  {
+    id: 'SP001',
+    name: 'Túi tote Dân Địa Phương',
+    type: 'Túi vải',
+    price: 150000,
+    stock: 12,
+    img: 'images/totebag-dandiaphuong1.png',
+    images: ['images/totebag-dandiaphuong1.png', 'images/totebag-dandiaphuong2.png'],
+    desc: 'Túi tote chất liệu vải canvas bền đẹp, in chữ "Dân Địa Phương" phong cách trẻ trung, tiện dụng.'
   },
-  { 
-    id: 'SP002', 
-    name: 'Túi tote Bình An Vô Sự', 
-    type: 'Túi vải', 
-    price: 99000, 
-    stock: 16, 
-    img: 'images/totebag-binhanvosu1.png', 
-    images: ['images/totebag-binhanvosu1.png', 'images/totebag-binhanvosu2.png'], 
-    desc: 'Túi tote chất liệu vải canvas bền đẹp, in chữ "Bình An Vô Sự" phong cách trẻ trung, tiện dụng.' 
+  {
+    id: 'SP002',
+    name: 'Túi tote Bình An Vô Sự',
+    type: 'Túi vải',
+    price: 99000,
+    stock: 16,
+    img: 'images/totebag-binhanvosu1.png',
+    images: ['images/totebag-binhanvosu1.png', 'images/totebag-binhanvosu2.png'],
+    desc: 'Túi tote chất liệu vải canvas bền đẹp, in chữ "Bình An Vô Sự" phong cách trẻ trung, tiện dụng.'
   },
-  { 
-    id: 'SP003', 
-    name: 'Túi tote Bạt', 
-    type: 'Túi vải', 
-    price: 180000, 
-    stock: 4, 
-    img: 'images/totebag-bat1.png', 
-    images: ['images/totebag-bat1.png', 'images/totebag-bat2.png'], 
-    desc: 'Túi tote chất liệu vải canvas bền đẹp, lấy cảm hứng từ vải bạt, phong cách trẻ trung, tiện dụng.' 
+  {
+    id: 'SP003',
+    name: 'Túi tote Bạt',
+    type: 'Túi vải',
+    price: 180000,
+    stock: 4,
+    img: 'images/totebag-bat1.png',
+    images: ['images/totebag-bat1.png', 'images/totebag-bat2.png'],
+    desc: 'Túi tote chất liệu vải canvas bền đẹp, lấy cảm hứng từ vải bạt, phong cách trẻ trung, tiện dụng.'
   },
 
   //postcard
-  { 
-    id: 'SP004', 
-    name: 'Bưu thiếp "Địa điểm Việt Nam"', 
-    type: 'Bưu thiếp', 
-    price: 80000, 
-    stock: 15, 
-    img: 'images/postcard-vietnameseplaces1.png', 
-    images: ['images/postcard-vietnameseplaces1.png', 'images/postcard-vietnameseplaces2.png'], 
-    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
+  {
+    id: 'SP004',
+    name: 'Bưu thiếp "Địa điểm Việt Nam"',
+    type: 'Bưu thiếp',
+    price: 80000,
+    stock: 15,
+    img: 'images/postcard-vietnameseplaces1.png',
+    images: ['images/postcard-vietnameseplaces1.png', 'images/postcard-vietnameseplaces2.png'],
+    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.'
   },
-  { 
-    id: 'SP005', 
-    name: 'Bưu thiếp "Hà Nội"', 
-    type: 'Bưu thiếp', 
-    price: 60000, 
-    stock: 7, 
-    img: 'images/postcard-hanoi1.png', 
-    images: ['images/postcard-hanoi1.png', 'images/postcard-hanoi2.png'], 
-    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
+  {
+    id: 'SP005',
+    name: 'Bưu thiếp "Hà Nội"',
+    type: 'Bưu thiếp',
+    price: 60000,
+    stock: 7,
+    img: 'images/postcard-hanoi1.png',
+    images: ['images/postcard-hanoi1.png', 'images/postcard-hanoi2.png'],
+    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.'
   },
-  { 
-    id: 'SP006', 
-    name: 'Bưu thiếp "Vietnamese Street Life"', 
-    type: 'Bưu thiếp', 
-    price: 80000, 
-    stock: 9, 
-    img: 'images/postcard-phuongsongdep1.png', 
-    images: ['images/postcard-phuongsongdep1.png', 'images/postcard-phuongsongdep2.png'], 
-    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
+  {
+    id: 'SP006',
+    name: 'Bưu thiếp "Vietnamese Street Life"',
+    type: 'Bưu thiếp',
+    price: 80000,
+    stock: 9,
+    img: 'images/postcard-phuongsongdep1.png',
+    images: ['images/postcard-phuongsongdep1.png', 'images/postcard-phuongsongdep2.png'],
+    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.'
   },
-  { 
-    id: 'SP007', 
-    name: 'Bưu thiếp "Hồ Chí Minh"', 
-    type: 'Bưu thiếp', 
-    price: 60000, 
-    stock: 13, 
-    img: 'images/postcard-hochiminh1.png', 
-    images: ['images/postcard-hochiminh1.png', 'images/postcard-hochiminh2.png'], 
-    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
+  {
+    id: 'SP007',
+    name: 'Bưu thiếp "Hồ Chí Minh"',
+    type: 'Bưu thiếp',
+    price: 60000,
+    stock: 13,
+    img: 'images/postcard-hochiminh1.png',
+    images: ['images/postcard-hochiminh1.png', 'images/postcard-hochiminh2.png'],
+    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.'
   },
-  { 
-    id: 'SP008', 
-    name: 'Bưu thiếp "Đi Chợ"', 
-    type: 'Bưu thiếp', 
-    price: 60000, 
-    stock: 19, 
-    img: 'images/postcard-dicho1.png', 
-    images: ['images/postcard-dicho1.png', 'images/postcard-dicho2.png'], 
-    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.' 
+  {
+    id: 'SP008',
+    name: 'Bưu thiếp "Đi Chợ"',
+    type: 'Bưu thiếp',
+    price: 60000,
+    stock: 19,
+    img: 'images/postcard-dicho1.png',
+    images: ['images/postcard-dicho1.png', 'images/postcard-dicho2.png'],
+    desc: 'Bộ thiệp minh họa các địa danh nổi tiếng của Việt Nam.'
   },
 
   //moc khoa
-  { 
-    id: 'SP009', 
-    name: 'Móc khoá Đĩa Than "Mountain Child"', 
-    type: 'Móc khóa', 
-    price: 99000, 
-    stock: 15, 
-    img: 'images/keychain-mountain1.png', 
-    images: ['images/keychain-mountain1.png', 'images/keychain-mountain2.png'], 
-    desc: 'Móc khóa acrylic hình đĩa than chủ đề "Mountain" thuộc bộ sưu tập Music of the city.' 
+  {
+    id: 'SP009',
+    name: 'Móc khoá Đĩa Than "Mountain Child"',
+    type: 'Móc khóa',
+    price: 99000,
+    stock: 15,
+    img: 'images/keychain-mountain1.png',
+    images: ['images/keychain-mountain1.png', 'images/keychain-mountain2.png'],
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "Mountain" thuộc bộ sưu tập Music of the city.'
   },
-  { 
-    id: 'SP010', 
-    name: 'Móc khoá Đĩa Than "Đà Lạt"', 
-    type: 'Móc khóa', 
-    price: 120000, 
-    stock: 18, 
-    img: 'images/keychain-dalat1.png', 
-    images: ['images/keychain-dalat1.png', 'images/keychain-dalat2.png'], 
-    desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.' 
+  {
+    id: 'SP010',
+    name: 'Móc khoá Đĩa Than "Đà Lạt"',
+    type: 'Móc khóa',
+    price: 120000,
+    stock: 18,
+    img: 'images/keychain-dalat1.png',
+    images: ['images/keychain-dalat1.png', 'images/keychain-dalat2.png'],
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.'
   },
-  { 
-    id: 'SP011', 
-    name: 'Móc khoá Đĩa Than "Hà Nội"', 
-    type: 'Móc khóa', 
-    price: 120000, 
-    stock: 5, 
-    img: 'images/keychain-hanoi1.png', 
-    images: ['images/keychain-hanoi1.png', 'images/keychain-hanoi2.png'], 
-    desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.' 
+  {
+    id: 'SP011',
+    name: 'Móc khoá Đĩa Than "Hà Nội"',
+    type: 'Móc khóa',
+    price: 120000,
+    stock: 5,
+    img: 'images/keychain-hanoi1.png',
+    images: ['images/keychain-hanoi1.png', 'images/keychain-hanoi2.png'],
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.'
   },
-  { 
-    id: 'SP012', 
-    name: 'Móc khoá Đĩa Than "Sài Gòn"', 
-    type: 'Móc khóa', 
-    price: 120000, 
-    stock: 9, 
-    img: 'images/keychain-saigon1.png', 
-    images: ['images/keychain-saigon1.png', 'images/keychain-saigon2.png'], 
-    desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.' 
+  {
+    id: 'SP012',
+    name: 'Móc khoá Đĩa Than "Sài Gòn"',
+    type: 'Móc khóa',
+    price: 120000,
+    stock: 9,
+    img: 'images/keychain-saigon1.png',
+    images: ['images/keychain-saigon1.png', 'images/keychain-saigon2.png'],
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "City" thuộc bộ sưu tập Music of the city.'
   },
-  { 
-    id: 'SP013', 
-    name: 'Móc khoá Đĩa Than "Ocean"', 
-    type: 'Móc khóa', 
-    price: 99000, 
-    stock: 13, 
-    img: 'images/keychain-ocean1.png', 
-    images: ['images/keychain-ocean1.png', 'images/keychain-ocean2.png'], 
-    desc: 'Móc khóa acrylic hình đĩa than chủ đề "Ocean" thuộc bộ sưu tập Music of the city.' 
+  {
+    id: 'SP013',
+    name: 'Móc khoá Đĩa Than "Ocean"',
+    type: 'Móc khóa',
+    price: 99000,
+    stock: 13,
+    img: 'images/keychain-ocean1.png',
+    images: ['images/keychain-ocean1.png', 'images/keychain-ocean2.png'],
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "Ocean" thuộc bộ sưu tập Music of the city.'
   },
-  { 
-    id: 'SP014', 
-    name: 'Móc khoá Đĩa Than "Việt Nam"', 
-    type: 'Móc khóa', 
-    price: 120000, 
-    stock: 6, 
-    img: 'images/keychain-vietnam1.png', 
-    images: ['images/keychain-vietnam1.png', 'images/keychain-vietnam2.png'], 
-    desc: 'Móc khóa acrylic hình đĩa than chủ đề "Vietnam" thuộc bộ sưu tập Music of the city.' 
+  {
+    id: 'SP014',
+    name: 'Móc khoá Đĩa Than "Việt Nam"',
+    type: 'Móc khóa',
+    price: 120000,
+    stock: 6,
+    img: 'images/keychain-vietnam1.png',
+    images: ['images/keychain-vietnam1.png', 'images/keychain-vietnam2.png'],
+    desc: 'Móc khóa acrylic hình đĩa than chủ đề "Vietnam" thuộc bộ sưu tập Music of the city.'
   },
-  
+
   //jewelry
-  { 
-    id: 'SP015', 
-    name: 'Dây chuyền "Vỏ sò 1"', 
-    type: 'Phụ kiện', 
-    price: 280000, 
-    stock: 15, 
-    img: 'images/jewelry-v11.png', 
-    images: ['images/jewelry-v11.png', 'images/jewelry-v12.png'], 
-    desc: 'Dây chuyền hạt cườm sáng màu kết hợp mặt vỏ sò lớn và charm sao biển phong cách mùa hè, biển cả.' 
-  },{ 
-    id: 'SP016', 
-    name: 'Dây chuyền "Vỏ sò 2"', 
-    type: 'Phụ kiện', 
-    price: 320000, 
-    stock: 20, 
-    img: 'images/jewelry-v21.png', 
-    images: ['images/jewelry-v21.png', 'images/jewelry-v22.png'], 
-    desc: 'Dây chuyền hạt cườm sáng màu kết hợp mặt vỏ sò lớn và charm sao biển phong cách mùa hè, biển cả.' 
+  {
+    id: 'SP015',
+    name: 'Dây chuyền "Vỏ sò 1"',
+    type: 'Phụ kiện',
+    price: 280000,
+    stock: 15,
+    img: 'images/jewelry-v11.png',
+    images: ['images/jewelry-v11.png', 'images/jewelry-v12.png'],
+    desc: 'Dây chuyền hạt cườm sáng màu kết hợp mặt vỏ sò lớn và charm sao biển phong cách mùa hè, biển cả.'
+  }, {
+    id: 'SP016',
+    name: 'Dây chuyền "Vỏ sò 2"',
+    type: 'Phụ kiện',
+    price: 320000,
+    stock: 20,
+    img: 'images/jewelry-v21.png',
+    images: ['images/jewelry-v21.png', 'images/jewelry-v22.png'],
+    desc: 'Dây chuyền hạt cườm sáng màu kết hợp mặt vỏ sò lớn và charm sao biển phong cách mùa hè, biển cả.'
   },
 
   //aothun
-  { 
-    id: 'SP017', 
-    name: 'Áo thun Wishy "Hà Nội"', 
-    type: 'Áo thun', 
-    price: 360000, 
-    stock: 7, 
-    img: 'images/aohanoi1.png', 
+  {
+    id: 'SP017',
+    name: 'Áo thun Wishy "Hà Nội"',
+    type: 'Áo thun',
+    price: 360000,
+    stock: 7,
+    img: 'images/aohanoi1.png',
     images: ['images/aohanoi1.png', 'images/ao-matsau.png'],
-    desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
+    desc: 'Áo thun chất liệu cotton 100% thoáng mát.'
   },
-  { 
-    id: 'SP018', 
-    name: 'Áo thun Wishy "Phú Quốc"', 
-    type: 'Áo thun', 
-    price: 360000, 
-    stock: 13, 
-    img: 'images/aophuquoc1.png', 
+  {
+    id: 'SP018',
+    name: 'Áo thun Wishy "Phú Quốc"',
+    type: 'Áo thun',
+    price: 360000,
+    stock: 13,
+    img: 'images/aophuquoc1.png',
     images: ['images/aophuquoc1.png', 'images/ao-matsau.png'],
-    desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
+    desc: 'Áo thun chất liệu cotton 100% thoáng mát.'
   },
-  { 
-    id: 'SP019', 
-    name: 'Áo thun Wishy "Đà Lạt"', 
-    type: 'Áo thun', 
-    price: 360000, 
-    stock: 6, 
-    img: 'images/aodalat1.png', 
+  {
+    id: 'SP019',
+    name: 'Áo thun Wishy "Đà Lạt"',
+    type: 'Áo thun',
+    price: 360000,
+    stock: 6,
+    img: 'images/aodalat1.png',
     images: ['images/aodalat1.png', 'images/ao-matsau.png'],
-    desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
+    desc: 'Áo thun chất liệu cotton 100% thoáng mát.'
   },
-  { 
-    id: 'SP020', 
-    name: 'Áo thun Wishy "Sài Gòn"', 
-    type: 'Áo thun', 
-    price: 360000, 
-    stock: 19, 
-    img: 'images/aosaigon1.png', 
+  {
+    id: 'SP020',
+    name: 'Áo thun Wishy "Sài Gòn"',
+    type: 'Áo thun',
+    price: 360000,
+    stock: 19,
+    img: 'images/aosaigon1.png',
     images: ['images/aosaigon1.png', 'images/ao-matsau.png'],
-    desc: 'Áo thun chất liệu cotton 100% thoáng mát.' 
+    desc: 'Áo thun chất liệu cotton 100% thoáng mát.'
   }
 ];
 
@@ -594,5 +604,5 @@ window.addEventListener('storage', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    renderHeader();
+  renderHeader();
 });
